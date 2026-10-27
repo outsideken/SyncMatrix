@@ -579,7 +579,7 @@
   const daylightToggle = d3.select("#sm-daylight-toggle");
 
   function updateDaylightToggle(p) {
-    // Some matrices (e.g. Partner) carry no daylight data: grey the switch out.
+    // A payload without daylight data (config "Show Sunrise/Sunset?": false): grey the switch out.
     const available = Boolean(p.daylight);
     daylightToggle.property("checked", options.showDaylight).property("disabled", !available);
     d3.select(daylightToggle.node().parentNode)

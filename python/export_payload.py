@@ -1,25 +1,33 @@
-"""Build a Sync Matrix JSON payload for the d3 renderer (web/index.html).
+r"""Build a Sync Matrix JSON payload for the d3 renderer (web/index.html).
 
 Python owns the data and the computation (sunrise/sunset, end of local day,
 ICOD, validation); the browser only draws. The payload is plain JSON so it can
 be committed to Git, served from any static host, or pushed into an iframe.
 
+Each payload is one matrix, one locality and one UTC day.
+
 Usage
 -----
-    python export_payload.py --config ../Config_PARTNER_Sync_Matrix.json \
-                             --events events.json --out ../web/data/partner.json
-
-    # No events yet? Generate deterministic sample events for a demo.
-    python export_payload.py --config ../Config_Abstracted_Sync_Matrix.json \
-                             --demo-events 14 --out ../web/data/abstracted.json
-
-    # Dated library for the page's Matrix/Date dropdowns: writes
-    # <out-dir>/<slug>/<YYYY-MM-DD>.json and rebuilds <out-dir>/index.json.
+    # Add a day to the page's library: writes
+    # <out-dir>/<slug>/<locality>/<YYYY-MM-DD>.json and rebuilds <out-dir>/index.json.
     python export_payload.py --config ../Config_PARTNER_Sync_Matrix.json --slug partner \
                              --date 2026-10-27 --events events.json --out-dir ../web/data
 
+    # No events yet? Generate deterministic sample events for a demo
+    # (the locality can come from the events file or --locality/--locality-name).
+    python export_payload.py --config ../Config_Abstracted_Sync_Matrix.json --slug abstracted \
+                             --demo-events 14 --locality "POINT(51.389722 35.688889)" \
+                             --locality-name Tehran --out-dir ../web/data
+
+    # Write a single payload file, without touching the manifest.
+    python export_payload.py --config ../Config_PARTNER_Sync_Matrix.json \
+                             --events events.json --out partner-tehran.json
+
     # Rebuild only the manifest (e.g. after deleting old days).
     python export_payload.py --rebuild-manifest ../web/data
+
+--slug defaults to the config's title stub without "Sync Matrix" (e.g.
+"PARTNER Sync Matrix" -> "partner"), and --label to "<Slug> Sync Matrix".
 
 Events file format (start/end/icod are ISO 8601 UTC)::
 
@@ -306,6 +314,15 @@ def slugify(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
 
+def default_slug(title_stub: str) -> str:
+    """Matrix id from the config title, without the "Sync Matrix" suffix.
+
+    "PARTNER Sync Matrix" -> "partner", so the default label becomes
+    "Partner Sync Matrix" rather than "Partner Sync Matrix Sync Matrix".
+    """
+    return slugify(re.sub(r"\s*sync\s*matrix\s*$", "", title_stub, flags=re.I)) or slugify(title_stub)
+
+
 def rebuild_manifest(data_dir: str) -> dict:
     """Scan <data_dir>/<matrix>/<locality>/<YYYY-MM-DD>.json into <data_dir>/index.json.
 
@@ -360,7 +377,8 @@ def main():
     parser.add_argument("--locality-name", help="Name for --locality, e.g. Tehran")
     parser.add_argument("--out", help="Payload JSON to write")
     parser.add_argument("--out-dir", help="Data folder: write <slug>/<locality>/<date>.json and rebuild index.json")
-    parser.add_argument("--slug", help="Matrix id for --out-dir (default: from the config title)")
+    parser.add_argument("--slug", help="Matrix id for --out-dir (default: config title without "
+                                       "'Sync Matrix', e.g. partner)")
     parser.add_argument("--label", help="Name for the Matrix dropdown (default: from --slug, e.g. Partner Sync Matrix)")
     args = parser.parse_args()
 
@@ -395,7 +413,7 @@ def main():
         parser.exit(2, "Error: %s\n" % err)
 
     # Name for the page's Matrix dropdown, e.g. "Partner Sync Matrix"; the chart keeps the config title.
-    slug = args.slug or slugify(config["Sync Matrix Title Stub"])
+    slug = args.slug or default_slug(config["Sync Matrix Title Stub"])
     payload["label"] = args.label or slug.replace("-", " ").title() + " Sync Matrix"
 
     out = args.out
