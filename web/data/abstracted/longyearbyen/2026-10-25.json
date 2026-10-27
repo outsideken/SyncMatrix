@@ -1,0 +1,451 @@
+{
+  "version": 1,
+  "title": "Abstracted Sync Matrix",
+  "subtitle": "Longyearbyen \u00b7 25 October 2026",
+  "icod": "2026-10-25T18:00:00Z",
+  "icod_source": "demo",
+  "generated": "2026-10-27T22:08:54Z",
+  "locality": {
+    "id": "longyearbyen",
+    "name": "Longyearbyen",
+    "lon": 15.6356,
+    "lat": 78.2232,
+    "timezone": "Arctic/Longyearbyen"
+  },
+  "window": {
+    "start": "2026-10-25T00:00:00Z",
+    "end": "2026-10-26T00:00:00Z",
+    "tick_minutes": 30
+  },
+  "groups": [
+    {
+      "id": "Auxilary",
+      "label": "Auxilary",
+      "color": "yellow",
+      "rows": [
+        {
+          "id": "Aux 02",
+          "label": "Aux 02"
+        },
+        {
+          "id": "Aux 01",
+          "label": "Aux 01"
+        }
+      ]
+    },
+    {
+      "id": "Series D",
+      "label": "Series D",
+      "color": "purple",
+      "rows": [
+        {
+          "id": "172.16.0.1",
+          "label": "172.16.0.1"
+        },
+        {
+          "id": "10.0.0.5",
+          "label": "10.0.0.5"
+        },
+        {
+          "id": "192.168.1.100",
+          "label": "192.168.1.100"
+        }
+      ]
+    },
+    {
+      "id": "Series C",
+      "label": "Series C",
+      "color": "royalblue",
+      "rows": [
+        {
+          "id": "Express",
+          "label": "Express"
+        },
+        {
+          "id": "Divinci",
+          "label": "Divinci"
+        },
+        {
+          "id": "Weber",
+          "label": "Weber"
+        },
+        {
+          "id": "Rapter",
+          "label": "Rapter"
+        }
+      ]
+    },
+    {
+      "id": "Series B",
+      "label": "Series B",
+      "color": "forestgreen",
+      "rows": [
+        {
+          "id": "-",
+          "label": "-"
+        },
+        {
+          "id": "B98890",
+          "label": "B98890"
+        },
+        {
+          "id": "B94578",
+          "label": "B94578"
+        },
+        {
+          "id": "B67434",
+          "label": "B67434"
+        },
+        {
+          "id": "B54756",
+          "label": "B54756"
+        }
+      ]
+    },
+    {
+      "id": "Series A",
+      "label": "Series A",
+      "color": "firebrick",
+      "rows": [
+        {
+          "id": "1011",
+          "label": "1011"
+        },
+        {
+          "id": "1010",
+          "label": "1010"
+        },
+        {
+          "id": "1001",
+          "label": "1001"
+        },
+        {
+          "id": "1000",
+          "label": "1000"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "demo-00",
+      "row": "10.0.0.5",
+      "start": "2026-10-25T17:30:00Z",
+      "end": "2026-10-25T18:00:00Z",
+      "status": "High",
+      "label": "Demo event 1",
+      "notes": "Generated sample (seed 325)."
+    },
+    {
+      "id": "demo-01",
+      "row": "Weber",
+      "start": "2026-10-25T05:00:00Z",
+      "end": "2026-10-25T06:00:00Z",
+      "status": "Moderate",
+      "label": "Demo event 2",
+      "notes": "Generated sample (seed 325)."
+    },
+    {
+      "id": "demo-02",
+      "row": "10.0.0.5",
+      "start": "2026-10-25T07:30:00Z",
+      "end": "2026-10-25T09:30:00Z",
+      "status": "High",
+      "label": "Demo event 3",
+      "notes": "Generated sample (seed 325)."
+    },
+    {
+      "id": "demo-03",
+      "row": "192.168.1.100",
+      "start": "2026-10-25T02:30:00Z",
+      "end": "2026-10-25T03:00:00Z",
+      "status": "Moderate",
+      "label": "Demo event 4",
+      "notes": "Generated sample (seed 325)."
+    },
+    {
+      "id": "demo-04",
+      "row": "Divinci",
+      "start": "2026-10-25T14:00:00Z",
+      "end": "2026-10-25T15:30:00Z",
+      "status": "High",
+      "label": "Demo event 5",
+      "notes": "Generated sample (seed 325)."
+    },
+    {
+      "id": "demo-05",
+      "row": "Divinci",
+      "start": "2026-10-25T00:00:00Z",
+      "end": "2026-10-25T01:30:00Z",
+      "status": "Low",
+      "label": "Demo event 6",
+      "notes": "Generated sample (seed 325)."
+    },
+    {
+      "id": "demo-06",
+      "row": "B94578",
+      "start": "2026-10-25T01:30:00Z",
+      "end": "2026-10-25T03:00:00Z",
+      "status": "No Concern",
+      "label": "Demo event 7",
+      "notes": "Generated sample (seed 325)."
+    },
+    {
+      "id": "demo-07",
+      "row": "B94578",
+      "start": "2026-10-25T02:30:00Z",
+      "end": "2026-10-25T03:00:00Z",
+      "status": "Moderate",
+      "label": "Demo event 8",
+      "notes": "Generated sample (seed 325)."
+    },
+    {
+      "id": "demo-08",
+      "row": "B98890",
+      "start": "2026-10-25T01:00:00Z",
+      "end": "2026-10-25T02:30:00Z",
+      "status": "Low",
+      "label": "Demo event 9",
+      "notes": "Generated sample (seed 325)."
+    },
+    {
+      "id": "demo-09",
+      "row": "B67434",
+      "start": "2026-10-25T10:00:00Z",
+      "end": "2026-10-25T11:30:00Z",
+      "status": "Moderate",
+      "label": "Demo event 10",
+      "notes": "Generated sample (seed 325)."
+    },
+    {
+      "id": "demo-10",
+      "row": "B98890",
+      "start": "2026-10-25T09:00:00Z",
+      "end": "2026-10-25T10:30:00Z",
+      "status": "Low",
+      "label": "Demo event 11",
+      "notes": "Generated sample (seed 325)."
+    },
+    {
+      "id": "demo-11",
+      "row": "Rapter",
+      "start": "2026-10-25T14:30:00Z",
+      "end": "2026-10-25T15:00:00Z",
+      "status": "Low",
+      "label": "Demo event 12",
+      "notes": "Generated sample (seed 325)."
+    }
+  ],
+  "status_colors": {
+    "High": "red",
+    "Moderate": "#cb181d",
+    "Low": "orange",
+    "No Concern": "#525252",
+    "Planned": "orange"
+  },
+  "daylight": {
+    "step_minutes": 10,
+    "elevations": [
+      -23.1,
+      -22.9,
+      -22.7,
+      -22.4,
+      -22.2,
+      -21.9,
+      -21.6,
+      -21.3,
+      -21.0,
+      -20.6,
+      -20.3,
+      -19.9,
+      -19.5,
+      -19.1,
+      -18.7,
+      -18.2,
+      -17.8,
+      -17.3,
+      -16.9,
+      -16.4,
+      -15.9,
+      -15.4,
+      -14.9,
+      -14.4,
+      -13.9,
+      -13.4,
+      -12.9,
+      -12.4,
+      -11.9,
+      -11.4,
+      -10.9,
+      -10.4,
+      -9.9,
+      -9.4,
+      -8.9,
+      -8.4,
+      -7.9,
+      -7.4,
+      -7.0,
+      -6.5,
+      -6.1,
+      -5.7,
+      -5.2,
+      -4.8,
+      -4.4,
+      -4.0,
+      -3.7,
+      -3.3,
+      -3.0,
+      -2.7,
+      -2.3,
+      -2.1,
+      -1.8,
+      -1.5,
+      -1.3,
+      -1.0,
+      -0.8,
+      -0.6,
+      -0.4,
+      -0.2,
+      -0.0,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.0,
+      -0.2,
+      -0.4,
+      -0.6,
+      -0.8,
+      -1.0,
+      -1.2,
+      -1.5,
+      -1.8,
+      -2.0,
+      -2.3,
+      -2.6,
+      -3.0,
+      -3.3,
+      -3.7,
+      -4.0,
+      -4.4,
+      -4.8,
+      -5.2,
+      -5.6,
+      -6.1,
+      -6.5,
+      -7.0,
+      -7.4,
+      -7.9,
+      -8.4,
+      -8.9,
+      -9.4,
+      -9.9,
+      -10.4,
+      -10.9,
+      -11.4,
+      -11.9,
+      -12.4,
+      -12.9,
+      -13.4,
+      -14.0,
+      -14.5,
+      -15.0,
+      -15.5,
+      -16.0,
+      -16.4,
+      -16.9,
+      -17.4,
+      -17.9,
+      -18.3,
+      -18.8,
+      -19.2,
+      -19.6,
+      -20.0,
+      -20.4,
+      -20.8,
+      -21.1,
+      -21.5,
+      -21.8,
+      -22.1,
+      -22.4,
+      -22.6,
+      -22.9,
+      -23.1,
+      -23.3,
+      -23.5,
+      -23.7,
+      -23.8,
+      -23.9,
+      -24.0,
+      -24.1,
+      -24.1,
+      -24.1,
+      -24.1,
+      -24.1,
+      -24.0,
+      -23.9,
+      -23.8,
+      -23.7,
+      -23.6,
+      -23.4
+    ],
+    "sun": {
+      "dawn": "2026-10-25T06:41:56Z",
+      "sunrise": "2026-10-25T09:40:27Z",
+      "sunset": "2026-10-25T11:39:53Z",
+      "dusk": "2026-10-25T14:38:25Z"
+    }
+  },
+  "markers": [],
+  "banners": [
+    {
+      "id": "Banner #1",
+      "text": "BANNER #1",
+      "start": "2026-10-25T00:00:00Z",
+      "end": "2026-10-26T00:00:00Z",
+      "level": 0,
+      "fill": "#252525",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #2",
+      "text": "BANNER #2",
+      "start": "2026-10-25T00:00:00Z",
+      "end": "2026-10-25T12:00:00Z",
+      "level": 1,
+      "fill": "blue",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #3",
+      "text": "BANNER #3",
+      "start": "2026-10-25T12:00:00Z",
+      "end": "2026-10-26T00:00:00Z",
+      "level": 1,
+      "fill": "green",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #4",
+      "text": "BANNER #4",
+      "start": "2026-10-25T00:00:00Z",
+      "end": "2026-10-25T12:00:00Z",
+      "level": 2,
+      "fill": "red",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #5",
+      "text": "BANNER #5",
+      "start": "2026-10-25T12:00:00Z",
+      "end": "2026-10-26T00:00:00Z",
+      "level": 2,
+      "fill": "orange",
+      "text_color": "yellow"
+    }
+  ],
+  "label": "Abstracted Sync Matrix"
+}
