@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sync Matrix Demo Dashboard</title>
+  <style>
+    body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #eef0f3; color: #252525; }
+    h1 { font-size: 16px; margin: 0 0 12px; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .panel { background: #fff; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); overflow: hidden; }
+    .panel header { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid #e3e3e3; font-size: 13px; font-weight: 600; }
+    .panel header select, .panel header button { margin-left: auto; font: inherit; font-weight: 400; }
+    .panel header button + button, .panel header select + button { margin-left: 0; }
+    iframe { display: block; width: 100%; border: 0; }
+    #log { font: 12px ui-monospace, Menlo, monospace; padding: 8px 12px; height: 110px; overflow: auto; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Demo dashboard (stand-in for the real one)</h1>
+  <div class="grid">
+    <section class="panel">
+      <header>
+        <span id="panel-title">Sync Matrix</span>
+        <button id="pick" type="button">Select PARTNER via postMessage</button>
+        <button id="push" type="button">Push payload via postMessage</button>
+      </header>
+      <iframe id="matrix" title="Sync Matrix" style="height: 560px"></iframe>
+    </section>
+    <section class="panel">
+      <header>Messages from the iframe</header>
+      <div id="log"></div>
+    </section>
+  </div>
+
+  <script>
+    const frame = document.getElementById("matrix");
+    const log = document.getElementById("log");
+    const origin = window.location.origin;
+
+    // Library mode: the iframe reads data/index.json and shows its own Matrix/Date dropdowns.
+    frame.src = "index.html?title=0&refresh=60&origin=" + encodeURIComponent(origin);
+
+    function write(line) {
+      log.textContent = new Date().toISOString().slice(11, 19) + "  " + line + "\n" + log.textContent;
+    }
+
+    // The dashboard can also drive the selection itself (e.g. from its own filters).
+    document.getElementById("pick").addEventListener("click", () => {
+      frame.contentWindow.postMessage({ type: "sync-matrix:select", matrix: "partner" }, origin);
+      write("sent select matrix=partner");
+    });
+
+    // Push mode: the dashboard already holds a payload and hands it over.
+    document.getElementById("push").addEventListener("click", async () => {
+      const index = await (await fetch("data/index.json", { cache: "no-store" })).json();
+      const file = index.matrices[0].localities[0].dates[0].file;
+      const payload = await (await fetch("data/" + file, { cache: "no-store" })).json();
+      payload.title += " (pushed)";
+      frame.contentWindow.postMessage({ type: "sync-matrix:data", payload }, origin);
+      write("pushed " + file + " via postMessage");
+    });
+
+    window.addEventListener("message", (ev) => {
+      if (ev.origin !== origin || !ev.data || !ev.data.type) return;
+      if (ev.data.type === "sync-matrix:event-click") {
+        const e = ev.data.event;
+        write(`event-click  ${e.label}  row=${e.row}  ${e.start} → ${e.end}  status=${e.status}`);
+      } else if (ev.data.type === "sync-matrix:selection") {
+        document.getElementById("panel-title").textContent = ev.data.matrix + " · " + ev.data.locality + " · " + ev.data.date;
+        write(`selection  matrix=${ev.data.matrix}  locality=${ev.data.locality}  date=${ev.data.date}`);
+      } else {
+        write(ev.data.type);
+      }
+    });
+  </script>
+</body>
+</html>
