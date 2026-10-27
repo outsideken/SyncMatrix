@@ -115,6 +115,23 @@ or `{type: "sync-matrix:data", payload}`; the page sends `sync-matrix:ready`,
 `sync-matrix:selection` (when the user changes matrix/locality/date) and
 `sync-matrix:event-click` (with the event).
 
+## GitHub Pages
+
+`.github/workflows/pages.yml` publishes `web/` to GitHub Pages on every push
+to `main` that touches `web/` (or by hand from the Actions tab). It first
+checks that every JSON file parses and that every file listed in
+`index.json` exists. Once enabled, the page is at:
+
+- `https://outsideken.github.io/SyncMatrix/`: the Sync Matrix
+- `https://outsideken.github.io/SyncMatrix/demo_dashboard.html`: the iframe test page
+
+One-time setup: **Settings → Pages → Build and deployment → Source: GitHub
+Actions**. A Pages site is **public**, even from a private repo (Pages on a
+private repo needs a paid plan; private Pages sites need Enterprise Cloud).
+
+To embed it, point the dashboard's iframe at the Pages URL with the usual
+parameters, e.g. `https://outsideken.github.io/SyncMatrix/?matrix=partner&title=0`.
+
 ## Publishing through Git
 
 Commit `web/`, including the new day files and the regenerated `index.json`.

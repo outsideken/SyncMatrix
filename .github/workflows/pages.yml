@@ -1,0 +1,60 @@
+# Publish web/ (the d3 Sync Matrix page, vendored d3 and the JSON data) to
+# GitHub Pages whenever main changes. Every path in web/ is relative, so the
+# site works under https://<owner>.github.io/SyncMatrix/ as-is.
+#
+# One-time repo setting: Settings -> Pages -> Build and deployment -> Source:
+# "GitHub Actions". A Pages site is public even when the repo is private.
+
+name: Deploy Sync Matrix to Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; let an in-progress one finish rather than cancel it.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Fail early if the manifest or any payload is not valid JSON.
+      - name: Check data files
+        run: |
+          python3 - <<'EOF'
+          import json, pathlib
+          files = sorted(pathlib.Path("web/data").rglob("*.json"))
+          for path in files:
+              json.loads(path.read_text())
+          manifest = json.loads(pathlib.Path("web/data/index.json").read_text())
+          for matrix in manifest["matrices"]:
+              for locality in matrix["localities"]:
+                  for day in locality["dates"]:
+                      assert pathlib.Path("web/data", day["file"]).is_file(), day["file"]
+          print("OK: %d JSON files, manifest entries all present" % len(files))
+          EOF
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
