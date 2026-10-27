@@ -1,0 +1,200 @@
+/* Sync Matrix renderer styles. Theme via ?theme=light|dark (default light). */
+
+:root {
+  --sm-bg: #ffffff;
+  --sm-ink: #252525;
+  --sm-ink-muted: #636363;
+  --sm-grid: #bdbdbd;
+  --sm-divider: #525252;
+  --sm-frame: #252525;
+  --sm-plot-bg: #ffffff;
+  --sm-night: #9e9e9e;
+  --sm-night-opacity: 0.4;
+  --sm-now: #2171b5;
+  --sm-eod: #cb181d;
+  --sm-icod: #6a3d9a;
+  --sm-tooltip-bg: #252525;
+  --sm-tooltip-ink: #ffffff;
+  --sm-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+:root[data-theme="dark"] {
+  --sm-bg: #16181d;
+  --sm-ink: #e6e6e6;
+  --sm-ink-muted: #a0a0a0;
+  --sm-grid: #3a3d44;
+  --sm-divider: #8a8d94;
+  --sm-frame: #c8c8c8;
+  --sm-plot-bg: #2b2f37;
+  --sm-night: #000000;
+  --sm-night-opacity: 0.55;
+  --sm-now: #6baed6;
+  --sm-eod: #fb6a4a;
+  --sm-icod: #c2a5cf;
+  --sm-tooltip-bg: #f0f0f0;
+  --sm-tooltip-ink: #16181d;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--sm-bg);
+  color: var(--sm-ink);
+  font-family: var(--sm-font);
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.sync-matrix {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto; /* many rows in a short frame scroll instead of squashing */
+}
+
+.sm-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--sm-grid);
+  font-size: 12px;
+  color: var(--sm-ink-muted);
+}
+.sm-toolbar[hidden],
+.sm-toolbar [hidden] { display: none; }
+.sm-toolbar label { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.sm-toolbar select,
+.sm-toolbar button {
+  font: inherit;
+  font-weight: 400;
+  color: var(--sm-ink);
+  background: var(--sm-bg);
+  border: 1px solid var(--sm-divider);
+  border-radius: 4px;
+  padding: 3px 6px;
+}
+.sm-toolbar button { cursor: pointer; padding: 3px 7px; }
+.sm-toolbar button:disabled { opacity: 0.35; cursor: default; }
+.sm-date-picker { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Day/night shading switch: a styled checkbox (keeps keyboard + screen-reader support). */
+.sm-switch { position: relative; cursor: pointer; user-select: none; }
+.sm-switch input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.sm-switch-track {
+  position: relative;
+  width: 28px;
+  height: 16px;
+  border-radius: 8px;
+  background: var(--sm-grid);
+  transition: background 0.15s;
+}
+.sm-switch-track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s;
+}
+.sm-switch input:checked + .sm-switch-track { background: var(--sm-now); }
+.sm-switch input:checked + .sm-switch-track::after { transform: translateX(12px); }
+.sm-switch input:focus-visible + .sm-switch-track { outline: 2px solid var(--sm-now); outline-offset: 2px; }
+.sm-switch.disabled { opacity: 0.4; cursor: default; }
+
+/* ICOD (Information Cut-Off Date): data received after it is not reflected. */
+.sm-icod-badge {
+  margin-left: auto;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--sm-icod);
+  color: var(--sm-icod);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.sm-icod-badge:empty { display: none; }
+.sm-icod-badge.warn,
+.sm-icod.warn { color: var(--sm-eod); fill: var(--sm-eod); border-color: var(--sm-eod); }
+.sm-icod-line   { stroke: var(--sm-icod); stroke-width: 2.5; }
+.sm-icod-tag    { font-size: 10px; font-weight: 700; fill: var(--sm-icod); }
+.sm-icod-tag-bg { fill: var(--sm-bg); opacity: 0.85; }
+.sm-hatch-line  { stroke: var(--sm-icod); stroke-width: 1; opacity: 0.35; }
+
+.sync-matrix svg { display: block; }
+
+.sm-title    { font-size: 15px; font-weight: 700; fill: var(--sm-ink); }
+.sm-subtitle { font-size: 12px; font-weight: 600; fill: var(--sm-ink-muted); }
+.sm-icod     { font-size: 11px; font-weight: 700; fill: var(--sm-ink); }
+
+.sm-axis text   { font-size: 10px; fill: var(--sm-ink); font-variant-numeric: tabular-nums; }
+.sm-axis line   { stroke: var(--sm-ink); }
+.sm-axis path   { display: none; }
+.sm-row-label   { font-size: 11px; fill: var(--sm-ink); }
+.sm-group-label { font-size: 10px; font-weight: 700; letter-spacing: 0.02em; }
+
+.sm-grid line      { stroke: var(--sm-grid); stroke-width: 0.6; stroke-dasharray: 2 2; }
+.sm-grid line.hour { stroke-dasharray: none; }
+.sm-divider        { stroke: var(--sm-divider); stroke-width: 2; }
+.sm-frame          { fill: none; stroke: var(--sm-frame); stroke-width: 1.5; }
+
+/* Day/night gradient; stop opacities come from sun elevation, this caps full night. */
+.sm-daylight { opacity: var(--sm-night-opacity); }
+.sm-plot-bg  { fill: var(--sm-plot-bg); }
+
+.sm-now     { stroke: var(--sm-now); stroke-width: 2; }
+.sm-now-tag { font-size: 10px; font-weight: 700; fill: var(--sm-now); }
+.sm-eod     { stroke: var(--sm-eod); stroke-width: 2.5; stroke-dasharray: 6 4; }
+
+.sm-event rect       { stroke-width: 2.5; cursor: pointer; }
+.sm-event:hover rect,
+.sm-event:focus rect { stroke-width: 4; }
+.sm-event:focus      { outline: none; }
+
+.sm-banner text  { font-size: 12px; font-weight: 700; }
+.sm-legend text  { font-size: 11px; fill: var(--sm-ink); }
+
+.sm-status {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--sm-ink-muted);
+  pointer-events: none;
+}
+.sm-status.error-banner {
+  inset: auto 8px 8px auto;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--sm-eod);
+  color: #ffffff;
+  font-size: 11px;
+}
+
+.sm-tooltip {
+  position: fixed;
+  z-index: 10;
+  max-width: 260px;
+  padding: 7px 9px;
+  border-radius: 4px;
+  background: var(--sm-tooltip-bg);
+  color: var(--sm-tooltip-ink);
+  font-size: 12px;
+  line-height: 1.35;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.sm-tooltip strong { display: block; margin-bottom: 2px; }
+.sm-tooltip .muted { opacity: 0.75; }
