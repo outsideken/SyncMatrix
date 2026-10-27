@@ -13,7 +13,12 @@ web/data/<matrix>/<locality>/<date>.json  one locality, one UTC day (demo events
 web/demo_dashboard.html    stand-in dashboard for testing iframe + postMessage
 ```
 
-The original matplotlib notebook and configs are unchanged.
+The original matplotlib notebook, configs and PNGs are included. Two Partner
+settings changed for the d3 version, in both `Config_PARTNER_Sync_Matrix.json`
+and the notebook cell that writes it: `"Show Sunrise/Sunset?"` is now `true`
+(so Partner gets day/night shading), and the `Commercial` group is renamed
+`COM` (its row id is still `CIRCUS`, which is what events reference).
+Re-running that notebook cell reproduces the committed configs.
 
 ## Build payloads
 
