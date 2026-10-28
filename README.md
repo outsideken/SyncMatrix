@@ -135,6 +135,13 @@ reflected in the matrix. It is provenance, so:
   its ICOD. When the toolbar is hidden (`controls=0` or single-file `data=`
   mode) the ICOD moves to the footer under the plot instead, so it is never
   lost. A payload without an ICOD is flagged in red as "ICOD not provided".
+- **Each phenomenology has its own provenance** (`provenance` in the payload:
+  `all` plus one entry per group, with `source`, `icod`, `icod_source` and
+  `notes`), because each can come from a different feed with its own ICOD.
+  This is what the legacy coloured banners carried. Hovering an event shows
+  its phenomenology's provenance, edged in the phenomenology colour; the badge
+  shows the **oldest** ICOD and its hover lists each one; exports print one
+  line per phenomenology with its colour chip.
 - To keep the chart simple, the ICOD is not drawn on the timeline by default.
   Add `icodmark=1` to the page URL to show a purple ICOD line with the period
   after it hatched ("After ICOD").

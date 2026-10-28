@@ -4,7 +4,30 @@
   "subtitle": "Antarctic 78\u00b0S \u00b7 22 September 2026",
   "icod": "2026-09-22T18:00:00Z",
   "icod_source": "demo",
-  "generated": "2026-10-28T20:30:31Z",
+  "source": "Demo data: generated sample events",
+  "provenance": {
+    "all": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-09-22T18:00:00Z",
+      "icod_source": "demo"
+    },
+    "EO": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-09-22T18:00:00Z",
+      "icod_source": "demo"
+    },
+    "IR": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-09-22T18:00:00Z",
+      "icod_source": "demo"
+    },
+    "SAR": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-09-22T18:00:00Z",
+      "icod_source": "demo"
+    }
+  },
+  "generated": "2026-10-28T21:02:53Z",
   "locality": {
     "id": "antarctic-78-s",
     "name": "Antarctic 78\u00b0S",
@@ -21,7 +44,8 @@
     {
       "id": "EO",
       "label": "EO",
-      "color": "#525252",
+      "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         {
           "id": "GeoEye-1",
@@ -76,7 +100,8 @@
     {
       "id": "IR",
       "label": "IR",
-      "color": "#525252",
+      "color": "#cb181d",
+      "tint": "#fcbba1",
       "rows": [
         {
           "id": "Aqua MODIS",
@@ -108,6 +133,7 @@
       "id": "SAR",
       "label": "SAR",
       "color": "#525252",
+      "tint": "#d9d9d9",
       "rows": [
         {
           "id": "Capella-11",
@@ -162,6 +188,7 @@
           "id": "Capella",
           "label": "Capella",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "Capella-11",
@@ -205,6 +232,7 @@
           "id": "Copernicus",
           "label": "Copernicus",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "Sentinel-1",
@@ -228,6 +256,7 @@
           "id": "NASA FIRMS",
           "label": "NASA FIRMS",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "Aqua MODIS",
@@ -255,6 +284,7 @@
           "id": "Vantor",
           "label": "Vantor",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "GeoEye-1",
@@ -483,13 +513,25 @@
       "notes": "Generated sample (seed 792)."
     }
   ],
-  "status_colors": {
-    "High": "red",
-    "Moderate": "#cb181d",
-    "Low": "orange",
-    "No Concern": "#525252",
-    "Planned": "orange",
-    "Predicted": "#3182bd"
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint"
+    },
+    "Collected": {
+      "fill": "tint"
+    },
+    "High": {
+      "fill": "tint"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "tint"
+    },
+    "No Concern": {
+      "fill": "tint"
+    }
   },
   "daylight": {
     "step_minutes": 10,
@@ -648,52 +690,6 @@
     }
   },
   "markers": [],
-  "banners": [
-    {
-      "id": "Banner #1",
-      "text": "BANNER #1",
-      "start": "2026-09-22T00:00:00Z",
-      "end": "2026-09-23T00:00:00Z",
-      "level": 0,
-      "fill": "#252525",
-      "text_color": "yellow"
-    },
-    {
-      "id": "Banner #2",
-      "text": "BANNER #2",
-      "start": "2026-09-22T00:00:00Z",
-      "end": "2026-09-22T12:00:00Z",
-      "level": 1,
-      "fill": "blue",
-      "text_color": "yellow"
-    },
-    {
-      "id": "Banner #3",
-      "text": "BANNER #3",
-      "start": "2026-09-22T12:00:00Z",
-      "end": "2026-09-23T00:00:00Z",
-      "level": 1,
-      "fill": "green",
-      "text_color": "yellow"
-    },
-    {
-      "id": "Banner #4",
-      "text": "BANNER #4",
-      "start": "2026-09-22T00:00:00Z",
-      "end": "2026-09-22T12:00:00Z",
-      "level": 2,
-      "fill": "red",
-      "text_color": "yellow"
-    },
-    {
-      "id": "Banner #5",
-      "text": "BANNER #5",
-      "start": "2026-09-22T12:00:00Z",
-      "end": "2026-09-23T00:00:00Z",
-      "level": 2,
-      "fill": "orange",
-      "text_color": "yellow"
-    }
-  ],
+  "banners": [],
   "label": "Abstracted Sync Matrix"
 }

@@ -200,7 +200,7 @@ body {
 .sm-tooltip {
   position: fixed;
   z-index: 10;
-  max-width: 260px;
+  max-width: 300px;
   padding: 7px 9px;
   border-radius: 4px;
   background: var(--sm-tooltip-bg);
@@ -212,3 +212,11 @@ body {
 }
 .sm-tooltip strong { display: block; margin-bottom: 2px; }
 .sm-tooltip .muted { opacity: 0.75; }
+
+/* Popup: provenance of the event's phenomenology, keyed by its colour. */
+.sm-tooltip-provenance {
+  margin-top: 6px;
+  padding: 4px 0 2px 7px;
+  border-left: 3px solid #525252;
+  opacity: 0.9;
+}
