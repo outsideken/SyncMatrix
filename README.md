@@ -74,9 +74,11 @@ reflected in the matrix. It is provenance, so:
   because it ran on proxy data.)
 - Demo payloads (`--demo-events`) are marked `icod_source: "demo"` and the page
   labels them **DEMO DATA**.
-- The page always shows the ICOD and its age as text: a toolbar badge, the
-  footer, and each Date option. A payload without an ICOD is flagged in red as
-  "ICOD not provided".
+- The page always shows the ICOD and its age in the badge at the top right of
+  the toolbar (with "DEMO DATA" for demo payloads), and each Date option lists
+  its ICOD. When the toolbar is hidden (`controls=0` or single-file `data=`
+  mode) the ICOD moves to the footer under the plot instead, so it is never
+  lost. A payload without an ICOD is flagged in red as "ICOD not provided".
 - To keep the chart simple, the ICOD is not drawn on the timeline by default.
   Add `icodmark=1` to the page URL to show a purple ICOD line with the period
   after it hatched ("After ICOD").
