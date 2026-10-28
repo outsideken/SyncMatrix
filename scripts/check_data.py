@@ -16,7 +16,8 @@ import sys
 from pathlib import Path
 
 WEB = Path(__file__).resolve().parents[1] / "web"
-REQUIRED = ("version", "title", "icod", "icod_source", "locality", "window", "groups", "events")
+REQUIRED = ("version", "title", "icod", "icod_source", "source", "provenance", "locality", "window",
+            "groups", "events")
 
 
 def main() -> int:
@@ -56,6 +57,11 @@ def main() -> int:
             continue
         if not payload["icod"]:
             problems.append("%s: no ICOD" % name)
+        provenance = payload.get("provenance", {})
+        missing = [g["id"] for g in payload["groups"] if g["id"] not in provenance] + \
+                  (["all"] if "all" not in provenance else [])
+        if missing:
+            problems.append("%s: no provenance for %s" % (name, ", ".join(missing)))
         rows = {row["id"] for group in payload["groups"] for row in group["rows"]}
         for alt in payload.get("alt_groupings", []):
             alt_rows = {row["id"] for group in alt["groups"] for row in group["rows"]}
