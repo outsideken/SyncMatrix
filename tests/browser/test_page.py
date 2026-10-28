@@ -43,7 +43,7 @@ def test_abstracted_layout(page, base_url, errors):
     expect(page.locator(".sm-title")).to_have_text("Abstracted Sync Matrix")
     expect(page.locator(".sm-subtitle")).to_have_text("Mid-north 40°N · 28 October 2026")
     assert texts(page, ".sm-group-label") == ["EO", "IR", "SAR"]
-    assert page.locator(".sm-row-label").count() == 29
+    assert page.locator(".sm-row-label").count() == 28
     hours = texts(page, ".sm-axis .tick text")
     assert hours[0] == "0000Z" and hours[-1] == "2300Z" and len(hours) == 24
     assert errors == []
@@ -163,4 +163,22 @@ def test_dashboard_iframe_receives_clicks(page, base_url, errors):
     frame.locator(".sm-event").first.click()
     expect(page.locator("#log")).to_contain_text("event-click")
     expect(page.locator("#log")).to_contain_text("sync-matrix:ready")
+    assert errors == []
+
+################################################################################
+## Predicted passes (web/live)
+################################################################################
+
+def test_predicted_pass_library(page, base_url, errors):
+    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=abstracted&locality=mid-north-40-n")
+    badge = page.locator("#sm-icod-badge")
+    expect(badge).to_contain_text("ICOD")
+    expect(badge).not_to_contain_text("DEMO DATA")  # real orbit data, not demo
+    labels = page.locator(".sm-event").evaluate_all("els => els.map(e => e.getAttribute('aria-label'))")
+    assert labels and all(" pass" in l for l in labels)
+    assert "Predicted" in texts(page, ".sm-legend text")
+    page.locator("#sm-matrix").select_option("partner")
+    page.wait_for_selector("svg.sm-root .sm-event")
+    assert any(re.search(r"\d+ (EO|IR|SAR) pass", l) for l in
+               page.locator(".sm-event").evaluate_all("els => els.map(e => e.getAttribute('aria-label'))"))
     assert errors == []

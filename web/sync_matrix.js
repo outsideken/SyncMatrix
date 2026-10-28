@@ -839,7 +839,8 @@
     const grouping = (groupingOptions(p).find((c) => c.id === options.grouping) || groupingOptions(p)[0]).label;
     const provenance = [
       icodLabel(p),
-      [dataSource ? "Data: " + dataSource : null,
+      [p.source ? "Source: " + p.source : null,
+       dataSource ? "Data: " + dataSource : null,
        (p.alt_groupings || []).length ? "Y-axis: " + grouping : null,
        "Exported " + formatExportTime(new Date())].filter(Boolean).join(" · "),
     ];
