@@ -537,7 +537,6 @@
       .text(icodLabel(p));
     icodText.append("title").text(ICOD_MEANING);
     const icodWidth = icodText.node().getComputedTextLength();
-    updateIcodBadge(p);
 
     const usedStatuses = Array.from(new Set(p.events.map((e) => e.status))).filter(Boolean);
     const legendItems = usedStatuses.map((s) => ({ label: s, color: p.status_colors[s] || FALLBACK_EVENT_COLOR }));
@@ -675,13 +674,6 @@
     if (!p.icod) return "ICOD: not provided — data currency unknown";
     return "ICOD: " + formatIcod(p.icod) + " (" + formatAge(p.icod) + ")" +
       (p.icod_source === "demo" ? " · DEMO DATA" : "");
-  }
-
-  function updateIcodBadge(p) {
-    d3.select("#sm-icod-badge")
-      .text(p.icod ? "ICOD " + formatIcodShort(p.icod) + " · " + formatAge(p.icod) : "ICOD not provided")
-      .classed("warn", !p.icod || p.icod_source === "demo")
-      .attr("title", ICOD_MEANING + (p.icod_source ? " Source: " + p.icod_source + "." : ""));
   }
 
   function readableInk(background) {
