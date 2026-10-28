@@ -2,7 +2,7 @@
 
 They check the physics and the rules, not exact times: passes respect each
 row's elevation threshold, optical (EO) passes are in daylight, side-looking
-SAR passes stay in the swath, and the Partner roll-up merges overlaps.
+SAR passes stay in the swath, and the Simplified roll-up merges overlaps.
 """
 
 import json
@@ -118,8 +118,8 @@ def test_config_satellites_must_be_rows(tmp_path):
         ep.load_config(path)
 
 
-def test_live_partner_provenance():
-    payload = json.loads(next((REPO / "web" / "live" / "partner").glob("*/*.json")).read_text())
+def test_live_simplified_provenance():
+    payload = json.loads(next((REPO / "web" / "live" / "simplified").glob("*/*.json")).read_text())
     prov = payload["provenance"]
     assert prov["COM"]["icod"] is None and "No data source" in prov["COM"]["source"]  # no COM feed
     for group in ("EO", "IR", "SAR"):

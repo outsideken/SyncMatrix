@@ -46,7 +46,7 @@ DAYS = [("2026-06-21", "2026-06-21T18:00:00Z"),
         ("2026-12-21", "2026-10-28T12:00:00Z")]
 
 # Matrix -> (sample events per day, seed offset).
-MATRICES = {"abstracted": (20, 0), "partner": (8, 7)}
+MATRICES = {"abstracted": (20, 0), "simplified": (8, 7)}
 
 
 def seed_for(site_index: int, day: str) -> int:

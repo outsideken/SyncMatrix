@@ -1,0 +1,950 @@
+{
+  "version": 1,
+  "title": "Simplified Sync Matrix",
+  "subtitle": "Arctic 70\u00b0N \u00b7 30 October 2026",
+  "icod": "2026-10-28T20:28:32Z",
+  "icod_source": "celestrak",
+  "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-28T2028Z.json), computed with Skyfield",
+  "provenance": {
+    "all": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-28T2028Z.json), computed with Skyfield",
+      "icod": "2026-10-28T20:28:32Z",
+      "icod_source": "celestrak"
+    },
+    "COM": {
+      "source": "No data source for COM",
+      "icod": null,
+      "icod_source": null
+    },
+    "IR": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-28T2028Z.json), computed with Skyfield",
+      "icod": "2026-10-28T20:28:32Z",
+      "icod_source": "celestrak",
+      "notes": "44 predicted passes from 7 of 7 configured satellites"
+    },
+    "SAR": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-28T2028Z.json), computed with Skyfield",
+      "icod": "2026-10-28T20:28:32Z",
+      "icod_source": "celestrak",
+      "notes": "24 predicted passes from 9 of 12 configured satellites"
+    },
+    "EO": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-28T2028Z.json), computed with Skyfield",
+      "icod": "2026-10-28T20:28:32Z",
+      "icod_source": "celestrak",
+      "notes": "13 predicted passes from 9 of 15 configured satellites"
+    }
+  },
+  "generated": "2026-10-28T22:17:43Z",
+  "locality": {
+    "id": "arctic-70-n",
+    "name": "Arctic 70\u00b0N",
+    "lon": 25.0,
+    "lat": 70.0,
+    "timezone": "Europe/Oslo"
+  },
+  "window": {
+    "start": "2026-10-30T00:00:00Z",
+    "end": "2026-10-31T00:00:00Z",
+    "tick_minutes": 30
+  },
+  "groups": [
+    {
+      "id": "COM",
+      "label": "COM",
+      "color": "#238b45",
+      "tint": "#c7e9c0",
+      "rows": [
+        {
+          "id": "CIRCUS",
+          "label": "CIRCUS"
+        }
+      ]
+    },
+    {
+      "id": "IR",
+      "label": "IR",
+      "color": "#cb181d",
+      "tint": "#fcbba1",
+      "rows": [
+        {
+          "id": "IR",
+          "label": "IR"
+        }
+      ]
+    },
+    {
+      "id": "SAR",
+      "label": "SAR",
+      "color": "#525252",
+      "tint": "#d9d9d9",
+      "rows": [
+        {
+          "id": "SAR",
+          "label": "SAR"
+        }
+      ]
+    },
+    {
+      "id": "EO",
+      "label": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
+      "rows": [
+        {
+          "id": "EO",
+          "label": "EO"
+        }
+      ]
+    }
+  ],
+  "grouping": "Phenomenology",
+  "alt_groupings": [],
+  "events": [
+    {
+      "id": "IR-0001",
+      "row": "IR",
+      "start": "2026-10-30T00:01:23Z",
+      "end": "2026-10-30T00:08:05Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 20 (JPSS-1)"
+    },
+    {
+      "id": "IR-0044",
+      "row": "IR",
+      "start": "2026-10-30T00:44:48Z",
+      "end": "2026-10-30T00:52:23Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 21 (JPSS-2)"
+    },
+    {
+      "id": "IR-0121",
+      "row": "IR",
+      "start": "2026-10-30T01:21:50Z",
+      "end": "2026-10-30T01:29:33Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "SUOMI NPP"
+    },
+    {
+      "id": "IR-0141",
+      "row": "IR",
+      "start": "2026-10-30T01:41:35Z",
+      "end": "2026-10-30T01:49:17Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 20 (JPSS-1)"
+    },
+    {
+      "id": "IR-0151",
+      "row": "IR",
+      "start": "2026-10-30T01:51:03Z",
+      "end": "2026-10-30T01:53:30Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "AQUA"
+    },
+    {
+      "id": "IR-0225",
+      "row": "IR",
+      "start": "2026-10-30T02:25:14Z",
+      "end": "2026-10-30T02:32:29Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 21 (JPSS-2)"
+    },
+    {
+      "id": "IR-0302",
+      "row": "IR",
+      "start": "2026-10-30T03:02:18Z",
+      "end": "2026-10-30T03:09:15Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "SUOMI NPP"
+    },
+    {
+      "id": "IR-0322",
+      "row": "IR",
+      "start": "2026-10-30T03:22:04Z",
+      "end": "2026-10-30T03:33:05Z",
+      "status": "Predicted",
+      "label": "2 IR passes",
+      "notes": "NOAA 20 (JPSS-1); AQUA"
+    },
+    {
+      "id": "SAR-0403",
+      "row": "SAR",
+      "start": "2026-10-30T04:03:25Z",
+      "end": "2026-10-30T04:05:54Z",
+      "status": "Predicted",
+      "label": "2 SAR passes",
+      "notes": "CAPELLA-20 (ACADIA-10); CAPELLA-19 (ACADIA-9)"
+    },
+    {
+      "id": "IR-0405",
+      "row": "IR",
+      "start": "2026-10-30T04:05:39Z",
+      "end": "2026-10-30T04:11:11Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 21 (JPSS-2)"
+    },
+    {
+      "id": "SAR-0417",
+      "row": "SAR",
+      "start": "2026-10-30T04:17:51Z",
+      "end": "2026-10-30T04:20:38Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-18 (ACADIA-8)"
+    },
+    {
+      "id": "IR-0442",
+      "row": "IR",
+      "start": "2026-10-30T04:42:37Z",
+      "end": "2026-10-30T04:47:48Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "SUOMI NPP"
+    },
+    {
+      "id": "SAR-0454",
+      "row": "SAR",
+      "start": "2026-10-30T04:54:31Z",
+      "end": "2026-10-30T04:56:14Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "SENTINEL-1D"
+    },
+    {
+      "id": "IR-0502",
+      "row": "IR",
+      "start": "2026-10-30T05:02:15Z",
+      "end": "2026-10-30T05:09:49Z",
+      "status": "Predicted",
+      "label": "2 IR passes",
+      "notes": "NOAA 20 (JPSS-1); AQUA"
+    },
+    {
+      "id": "SAR-0539",
+      "row": "SAR",
+      "start": "2026-10-30T05:39:19Z",
+      "end": "2026-10-30T05:42:40Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-19 (ACADIA-9)"
+    },
+    {
+      "id": "IR-0545",
+      "row": "IR",
+      "start": "2026-10-30T05:45:22Z",
+      "end": "2026-10-30T05:49:46Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 21 (JPSS-2)"
+    },
+    {
+      "id": "SAR-0553",
+      "row": "SAR",
+      "start": "2026-10-30T05:53:44Z",
+      "end": "2026-10-30T05:56:50Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-18 (ACADIA-8)"
+    },
+    {
+      "id": "IR-0622",
+      "row": "IR",
+      "start": "2026-10-30T06:22:02Z",
+      "end": "2026-10-30T06:26:37Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "SUOMI NPP"
+    },
+    {
+      "id": "IR-0635",
+      "row": "IR",
+      "start": "2026-10-30T06:35:31Z",
+      "end": "2026-10-30T06:38:13Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "TERRA"
+    },
+    {
+      "id": "IR-0641",
+      "row": "IR",
+      "start": "2026-10-30T06:41:19Z",
+      "end": "2026-10-30T06:46:10Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 20 (JPSS-1)"
+    },
+    {
+      "id": "IR-0723",
+      "row": "IR",
+      "start": "2026-10-30T07:23:56Z",
+      "end": "2026-10-30T07:29:33Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 21 (JPSS-2)"
+    },
+    {
+      "id": "IR-0800",
+      "row": "IR",
+      "start": "2026-10-30T08:00:30Z",
+      "end": "2026-10-30T08:06:37Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "SUOMI NPP"
+    },
+    {
+      "id": "IR-0812",
+      "row": "IR",
+      "start": "2026-10-30T08:12:15Z",
+      "end": "2026-10-30T08:17:48Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "TERRA"
+    },
+    {
+      "id": "IR-0819",
+      "row": "IR",
+      "start": "2026-10-30T08:19:47Z",
+      "end": "2026-10-30T08:26:22Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 20 (JPSS-1)"
+    },
+    {
+      "id": "SAR-0901",
+      "row": "SAR",
+      "start": "2026-10-30T09:01:41Z",
+      "end": "2026-10-30T09:04:01Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-15 (ACADIA-5)"
+    },
+    {
+      "id": "IR-0902",
+      "row": "IR",
+      "start": "2026-10-30T09:02:40Z",
+      "end": "2026-10-30T09:09:59Z",
+      "status": "Predicted",
+      "label": "2 IR passes",
+      "notes": "NOAA 21 (JPSS-2); SENTINEL-3A"
+    },
+    {
+      "id": "EO-0903",
+      "row": "EO",
+      "start": "2026-10-30T09:03:42Z",
+      "end": "2026-10-30T09:05:20Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "SENTINEL-3A"
+    },
+    {
+      "id": "EO-0919",
+      "row": "EO",
+      "start": "2026-10-30T09:19:06Z",
+      "end": "2026-10-30T09:21:48Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WORLDVIEW-2 (WV-2)"
+    },
+    {
+      "id": "EO-0930",
+      "row": "EO",
+      "start": "2026-10-30T09:30:24Z",
+      "end": "2026-10-30T09:31:11Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "LEGION 1"
+    },
+    {
+      "id": "IR-0939",
+      "row": "IR",
+      "start": "2026-10-30T09:39:30Z",
+      "end": "2026-10-30T09:47:05Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "SUOMI NPP"
+    },
+    {
+      "id": "IR-0950",
+      "row": "IR",
+      "start": "2026-10-30T09:50:10Z",
+      "end": "2026-10-30T09:54:34Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "TERRA"
+    },
+    {
+      "id": "EO-0951",
+      "row": "EO",
+      "start": "2026-10-30T09:51:43Z",
+      "end": "2026-10-30T09:54:35Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WORLDVIEW-3 (WV-3)"
+    },
+    {
+      "id": "IR-0955",
+      "row": "IR",
+      "start": "2026-10-30T09:55:46Z",
+      "end": "2026-10-30T09:57:56Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "AQUA"
+    },
+    {
+      "id": "IR-0959",
+      "row": "IR",
+      "start": "2026-10-30T09:59:08Z",
+      "end": "2026-10-30T10:07:58Z",
+      "status": "Predicted",
+      "label": "2 IR passes",
+      "notes": "NOAA 20 (JPSS-1); SENTINEL-3B"
+    },
+    {
+      "id": "EO-1004",
+      "row": "EO",
+      "start": "2026-10-30T10:04:49Z",
+      "end": "2026-10-30T10:07:42Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "SENTINEL-3B"
+    },
+    {
+      "id": "EO-1014",
+      "row": "EO",
+      "start": "2026-10-30T10:14:45Z",
+      "end": "2026-10-30T10:17:18Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "LEGION 2"
+    },
+    {
+      "id": "SAR-1022",
+      "row": "SAR",
+      "start": "2026-10-30T10:22:13Z",
+      "end": "2026-10-30T10:24:30Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-20 (ACADIA-10)"
+    },
+    {
+      "id": "EO-1026",
+      "row": "EO",
+      "start": "2026-10-30T10:26:16Z",
+      "end": "2026-10-30T10:29:39Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "GEOEYE 1"
+    },
+    {
+      "id": "EO-1030",
+      "row": "EO",
+      "start": "2026-10-30T10:30:42Z",
+      "end": "2026-10-30T10:31:25Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "SENTINEL-2C"
+    },
+    {
+      "id": "SAR-1037",
+      "row": "SAR",
+      "start": "2026-10-30T10:37:01Z",
+      "end": "2026-10-30T10:40:11Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-15 (ACADIA-5)"
+    },
+    {
+      "id": "IR-1042",
+      "row": "IR",
+      "start": "2026-10-30T10:42:52Z",
+      "end": "2026-10-30T10:50:24Z",
+      "status": "Predicted",
+      "label": "2 IR passes",
+      "notes": "NOAA 21 (JPSS-2); SENTINEL-3A"
+    },
+    {
+      "id": "EO-1043",
+      "row": "EO",
+      "start": "2026-10-30T10:43:20Z",
+      "end": "2026-10-30T10:45:34Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "SENTINEL-3A"
+    },
+    {
+      "id": "EO-1057",
+      "row": "EO",
+      "start": "2026-10-30T10:57:58Z",
+      "end": "2026-10-30T11:01:26Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WORLDVIEW-2 (WV-2)"
+    },
+    {
+      "id": "EO-1103",
+      "row": "EO",
+      "start": "2026-10-30T11:03:55Z",
+      "end": "2026-10-30T11:06:05Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "LEGION 1"
+    },
+    {
+      "id": "IR-1120",
+      "row": "IR",
+      "start": "2026-10-30T11:20:12Z",
+      "end": "2026-10-30T11:27:24Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "SUOMI NPP"
+    },
+    {
+      "id": "EO-1128",
+      "row": "EO",
+      "start": "2026-10-30T11:28:22Z",
+      "end": "2026-10-30T11:29:47Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WORLDVIEW-3 (WV-3)"
+    },
+    {
+      "id": "IR-1131",
+      "row": "IR",
+      "start": "2026-10-30T11:31:06Z",
+      "end": "2026-10-30T11:36:08Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "AQUA"
+    },
+    {
+      "id": "IR-1140",
+      "row": "IR",
+      "start": "2026-10-30T11:40:27Z",
+      "end": "2026-10-30T11:47:01Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 20 (JPSS-1)"
+    },
+    {
+      "id": "SAR-1151",
+      "row": "SAR",
+      "start": "2026-10-30T11:51:27Z",
+      "end": "2026-10-30T11:53:43Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-17 (ACADIA-7)"
+    },
+    {
+      "id": "SAR-1157",
+      "row": "SAR",
+      "start": "2026-10-30T11:57:23Z",
+      "end": "2026-10-30T12:00:51Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-20 (ACADIA-10)"
+    },
+    {
+      "id": "IR-1225",
+      "row": "IR",
+      "start": "2026-10-30T12:25:49Z",
+      "end": "2026-10-30T12:29:55Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 21 (JPSS-2)"
+    },
+    {
+      "id": "EO-1247",
+      "row": "EO",
+      "start": "2026-10-30T12:47:22Z",
+      "end": "2026-10-30T12:49:39Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WORLDVIEW-1 (WV-1)"
+    },
+    {
+      "id": "IR-1308",
+      "row": "IR",
+      "start": "2026-10-30T13:08:26Z",
+      "end": "2026-10-30T13:13:43Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "AQUA"
+    },
+    {
+      "id": "SAR-1326",
+      "row": "SAR",
+      "start": "2026-10-30T13:26:43Z",
+      "end": "2026-10-30T13:29:55Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-17 (ACADIA-7)"
+    },
+    {
+      "id": "SAR-1334",
+      "row": "SAR",
+      "start": "2026-10-30T13:34:44Z",
+      "end": "2026-10-30T13:37:57Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-19 (ACADIA-9)"
+    },
+    {
+      "id": "SAR-1341",
+      "row": "SAR",
+      "start": "2026-10-30T13:41:58Z",
+      "end": "2026-10-30T13:43:37Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "SENTINEL-1A"
+    },
+    {
+      "id": "SAR-1347",
+      "row": "SAR",
+      "start": "2026-10-30T13:47:29Z",
+      "end": "2026-10-30T13:52:23Z",
+      "status": "Predicted",
+      "label": "2 SAR passes",
+      "notes": "SENTINEL-1C; CAPELLA-18 (ACADIA-8)"
+    },
+    {
+      "id": "IR-1441",
+      "row": "IR",
+      "start": "2026-10-30T14:41:17Z",
+      "end": "2026-10-30T14:42:28Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "TERRA"
+    },
+    {
+      "id": "SAR-1511",
+      "row": "SAR",
+      "start": "2026-10-30T15:11:10Z",
+      "end": "2026-10-30T15:13:42Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-19 (ACADIA-9)"
+    },
+    {
+      "id": "SAR-1526",
+      "row": "SAR",
+      "start": "2026-10-30T15:26:02Z",
+      "end": "2026-10-30T15:27:43Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-18 (ACADIA-8)"
+    },
+    {
+      "id": "IR-1616",
+      "row": "IR",
+      "start": "2026-10-30T16:16:15Z",
+      "end": "2026-10-30T16:21:08Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "TERRA"
+    },
+    {
+      "id": "IR-1719",
+      "row": "IR",
+      "start": "2026-10-30T17:19:19Z",
+      "end": "2026-10-30T17:20:36Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "SENTINEL-3A"
+    },
+    {
+      "id": "IR-1753",
+      "row": "IR",
+      "start": "2026-10-30T17:53:30Z",
+      "end": "2026-10-30T17:58:55Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "TERRA"
+    },
+    {
+      "id": "SAR-1811",
+      "row": "SAR",
+      "start": "2026-10-30T18:11:27Z",
+      "end": "2026-10-30T18:13:27Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-16 (ACADIA-6)"
+    },
+    {
+      "id": "IR-1819",
+      "row": "IR",
+      "start": "2026-10-30T18:19:40Z",
+      "end": "2026-10-30T18:22:58Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "SENTINEL-3B"
+    },
+    {
+      "id": "SAR-1830",
+      "row": "SAR",
+      "start": "2026-10-30T18:30:37Z",
+      "end": "2026-10-30T18:33:44Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-15 (ACADIA-5)"
+    },
+    {
+      "id": "IR-1857",
+      "row": "IR",
+      "start": "2026-10-30T18:57:55Z",
+      "end": "2026-10-30T19:01:16Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "SENTINEL-3A"
+    },
+    {
+      "id": "SAR-1946",
+      "row": "SAR",
+      "start": "2026-10-30T19:46:06Z",
+      "end": "2026-10-30T19:49:23Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-16 (ACADIA-6)"
+    },
+    {
+      "id": "SAR-2006",
+      "row": "SAR",
+      "start": "2026-10-30T20:06:42Z",
+      "end": "2026-10-30T20:09:07Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-15 (ACADIA-5)"
+    },
+    {
+      "id": "SAR-2120",
+      "row": "SAR",
+      "start": "2026-10-30T21:20:12Z",
+      "end": "2026-10-30T21:23:22Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-17 (ACADIA-7)"
+    },
+    {
+      "id": "IR-2246",
+      "row": "IR",
+      "start": "2026-10-30T22:46:58Z",
+      "end": "2026-10-30T22:49:40Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 21 (JPSS-2)"
+    },
+    {
+      "id": "SAR-2256",
+      "row": "SAR",
+      "start": "2026-10-30T22:56:20Z",
+      "end": "2026-10-30T22:58:41Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-17 (ACADIA-7)"
+    },
+    {
+      "id": "IR-2323",
+      "row": "IR",
+      "start": "2026-10-30T23:23:21Z",
+      "end": "2026-10-30T23:28:04Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "SUOMI NPP"
+    },
+    {
+      "id": "IR-2342",
+      "row": "IR",
+      "start": "2026-10-30T23:42:43Z",
+      "end": "2026-10-30T23:48:47Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA 20 (JPSS-1)"
+    }
+  ],
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint"
+    },
+    "Collected": {
+      "fill": "tint"
+    },
+    "High": {
+      "fill": "tint"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "tint"
+    },
+    "No Concern": {
+      "fill": "tint"
+    }
+  },
+  "daylight": {
+    "step_minutes": 10,
+    "elevations": [
+      -30.9,
+      -30.4,
+      -29.9,
+      -29.3,
+      -28.7,
+      -28.1,
+      -27.5,
+      -26.8,
+      -26.1,
+      -25.4,
+      -24.7,
+      -23.9,
+      -23.2,
+      -22.4,
+      -21.6,
+      -20.8,
+      -20.0,
+      -19.1,
+      -18.3,
+      -17.5,
+      -16.6,
+      -15.8,
+      -14.9,
+      -14.1,
+      -13.2,
+      -12.4,
+      -11.5,
+      -10.7,
+      -9.8,
+      -9.0,
+      -8.2,
+      -7.4,
+      -6.6,
+      -5.8,
+      -5.0,
+      -4.2,
+      -3.5,
+      -2.8,
+      -2.0,
+      -1.3,
+      -0.5,
+      0.3,
+      0.8,
+      1.3,
+      1.8,
+      2.3,
+      2.8,
+      3.3,
+      3.7,
+      4.1,
+      4.4,
+      4.8,
+      5.1,
+      5.3,
+      5.6,
+      5.8,
+      6.0,
+      6.1,
+      6.2,
+      6.3,
+      6.3,
+      6.3,
+      6.2,
+      6.2,
+      6.0,
+      5.9,
+      5.7,
+      5.5,
+      5.2,
+      5.0,
+      4.6,
+      4.3,
+      3.9,
+      3.5,
+      3.1,
+      2.6,
+      2.1,
+      1.6,
+      1.1,
+      0.6,
+      0.1,
+      -0.8,
+      -1.6,
+      -2.3,
+      -3.1,
+      -3.8,
+      -4.6,
+      -5.3,
+      -6.1,
+      -6.9,
+      -7.7,
+      -8.5,
+      -9.4,
+      -10.2,
+      -11.0,
+      -11.9,
+      -12.7,
+      -13.6,
+      -14.5,
+      -15.3,
+      -16.2,
+      -17.0,
+      -17.9,
+      -18.7,
+      -19.6,
+      -20.4,
+      -21.2,
+      -22.0,
+      -22.8,
+      -23.6,
+      -24.4,
+      -25.1,
+      -25.8,
+      -26.6,
+      -27.2,
+      -27.9,
+      -28.5,
+      -29.1,
+      -29.7,
+      -30.3,
+      -30.8,
+      -31.3,
+      -31.7,
+      -32.1,
+      -32.5,
+      -32.8,
+      -33.1,
+      -33.4,
+      -33.6,
+      -33.8,
+      -33.9,
+      -34.0,
+      -34.0,
+      -34.0,
+      -33.9,
+      -33.9,
+      -33.7,
+      -33.5,
+      -33.3,
+      -33.1,
+      -32.8,
+      -32.4,
+      -32.0,
+      -31.6,
+      -31.2
+    ],
+    "sun": {
+      "dawn": "2026-10-30T05:27:10Z",
+      "sunrise": "2026-10-30T06:40:51Z",
+      "sunset": "2026-10-30T13:24:58Z",
+      "dusk": "2026-10-30T14:38:30Z"
+    }
+  },
+  "markers": [],
+  "banners": [],
+  "label": "Simplified Sync Matrix"
+}

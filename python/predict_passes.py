@@ -122,7 +122,7 @@ def predict_events(config: dict, snapshot: dict, lat: float, lon: float,
 
 
 def roll_up(events: list, row_group: dict) -> list:
-    """Summarise per-satellite events by group (e.g. EO, IR, SAR) for Partner.
+    """Summarise per-satellite events by group (e.g. EO, IR, SAR) for Simplified.
 
     Overlapping passes in the same group become one event listing them.
     """
