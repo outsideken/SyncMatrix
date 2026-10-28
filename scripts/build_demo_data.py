@@ -1,6 +1,6 @@
 """Rebuild the demo library in web/data from config/*.json.
 
-Seven neutral sites from 78N to 78S on four dates chosen to exercise the
+Seven neutral sites from 78N to 78S and eight cities, on four dates chosen to exercise the
 day/night shading (June solstice, September equinox, 28 Oct 2026, December
 solstice), for every matrix. Events are deterministic samples (fixed seeds),
 so re-running this reproduces the committed files apart from their
@@ -21,13 +21,23 @@ sys.path.insert(0, str(REPO / "python"))
 
 import export_payload as ep  # noqa: E402
 
+# Neutral latitude sites (day/night extremes), then city localities (city
+# centres). The predicted-pass library uses the same list.
 SITES = [("High Arctic 78°N", "POINT(16 78)"),
          ("Arctic 70°N", "POINT(25 70)"),
          ("Subarctic 65°N", "POINT(25 65)"),
          ("Mid-north 40°N", "POINT(-100 40)"),
          ("Equator 0°", "POINT(25 0)"),
          ("Mid-south 40°S", "POINT(-70 -40)"),
-         ("Antarctic 78°S", "POINT(166 -78)")]
+         ("Antarctic 78°S", "POINT(166 -78)"),
+         ("London", "POINT(-0.1278 51.5074)"),
+         ("Tehran", "POINT(51.389722 35.688889)"),
+         ("Kiev", "POINT(30.5234 50.4501)"),
+         ("Tokyo", "POINT(139.6917 35.6895)"),
+         ("Kathmandu", "POINT(85.3240 27.7172)"),
+         ("Cairo", "POINT(31.2357 30.0444)"),
+         ("Gao", "POINT(-0.0444 16.2717)"),
+         ("Assisi", "POINT(12.6176 43.0707)")]
 
 # (day, ICOD): past days cut off that evening; today and the December plan at 28 Oct 1200Z.
 DAYS = [("2026-06-21", "2026-06-21T18:00:00Z"),
