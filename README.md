@@ -18,11 +18,17 @@ settings changed for the d3 version, in both `Config_PARTNER_Sync_Matrix.json`
 and the notebook cell that writes it: `"Show Sunrise/Sunset?"` is now `true`
 (so Partner gets day/night shading), and the `Commercial` group is renamed
 `COM` (its row id is still `CIRCUS`, which is what events reference).
-The Abstracted config also gained two groups at the top: **Vantor** (rows
-WorldView-1 to -3, Legion-1 to -6 and GeoEye-1, the operating fleet) and
-**Sentinel** (rows Sentinel-1 to -6, one per Copernicus mission), with their
-colours in the shared colour map. Re-running that notebook cell reproduces
-the committed configs.
+The Abstracted config's placeholder groups (Series A–D, Auxilary) are
+replaced by satellites grouped by **phenomenology**, matching Partner's
+group names:
+
+- **EO**: Vantor WorldView-1 to -3, Legion-1 to -6 and GeoEye-1; Sentinel-2;
+  Sentinel-3 OLCI.
+- **IR**: the NASA FIRMS active-fire sources (Terra and Aqua MODIS; S-NPP,
+  NOAA-20 and NOAA-21 VIIRS); Sentinel-3 SLSTR.
+- **SAR**: Sentinel-1; Capella Acadia satellites Capella-11 to -20.
+
+Re-running that notebook cell reproduces the committed configs.
 
 ## Build payloads
 
