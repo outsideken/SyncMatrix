@@ -32,6 +32,21 @@ Within each group the rows are alphabetical, numbers in numeric order
 (Capella-11 before Capella-20). Re-running that notebook cell reproduces the
 committed configs.
 
+The same rows can also be grouped by **provider**, offered on the page by a
+**Group by: Phenomenology | Provider** control (Abstracted only; Partner is
+always phenomenology, so the control is hidden there):
+
+- **Capella**: Capella-11 to -20
+- **Copernicus**: Sentinel-1, Sentinel-2, Sentinel-3 OLCI, Sentinel-3 SLSTR
+- **NASA FIRMS**: Aqua MODIS, NOAA-20 VIIRS, NOAA-21 VIIRS, S-NPP VIIRS, Terra MODIS
+- **Vantor**: GeoEye-1, Legion-1 to -6, WorldView-1 to -3
+
+In the config this is `"Y-Axis Grouping Name"` (the name of `"Y-Axis Data"`'s
+grouping, e.g. `"Phenomenology"`) plus `"Y-Axis Alternate Groupings"`:
+`{"Provider": {group: [rows…]}}`, written bottom-up like `"Y-Axis Data"`. Each
+alternative must contain exactly the same rows, or the exporter stops with an
+error, so events land on the same row in every grouping.
+
 ## Build payloads
 
 ```bash
@@ -116,6 +131,7 @@ or shared link reopens the same view.
 | `matrix`, `locality`, `date` | Initial selection (default: first matrix and locality, newest day) |
 | `controls=0` | Hide the dropdowns (the dashboard selects via `postMessage`) |
 | `daylight=0` | Start with the toolbar's **Day/night shading** switch off |
+| `group=provider` | Start grouped by provider (Abstracted); default is the matrix's own grouping |
 | `icodmark=1` | Draw the ICOD line and hatch the period after it (off by default) |
 | `manifest` | Manifest URL (default `data/index.json`) |
 | `data` | Draw this one payload instead; no manifest, no dropdowns |
