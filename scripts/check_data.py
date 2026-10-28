@@ -51,6 +51,10 @@ def main() -> int:
         if not payload["icod"]:
             problems.append("%s: no ICOD" % name)
         rows = {row["id"] for group in payload["groups"] for row in group["rows"]}
+        for alt in payload.get("alt_groupings", []):
+            alt_rows = {row["id"] for group in alt["groups"] for row in group["rows"]}
+            if alt_rows != rows:
+                problems.append("%s: grouping %r has different rows from the main grouping" % (name, alt["label"]))
         for event in payload["events"]:
             if event["row"] not in rows:
                 problems.append("%s: event %r on unknown row %r" % (name, event.get("label"), event["row"]))
