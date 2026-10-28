@@ -76,11 +76,16 @@ def test_optical_passes_are_in_daylight(site):
             assert sun_elevation(observer, peak) > -1, e["id"]
 
 
-def test_no_optical_passes_in_high_arctic_late_october():
+def test_optical_passes_need_the_sun_in_the_high_arctic():
+    # The snapshot changes daily, so the season does too: when the sun never
+    # rises at 78N that day there can be no EO passes; IR works in the dark.
     lat, lon = SITES["high-arctic"]
     events = pp.predict_events(CONFIG, SNAPSHOT, lat, lon, DAY, END)
-    assert not [e for e in events if GROUP[e["row"]] == "EO"]  # sun never gets up
-    assert [e for e in events if GROUP[e["row"]] == "IR"]      # thermal works in the dark
+    observer = Observer(latitude=lat, longitude=lon)
+    sun_up = any(sun_elevation(observer, DAY + timedelta(minutes=10 * i)) > 0 for i in range(145))
+    if not sun_up:
+        assert not [e for e in events if GROUP[e["row"]] == "EO"]
+    assert [e for e in events if GROUP[e["row"]] == "IR"]
 
 
 def test_side_looking_sar_stays_in_the_swath():

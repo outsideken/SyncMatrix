@@ -16,7 +16,7 @@ web/sync_matrix.js|css     renderer code and theme
 web/vendor/d3.v7.9.0.min.js  vendored d3, so no CDN access is needed
 web/data/index.json        manifest: matrices -> localities -> days (generated)
 web/data/<matrix>/<locality>/<date>.json  one locality, one UTC day (demo events)
-web/live/...               same layout: predicted passes (open the page with ?manifest=live/index.json)
+web/live/...               same layout: predicted passes, the page's default library (refreshed daily)
 web/demo_dashboard.html    stand-in dashboard for testing iframe + postMessage
 legacy/                    the original matplotlib notebook, its configs and PNGs (reference only)
 ```
@@ -55,12 +55,19 @@ latitude sites and eight cities: London, Kiev, Assisi, Tokyo, Tehran, Cairo,
 Kathmandu, Gao) and the three days from the orbit snapshot, when each
 satellite row can image the site.
 
-```bash
-.venv/bin/python scripts/fetch_tles.py       # snapshot current orbits -> data/tle/celestrak-<time>.json
-.venv/bin/python scripts/build_live_data.py  # predict passes -> web/live (from the newest snapshot)
-```
+This is the page's **default** library. The toolbar's **Data: Predicted | Demo**
+switch changes to the demo library (generated events, DEMO DATA) and back,
+keeping the matrix and locality; `?source=demo` opens on the demo.
 
-Open the page with `?manifest=live/index.json` to view them.
+**Refreshed daily** by `.github/workflows/refresh-live.yml` (05:17 UTC, or
+*Run workflow* by hand): it fetches new orbits, prunes `data/tle` to the 14
+newest snapshots, rebuilds `web/live` (three days from the new snapshot,
+replacing the old days), runs the checks and unit tests, commits to `main` as
+github-actions[bot], and starts the Pages deploy. The same steps locally:
+
+```bash
+.venv/bin/python scripts/refresh_live_data.py   # fetch_tles.py + prune + build_live_data.py + checks
+```
 
 - **Orbits** come from Celestrak (one request per satellite, with a pause),
   saved with their download time. Passes are computed with Skyfield, so a
@@ -70,7 +77,7 @@ Open the page with `?manifest=live/index.json` to view them.
   (Sentinel-1, Capella) need the site in the swath. Thresholds and NORAD
   numbers are in `config/abstracted.json` under `satellites` (table in
   [config/README.md](config/README.md#pass-thresholds-abstracted)).
-- **Events** are status `Predicted` (blue). Hover shows the highest elevation,
+- **Events** are status `Predicted`. Hover shows the highest elevation,
   the sun's elevation, the threshold and the orbit's NORAD number, epoch and
   download time.
 - **Simplified** is built from the same passes, rolled up into EO / IR / SAR;
@@ -170,7 +177,8 @@ or shared link reopens the same view.
 | `daylight=0` | Start with the toolbar's **Day/night shading** switch off |
 | `group=provider` | Start grouped by provider (Abstracted); default is the matrix's own grouping |
 | `icodmark=1` | Draw the ICOD line and hatch the period after it (off by default) |
-| `manifest` | Manifest URL (default `data/index.json`) |
+| `source=demo` | Start on the demo library (default: predicted passes); the toolbar's Data switch changes it |
+| `manifest` | Read this manifest instead (hides the Data switch) |
 | `data` | Draw this one payload instead; no manifest, no dropdowns |
 | `refresh` | Re-fetch every N seconds (0 = once); new days appear in the dropdown |
 | `title=0` | Hide the title when the dashboard panel has its own header |
@@ -203,8 +211,8 @@ to `main` that touches `web/` (or by hand from the Actions tab). It first
 runs `scripts/check_data.py` on both libraries (`web/data` and `web/live`).
 Once enabled, the page is at:
 
-- `https://outsideken.github.io/SyncMatrix/`: the Sync Matrix (demo library)
-- `https://outsideken.github.io/SyncMatrix/?manifest=live/index.json`: predicted passes
+- `https://outsideken.github.io/SyncMatrix/`: the Sync Matrix (predicted passes)
+- `https://outsideken.github.io/SyncMatrix/?source=demo`: the demo library
 - `https://outsideken.github.io/SyncMatrix/demo_dashboard.html`: the iframe test page
 
 Everything in `web/` is published: the page, the demo library (neutral sites,
@@ -254,8 +262,8 @@ same checks locally before pushing:
 
 | Check | What it catches |
 |---|---|
-| `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the late-October High Arctic, Sentinel-1 stays in its swath, Simplified roll-up merges overlaps), config checks (missing title, duplicate rows, a grouping with different rows, bad banner times), ICOD rules (missing or future ICOD fails, demo is labelled), locality required, the `<matrix>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
+| `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the High Arctic when the sun never rises, Sentinel-1 stays in its swath, Simplified roll-up merges overlaps), config checks (missing title, duplicate rows, a grouping with different rows, bad banner times), ICOD rules (missing or future ICOD fails, demo is labelled), locality required, the `<matrix>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
 | `check_data.py` | A `web/data` (or `--live`: `web/live`) file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
 | `check_demo_data.py` | `web/data` out of date with `config/` or the exporter; with `--live`, `web/live` out of date with the newest committed TLE snapshot or the pass prediction (rebuilds into a temp folder and compares, ignoring timestamps) |
 | `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |
-| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed demo data: default view, layout (groups, 28 rows, 24 hour labels), localities north to south, ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |
+| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed libraries: default view (predicted), the Data switch (Predicted ↔ Demo, keeps matrix/locality), `manifest=` hides the switch, layout (groups, 28 rows, 24 hour labels), localities north to south, ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |

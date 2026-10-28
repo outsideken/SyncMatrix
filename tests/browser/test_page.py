@@ -10,8 +10,8 @@ from urllib.parse import parse_qs, urlparse
 from playwright.sync_api import Page, expect
 
 DAY = "2026-10-28"
-ABSTRACTED = "/index.html?matrix=abstracted&locality=mid-north-40-n&date=%s" % DAY
-SIMPLIFIED = "/index.html?matrix=simplified&locality=mid-north-40-n&date=%s" % DAY
+ABSTRACTED = "/index.html?source=demo&matrix=abstracted&locality=mid-north-40-n&date=%s" % DAY
+SIMPLIFIED = "/index.html?source=demo&matrix=simplified&locality=mid-north-40-n&date=%s" % DAY
 
 
 def open_page(page: Page, path: str):
@@ -30,11 +30,32 @@ def query(page: Page):
 ## Loading and layout
 ################################################################################
 
-def test_default_view_loads_from_the_manifest(page, base_url, errors):
+def test_default_view_is_the_predicted_library(page, base_url, errors):
     open_page(page, base_url + "/index.html")
     assert query(page)["matrix"] == "abstracted"
-    assert "locality" in query(page) and "date" in query(page)
+    assert "locality" in query(page) and "date" in query(page) and "source" not in query(page)
     assert texts(page, "#sm-matrix option") == ["Abstracted Sync Matrix", "Simplified Sync Matrix"]
+    expect(page.get_by_role("radio", name="Predicted")).to_have_attribute("aria-checked", "true")
+    expect(page.locator("#sm-icod-badge")).not_to_contain_text("DEMO DATA")
+    assert "Predicted" in texts(page, ".sm-legend text")
+    assert errors == []
+
+
+def test_data_switch_between_predicted_and_demo(page, base_url, errors):
+    open_page(page, base_url + "/index.html?matrix=simplified&locality=mid-north-40-n")
+    page.get_by_role("radio", name="Demo").click()
+    expect(page.locator("#sm-icod-badge")).to_contain_text("DEMO DATA")
+    assert query(page)["source"] == "demo"
+    assert query(page)["matrix"] == "simplified" and query(page)["locality"] == "mid-north-40-n"  # kept
+    page.get_by_role("radio", name="Predicted").click()
+    expect(page.locator("#sm-icod-badge")).not_to_contain_text("DEMO DATA")
+    assert "source" not in query(page)
+    assert errors == []
+
+
+def test_explicit_manifest_hides_the_data_switch(page, base_url, errors):
+    open_page(page, base_url + "/index.html?manifest=data/index.json")
+    expect(page.locator("#sm-source")).to_be_hidden()
     assert errors == []
 
 
@@ -106,13 +127,13 @@ def stop_opacities(page):
 
 
 def test_polar_night_is_shaded_all_day(page, base_url, errors):
-    open_page(page, base_url + "/index.html?matrix=abstracted&locality=high-arctic-78-n&date=2026-12-21")
+    open_page(page, base_url + "/index.html?source=demo&matrix=abstracted&locality=high-arctic-78-n&date=2026-12-21")
     assert min(stop_opacities(page)) > 0.5
     assert errors == []
 
 
 def test_midnight_sun_is_never_shaded(page, base_url, errors):
-    open_page(page, base_url + "/index.html?matrix=abstracted&locality=high-arctic-78-n&date=2026-06-21")
+    open_page(page, base_url + "/index.html?source=demo&matrix=abstracted&locality=high-arctic-78-n&date=2026-06-21")
     assert max(stop_opacities(page)) == 0
     assert errors == []
 
