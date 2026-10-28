@@ -140,10 +140,24 @@ or shared link reopens the same view.
 | `theme=dark` | Dark palette |
 | `origin` | Dashboard origin trusted for `postMessage` (default: same origin only) |
 
-Messages: the dashboard may send `{type: "sync-matrix:select", matrix, locality, date}`
-or `{type: "sync-matrix:data", payload}`; the page sends `sync-matrix:ready`,
-`sync-matrix:selection` (when the user changes matrix/locality/date) and
-`sync-matrix:event-click` (with the event).
+Messages: the dashboard may send `{type: "sync-matrix:select", matrix, locality, date}`,
+`{type: "sync-matrix:data", payload}` or `{type: "sync-matrix:export", format: "png"|"svg"}`;
+the page sends `sync-matrix:ready`, `sync-matrix:selection` (when the user
+changes matrix/locality/date) and `sync-matrix:event-click` (with the event).
+
+## Export
+
+The toolbar's **Export: PNG | SVG** buttons download the chart as shown
+(current matrix, locality, day, Y-axis grouping and day/night setting), e.g.
+`abstracted_mid-north-40-n_2026-10-28_provider.png`. PNG is rendered at 2x for
+slides; SVG scales cleanly. Every export carries its provenance under the
+chart: the ICOD line (red, with DEMO DATA, for demo payloads) and
+`Data: <file> · Y-axis: <grouping> · Exported <time>`. The title and subtitle
+are always included, even with `title=0`.
+
+When the toolbar is hidden (`controls=0`), the dashboard can trigger an export
+with the `sync-matrix:export` message. Inside an `<iframe sandbox>`, downloads
+need `allow-downloads`.
 
 ## Publishing through Git
 
