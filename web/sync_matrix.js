@@ -72,7 +72,6 @@
 
   const parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
   const formatTick = d3.utcFormat("%H%MZ");
-  const formatHour = d3.utcFormat("%HZ");
   const formatFull = d3.utcFormat("%d %b %Y %H%MZ");
   const formatIcod = d3.utcFormat("%d %b %Y @ %H%MZ");
   const formatIcodShort = d3.utcFormat("%d %b %H%MZ");
@@ -313,10 +312,10 @@
     const bottom = bannerLevels * LAYOUT.bannerHeight + LAYOUT.footerHeight;
     const plotWidth = Math.max(100, width - left - right);
 
-    // Every hour is labelled ("00Z", "01Z", ...). When the frame is too narrow
+    // Every hour is labelled ("0000Z", "0100Z", ...). When the frame is too narrow
     // for them side by side, the labels turn vertical instead of being dropped.
     const hours = d3.utcHour.range(p.window.start, p.window.end);
-    const hourLabelWidth = measureLabelWidth(hours.map(formatHour), "sm-axis-label");
+    const hourLabelWidth = measureLabelWidth(hours.map(formatTick), "sm-axis-label");
     const rotateHours = plotWidth / Math.max(hours.length, 1) < hourLabelWidth + LAYOUT.hourLabelGap;
     const axisHeight = rotateHours ? hourLabelWidth + 12 : LAYOUT.axisHeight;
 
@@ -356,7 +355,7 @@
     const ticks = d3.utcMinute.every(tickMinutes).range(p.window.start, p.window.end);
 
     const axis = plot.append("g").attr("class", "sm-axis")
-      .call(d3.axisTop(x).tickValues(hours).tickFormat(formatHour).tickSize(4).tickPadding(3));
+      .call(d3.axisTop(x).tickValues(hours).tickFormat(formatTick).tickSize(4).tickPadding(3));
     if (rotateHours) {
       axis.selectAll("text")
         .attr("transform", "rotate(-90)")
