@@ -134,3 +134,23 @@ With GitHub Pages the page and data share an origin, so the defaults just work. 
 URL also works (it allows cross-origin reads) but is cached for about 5 minutes,
 so a short `refresh` won't show changes faster than that. A private repo's raw
 URLs need a token: don't put one in the iframe URL.
+
+## Checks (CI)
+
+`.github/workflows/ci.yml` runs on every pull request and on `main`. Run the
+same checks locally before pushing:
+
+```bash
+.venv/bin/pip install -r requirements.txt pytest
+.venv/bin/python -m pytest -q tests
+.venv/bin/python scripts/check_data.py
+.venv/bin/python scripts/check_notebook_configs.py
+.venv/bin/python scripts/check_js_syntax.py
+```
+
+| Check | What it catches |
+|---|---|
+| `tests/` | ICOD rules (missing or future ICOD fails, demo is labelled), the default matrix label and `<matrix>/<locality>/<date>.json` layout, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
+| `check_data.py` | A `web/data` file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
+| `check_notebook_configs.py` | `Config_*.json` drifting from the notebook cell that writes them |
+| `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |

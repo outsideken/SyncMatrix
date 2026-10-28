@@ -1,0 +1,54 @@
+# Checks that reviews used to do by hand. Runs on every PR and on main.
+#
+#   - exporter tests (pytest): ICOD rules, labels and output layout, events,
+#     day/night shading at extreme latitudes, end of local day
+#   - data: every web/data JSON parses and matches index.json
+#   - notebook: the config-writing cell still reproduces Config_*.json
+#   - JavaScript: web/*.js and inline <script> blocks pass `node --check`
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install
+        run: pip install -r requirements.txt pytest
+
+      - name: Exporter tests
+        run: python -m pytest -q tests
+
+      - name: Data files
+        run: python scripts/check_data.py
+
+      - name: Notebook writes the committed configs
+        run: python scripts/check_notebook_configs.py
+
+      - name: JavaScript syntax
+        run: python scripts/check_js_syntax.py
