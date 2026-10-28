@@ -49,8 +49,10 @@ To change a matrix, edit its config and run `python scripts/build_demo_data.py`
 
 ## Predicted passes (live data)
 
-`web/live` holds **real predicted passes**: for each demo site and the three
-days from the orbit snapshot, when each satellite row can image the site.
+`web/live` holds **real predicted passes**: for each site (the seven neutral
+latitude sites and eight cities: London, Kiev, Assisi, Tokyo, Tehran, Cairo,
+Kathmandu, Gao) and the three days from the orbit snapshot, when each
+satellite row can image the site.
 
 ```bash
 .venv/bin/python scripts/fetch_tles.py       # snapshot current orbits -> data/tle/celestrak-<time>.json
