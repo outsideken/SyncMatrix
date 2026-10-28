@@ -66,7 +66,7 @@
     rowMax: 44,
     bannerHeight: 24,
     footerHeight: 26,
-    minLabelSpacing: 44,
+    hourLabelGap: 6,
   };
   const FALLBACK_EVENT_COLOR = "#ff8c00";
 
@@ -308,15 +308,22 @@
       ? measureLabelWidth(p.groups.map((g) => g.label), "sm-group-label") + 2 * LAYOUT.labelGap
       : LAYOUT.groupStripWidth;
 
-    const top = (options.showTitle ? LAYOUT.titleHeight : 6) + LAYOUT.axisHeight;
     const left = stripWidth + LAYOUT.labelGap +
       (groupOnly ? 0 : measureLabelWidth(rows.map((r) => r.label)) + LAYOUT.labelGap);
     const right = LAYOUT.marginRight;
     const bottom = bannerLevels * LAYOUT.bannerHeight + LAYOUT.footerHeight;
+    const plotWidth = Math.max(100, width - left - right);
 
+    // Every hour is labelled ("0000Z", "0100Z", ...). When the frame is too narrow
+    // for them side by side, the labels turn vertical instead of being dropped.
+    const hours = d3.utcHour.range(p.window.start, p.window.end);
+    const hourLabelWidth = measureLabelWidth(hours.map(formatTick), "sm-axis-label");
+    const rotateHours = plotWidth / Math.max(hours.length, 1) < hourLabelWidth + LAYOUT.hourLabelGap;
+    const axisHeight = rotateHours ? hourLabelWidth + 12 : LAYOUT.axisHeight;
+
+    const top = (options.showTitle ? LAYOUT.titleHeight : 6) + axisHeight;
     const rowHeight = Math.max(LAYOUT.rowMin,
       Math.min(LAYOUT.rowMax, (height - top - bottom) / Math.max(rows.length, 1)));
-    const plotWidth = Math.max(100, width - left - right);
     const plotHeight = rowHeight * rows.length;
     const svgHeight = top + plotHeight + bottom;
 
@@ -343,17 +350,20 @@
     const plot = svg.append("g").attr("transform", `translate(${left},${top})`);
 
     //--------------------------------------------------------------------------
-    // Time axis (labels thinned to fit the width)
+    // Time axis: a label on every hour; the grid below keeps the finer ticks
     //--------------------------------------------------------------------------
 
     const tickMinutes = p.window.tick_minutes || 30;
     const ticks = d3.utcMinute.every(tickMinutes).range(p.window.start, p.window.end);
-    const pxPerTick = plotWidth / ticks.length;
-    const labelEvery = Math.max(1, Math.ceil(LAYOUT.minLabelSpacing / pxPerTick));
-    const labelled = ticks.filter((_, i) => i % labelEvery === 0);
 
-    plot.append("g").attr("class", "sm-axis")
-      .call(d3.axisTop(x).tickValues(labelled).tickFormat(formatTick).tickSize(4).tickPadding(3));
+    const axis = plot.append("g").attr("class", "sm-axis")
+      .call(d3.axisTop(x).tickValues(hours).tickFormat(formatTick).tickSize(4).tickPadding(3));
+    if (rotateHours) {
+      axis.selectAll("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", 7).attr("y", 0).attr("dy", "0.35em")
+        .attr("text-anchor", "start");
+    }
 
     //--------------------------------------------------------------------------
     // Background: night/twilight shading, grid, group dividers
