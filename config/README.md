@@ -12,11 +12,11 @@ checks a config before building anything (`load_config` in
   "tick_minutes": 30,
   "show_daylight": true,
   "show_end_of_local_day": false,
-  "status_colors": {"High": "red", "Moderate": "#cb181d", "Low": "orange", "No Concern": "#525252"},
+  "status_styles": {"Predicted": {"fill": "tint"}, "Collected": {"fill": "solid"}},
   "grouping": "Phenomenology",
   "groups": [
     {"name": "EO", "rows": ["GeoEye-1", "Legion-1", "WorldView-1"]},
-    {"name": "SAR", "color": "#525252", "rows": ["Capella-11", "Sentinel-1"]}
+    {"name": "SAR", "color": "#525252", "tint": "#d9d9d9", "rows": ["Capella-11", "Sentinel-1"]}
   ],
   "alt_groupings": {
     "Provider": [
@@ -39,9 +39,9 @@ checks a config before building anything (`load_config` in
 | `tick_minutes` | | Grid spacing (default 30); hour labels are always shown |
 | `show_daylight` | | Day/night shading for the payload's locality |
 | `show_end_of_local_day` | | Dashed line at local midnight |
-| `status_colors` | | Event colour by `status` |
+| `status_styles` | | How an event's `status` is drawn. Colour is always the row's phenomenology (its group's `color`); the status sets the style: `fill` is `solid` (the colour), `tint` (the group's `tint`, the default) or `none` (outline only), and optional `dash` is an SVG dash pattern, e.g. `"4 3"`. The current configs use `{"fill": "tint"}` for every status |
 | `grouping` | | Name of `groups`' grouping, shown in the Group by control |
-| `groups` | yes | Y-axis groups and rows, **top to bottom as drawn**. A row is a name, or `{"id", "label"}` when the label shown differs from the id events use. `color` (default grey) keys the group everywhere: its strip or bar, its provenance in popups, and its chip on exports |
+| `groups` | yes | Y-axis groups and rows, **top to bottom as drawn**. A row is a name, or `{"id", "label"}` when the label shown differs from the id events use. `color` (default grey `#525252`) keys the group everywhere: its strip or bar, its event boxes, its provenance in popups and its chip on exports; `tint` (default `#d9d9d9`) is the light fill of its event boxes |
 | `alt_groupings` | | Other ways to group **the same rows** (e.g. Provider), offered by the page's Group by control |
 | `banners` | | Optional bars under the plot; `start`/`end` are UTC times of day (`HH:MM`, up to `24:00`); `level` 0 is nearest the plot. Not used by the current matrices: the legacy banners carried each phenomenology's provenance, which now comes from the data (see below) |
 | `satellites` | | For predicted passes: per row, `norad` (list of NORAD catalogue numbers; a mission row like Sentinel-2 lists each spacecraft), `min_elevation` (degrees above the locality's horizon for a pass to count), optional `max_elevation` (side-looking SAR: the highest point must stay at or below this so the locality is in the swath) and `needs_daylight` (optical rows: sun up at the locality) |
