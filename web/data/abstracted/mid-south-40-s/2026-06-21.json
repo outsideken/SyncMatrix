@@ -27,7 +27,7 @@
       "icod_source": "demo"
     }
   },
-  "generated": "2026-10-28T20:50:28Z",
+  "generated": "2026-10-28T20:54:20Z",
   "locality": {
     "id": "mid-south-40-s",
     "name": "Mid-south 40\u00b0S",
@@ -45,6 +45,7 @@
       "id": "EO",
       "label": "EO",
       "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         {
           "id": "GeoEye-1",
@@ -100,6 +101,7 @@
       "id": "IR",
       "label": "IR",
       "color": "#cb181d",
+      "tint": "#fcbba1",
       "rows": [
         {
           "id": "Aqua MODIS",
@@ -131,6 +133,7 @@
       "id": "SAR",
       "label": "SAR",
       "color": "#525252",
+      "tint": "#d9d9d9",
       "rows": [
         {
           "id": "Capella-11",
@@ -185,6 +188,7 @@
           "id": "Capella",
           "label": "Capella",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "Capella-11",
@@ -228,6 +232,7 @@
           "id": "Copernicus",
           "label": "Copernicus",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "Sentinel-1",
@@ -251,6 +256,7 @@
           "id": "NASA FIRMS",
           "label": "NASA FIRMS",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "Aqua MODIS",
@@ -278,6 +284,7 @@
           "id": "Vantor",
           "label": "Vantor",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "GeoEye-1",
@@ -506,13 +513,27 @@
       "notes": "Generated sample (seed 661)."
     }
   ],
-  "status_colors": {
-    "High": "red",
-    "Moderate": "#cb181d",
-    "Low": "orange",
-    "No Concern": "#525252",
-    "Planned": "orange",
-    "Predicted": "#3182bd"
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint",
+      "dash": "4 3"
+    },
+    "Collected": {
+      "fill": "solid"
+    },
+    "High": {
+      "fill": "solid"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "none"
+    },
+    "No Concern": {
+      "fill": "none",
+      "dash": "2 2"
+    }
   },
   "daylight": {
     "step_minutes": 10,

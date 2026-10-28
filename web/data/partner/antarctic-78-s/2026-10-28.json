@@ -32,7 +32,7 @@
       "icod_source": "demo"
     }
   },
-  "generated": "2026-10-28T20:50:29Z",
+  "generated": "2026-10-28T20:54:20Z",
   "locality": {
     "id": "antarctic-78-s",
     "name": "Antarctic 78\u00b0S",
@@ -50,6 +50,7 @@
       "id": "COM",
       "label": "COM",
       "color": "#238b45",
+      "tint": "#c7e9c0",
       "rows": [
         {
           "id": "CIRCUS",
@@ -61,6 +62,7 @@
       "id": "IR",
       "label": "IR",
       "color": "#cb181d",
+      "tint": "#fcbba1",
       "rows": [
         {
           "id": "IR",
@@ -72,6 +74,7 @@
       "id": "SAR",
       "label": "SAR",
       "color": "#525252",
+      "tint": "#d9d9d9",
       "rows": [
         {
           "id": "SAR",
@@ -83,6 +86,7 @@
       "id": "EO",
       "label": "EO",
       "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         {
           "id": "EO",
@@ -167,13 +171,27 @@
       "notes": "Generated sample (seed 815)."
     }
   ],
-  "status_colors": {
-    "High": "red",
-    "Moderate": "#cb181d",
-    "Low": "orange",
-    "No Concern": "#525252",
-    "Planned": "orange",
-    "Predicted": "#3182bd"
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint",
+      "dash": "4 3"
+    },
+    "Collected": {
+      "fill": "solid"
+    },
+    "High": {
+      "fill": "solid"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "none"
+    },
+    "No Concern": {
+      "fill": "none",
+      "dash": "2 2"
+    }
   },
   "daylight": {
     "step_minutes": 10,

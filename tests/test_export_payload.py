@@ -288,3 +288,15 @@ def test_payload_carries_source_provenance_and_group_colours():
     assert payload["provenance"]["SAR"]["icod_source"] == "demo"
     assert {g["label"]: g["color"] for g in payload["groups"]} == {"EO": "#08519c", "IR": "#cb181d", "SAR": "#525252"}
     assert payload["banners"] == []  # provenance replaces the legacy banners
+
+
+def test_status_styles_and_tints():
+    payload = ep.build_payload(ep.load_config(ABSTRACTED), day=date(2026, 10, 27), demo_count=1,
+                               icod="2026-10-27T12:00:00Z", locality={"name": "X", "point": "POINT(-100 40)"})
+    assert payload["status_styles"]["Predicted"] == {"fill": "tint", "dash": "4 3"}
+    assert {g["label"]: g["tint"] for g in payload["groups"]} == {"EO": "#c6dbef", "IR": "#fcbba1", "SAR": "#d9d9d9"}
+
+
+def test_status_style_fill_is_checked(tmp_path):
+    with pytest.raises(ValueError, match="fill must be one of solid, tint, none"):
+        ep.load_config(write_config(tmp_path, status_styles={"Predicted": {"fill": "stripes"}}))

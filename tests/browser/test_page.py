@@ -214,3 +214,24 @@ def test_export_lists_provenance_per_phenomenology(page, base_url, errors, tmp_p
         assert line in svg
     assert "fill:#238b45" in svg and "fill:#08519c" in svg  # colour chips
     assert errors == []
+
+
+def test_boxes_take_their_phenomenology_colour(page, base_url, errors):
+    # Under Group by Provider too: colour follows the row's phenomenology, not the provider.
+    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=abstracted&locality=mid-north-40-n&group=provider")
+    boxes = page.locator(".sm-event").evaluate_all("""els => els.map(g => {
+        const r = g.querySelector('rect');
+        return [g.getAttribute('aria-label'), r.getAttribute('stroke'), r.getAttribute('stroke-dasharray'), r.getAttribute('fill')];
+    })""")
+    expected = {"WorldView": "#08519c", "Legion": "#08519c", "MODIS": "#cb181d", "VIIRS": "#cb181d",
+                "Capella": "#525252", "Sentinel-1": "#525252"}
+    seen = set()
+    for label, stroke, dash, fill in boxes:
+        for key, colour in expected.items():
+            if key in label:
+                assert stroke == colour, label
+                seen.add(colour)
+        assert dash == "4 3"            # Predicted = dashed
+        assert fill in ("#c6dbef", "#fcbba1", "#d9d9d9")  # Predicted = light tint
+    assert seen == {"#08519c", "#cb181d", "#525252"}
+    assert errors == []

@@ -30,7 +30,7 @@
       "notes": "9 predicted passes from 12 satellites"
     }
   },
-  "generated": "2026-10-28T20:50:30Z",
+  "generated": "2026-10-28T20:54:22Z",
   "locality": {
     "id": "equator-0",
     "name": "Equator 0\u00b0",
@@ -48,6 +48,7 @@
       "id": "EO",
       "label": "EO",
       "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         {
           "id": "GeoEye-1",
@@ -103,6 +104,7 @@
       "id": "IR",
       "label": "IR",
       "color": "#cb181d",
+      "tint": "#fcbba1",
       "rows": [
         {
           "id": "Aqua MODIS",
@@ -134,6 +136,7 @@
       "id": "SAR",
       "label": "SAR",
       "color": "#525252",
+      "tint": "#d9d9d9",
       "rows": [
         {
           "id": "Capella-11",
@@ -188,6 +191,7 @@
           "id": "Capella",
           "label": "Capella",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "Capella-11",
@@ -231,6 +235,7 @@
           "id": "Copernicus",
           "label": "Copernicus",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "Sentinel-1",
@@ -254,6 +259,7 @@
           "id": "NASA FIRMS",
           "label": "NASA FIRMS",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "Aqua MODIS",
@@ -281,6 +287,7 @@
           "id": "Vantor",
           "label": "Vantor",
           "color": "#525252",
+          "tint": "#d9d9d9",
           "rows": [
             {
               "id": "GeoEye-1",
@@ -599,13 +606,27 @@
       "notes": "Highest 56\u00b0 at 2327Z (sun -65\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 54234, epoch 2026-10-28 14:27Z, fetched 2026-10-28T20:28:32Z."
     }
   ],
-  "status_colors": {
-    "High": "red",
-    "Moderate": "#cb181d",
-    "Low": "orange",
-    "No Concern": "#525252",
-    "Planned": "orange",
-    "Predicted": "#3182bd"
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint",
+      "dash": "4 3"
+    },
+    "Collected": {
+      "fill": "solid"
+    },
+    "High": {
+      "fill": "solid"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "none"
+    },
+    "No Concern": {
+      "fill": "none",
+      "dash": "2 2"
+    }
   },
   "daylight": {
     "step_minutes": 10,

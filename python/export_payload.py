@@ -56,7 +56,9 @@ from astral.sun import dawn, dusk, elevation, sunrise, sunset
 from timezonefinder import TimezoneFinder
 
 PAYLOAD_VERSION = 1
-DEFAULT_GROUP_COLOR = "#525252"
+DEFAULT_GROUP_COLOR = "#525252"   # ColorBrewer Greys, dark end
+DEFAULT_GROUP_TINT = "#d9d9d9"    # ColorBrewer Greys, light end
+STATUS_FILLS = ("solid", "tint", "none")
 
 ################################################################################
 ## HELPERS
@@ -131,6 +133,9 @@ def load_config(path) -> dict:
             raise ValueError("%s: grouping %r does not have the same rows as \"groups\" "
                              "(missing: %s; extra: %s)"
                              % (path, label, sorted(rows - alt) or "none", sorted(alt - rows) or "none"))
+    for status, style in config.get("status_styles", {}).items():
+        if style.get("fill", "tint") not in STATUS_FILLS:
+            raise ValueError("%s: status_styles[%r] fill must be one of %s" % (path, status, ", ".join(STATUS_FILLS)))
     for row, spec in config.get("satellites", {}).items():
         if row not in rows:
             raise ValueError("%s: satellites entry %r is not a row" % (path, row))
@@ -158,6 +163,7 @@ def build_groups(groups: list) -> list:
     return [{"id": g["name"],
              "label": g["name"],
              "color": g.get("color", DEFAULT_GROUP_COLOR),
+             "tint": g.get("tint", DEFAULT_GROUP_TINT),
              "rows": [{"id": row_id(r), "label": r if isinstance(r, str) else r.get("label", r["id"])}
                       for r in g["rows"]]}
             for g in groups]
@@ -370,7 +376,7 @@ def build_payload(config: dict, events: list = None, day: date = None,
             "grouping": config.get("grouping", "Group"),
             "alt_groupings": build_alt_groupings(config),
             "events": events,
-            "status_colors": config.get("status_colors", {}),
+            "status_styles": config.get("status_styles", {}),
             "daylight": daylight,
             "markers": markers,
             "banners": build_banners(config, window_start),
