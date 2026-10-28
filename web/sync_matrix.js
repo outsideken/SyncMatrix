@@ -175,11 +175,13 @@
 
   // Each file is one matrix, one locality, one day. Changing one choice keeps
   // the others where that combination exists, else falls back to the first
-  // locality / newest day.
+  // locality and to today (or the newest day if today has no file).
   function select(want, { notify = true } = {}) {
     const matrix = matrixById(want.matrix);
     const locality = localityById(matrix, want.locality);
-    const day = locality.dates.find((d) => d.date === want.date) || locality.dates[0];
+    const today = new Date().toISOString().slice(0, 10);
+    const day = locality.dates.find((d) => d.date === want.date) ||
+      locality.dates.find((d) => d.date === today) || locality.dates[0];
     selection = { matrix: matrix.id, locality: locality.id, date: day.date };
 
     // Manifest paths are relative to the manifest, not to this page.
