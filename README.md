@@ -4,62 +4,56 @@ Python builds a JSON payload; a d3 page draws it. The page is made to be
 embedded in a dashboard with an `<iframe>`.
 
 ```
-python/export_payload.py   legacy Config_*.json (+ events) -> payload JSON
+config/<matrix>.json       matrix definitions: groups, rows, groupings, banners (see config/README.md)
+python/export_payload.py   config + events -> payload JSON
+scripts/build_demo_data.py rebuilds the demo library in web/data from config/
 web/index.html             the renderer (embed this)
 web/sync_matrix.js|css     renderer code and theme
 web/vendor/d3.v7.9.0.min.js  vendored d3, so no CDN access is needed
 web/data/index.json        manifest: matrices -> localities -> days (generated)
 web/data/<matrix>/<locality>/<date>.json  one locality, one UTC day (demo events for now)
 web/demo_dashboard.html    stand-in dashboard for testing iframe + postMessage
+legacy/                    the original matplotlib notebook, its configs and PNGs (reference only)
 ```
 
-The original matplotlib notebook, configs and PNGs are included. Two Partner
-settings changed for the d3 version, in both `Config_PARTNER_Sync_Matrix.json`
-and the notebook cell that writes it: `"Show Sunrise/Sunset?"` is now `true`
-(so Partner gets day/night shading), and the `Commercial` group is renamed
-`COM` (its row id is still `CIRCUS`, which is what events reference).
-The Abstracted config's placeholder groups (Series A–D, Auxilary) are
-replaced by satellites grouped by **phenomenology**, matching Partner's
-group names:
+## Matrices
 
-- **EO**: GeoEye-1, Legion-1 to -6 and WorldView-1 to -3 (Vantor); Sentinel-2;
-  Sentinel-3 OLCI.
-- **IR**: the NASA FIRMS active-fire sources (Aqua and Terra MODIS; S-NPP,
-  NOAA-20 and NOAA-21 VIIRS); Sentinel-3 SLSTR.
-- **SAR**: Sentinel-1; Capella Acadia satellites Capella-11 to -20.
+Two matrices, defined in [`config/`](config/README.md):
 
-Within each group the rows are alphabetical, numbers in numeric order
-(Capella-11 before Capella-20). Re-running that notebook cell reproduces the
-committed configs.
+- **Abstracted Sync Matrix** (`config/abstracted.json`): one row per satellite
+  (or instrument), grouped by **phenomenology**, rows alphabetical (numbers in
+  numeric order):
+  - **EO**: GeoEye-1, Legion-1 to -6, WorldView-1 to -3 (Vantor); Sentinel-2;
+    Sentinel-3 OLCI.
+  - **IR**: the NASA FIRMS active-fire sources (Aqua and Terra MODIS; S-NPP,
+    NOAA-20 and NOAA-21 VIIRS); Sentinel-3 SLSTR.
+  - **SAR**: Capella Acadia satellites Capella-11 to -20; Sentinel-1.
 
-The same rows can also be grouped by **provider**, offered on the page by a
-**Group by: Phenomenology | Provider** control (Abstracted only; Partner is
-always phenomenology, so the control is hidden there):
+  The same rows can be grouped by **provider** with the page's **Group by:
+  Phenomenology | Provider** control: Capella; Copernicus (Sentinel-1, -2,
+  -3 OLCI, -3 SLSTR); NASA FIRMS (MODIS and VIIRS); Vantor (GeoEye-1, Legion,
+  WorldView).
+- **Partner Sync Matrix** (`config/partner.json`): the phenomenology groups
+  only (COM, IR, SAR, EO), drawn as grey bars without row labels. Always
+  phenomenology, so the Group by control is hidden. The COM row's id is
+  `CIRCUS`, which is what events reference.
 
-- **Capella**: Capella-11 to -20
-- **Copernicus**: Sentinel-1, Sentinel-2, Sentinel-3 OLCI, Sentinel-3 SLSTR
-- **NASA FIRMS**: Aqua MODIS, NOAA-20 VIIRS, NOAA-21 VIIRS, S-NPP VIIRS, Terra MODIS
-- **Vantor**: GeoEye-1, Legion-1 to -6, WorldView-1 to -3
-
-In the config this is `"Y-Axis Grouping Name"` (the name of `"Y-Axis Data"`'s
-grouping, e.g. `"Phenomenology"`) plus `"Y-Axis Alternate Groupings"`:
-`{"Provider": {group: [rows…]}}`, written bottom-up like `"Y-Axis Data"`. Each
-alternative must contain exactly the same rows, or the exporter stops with an
-error, so events land on the same row in every grouping.
+To change a matrix, edit its config and run `python scripts/build_demo_data.py`
+(CI fails if the committed demo data doesn't match the configs).
 
 ## Build payloads
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install astral timezonefinder
-.venv/bin/python python/export_payload.py --config Config_PARTNER_Sync_Matrix.json \
-    --slug partner --date 2026-10-27 --events events.json --out-dir web/data
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/python python/export_payload.py --config config/partner.json \
+    --date 2026-10-27 --events events.json --out-dir web/data
 ```
 
-`--out-dir` writes `web/data/partner/mid-north-40-n/2026-10-27.json` and rebuilds
-`web/data/index.json` from the files on disk, so the new day shows up in the
-page's Date dropdown. After deleting old days, run
-`export_payload.py --rebuild-manifest web/data`. `--out FILE` still writes a
-single payload without touching the manifest.
+`--out-dir` writes `web/data/partner/mid-north-40-n/2026-10-27.json` (the
+matrix id is the config file name) and rebuilds `web/data/index.json` from the
+files on disk, so the new day shows up in the page's Date dropdown. After
+deleting old days, run `export_payload.py --rebuild-manifest web/data`.
+`--out FILE` writes a single payload without touching the manifest.
 
 Use `--demo-events N` instead of `--events` for sample data; `--date` defaults
 to today (UTC). The events file is
@@ -71,13 +65,12 @@ to today (UTC). The events file is
 ```
 
 with ISO 8601 UTC times; unknown rows or end-before-start fail loudly. Each
-file is **one locality, one day**. The locality can also be given with
-`--locality "POINT(lon lat)" --locality-name "Mid-north 40°N"`; the config's
-`"Locality Point"` is only a fallback for demos. Its timezone is looked up and
-stored in the payload.
+file is **one locality, one day**. The locality is required: in the events
+file, or with `--locality "POINT(lon lat)" --locality-name "Mid-north 40°N"`.
+Its timezone is looked up and stored in the payload.
 
-`--label` sets the name in the Matrix dropdown (default from `--slug`, e.g.
-`Partner Sync Matrix`); the chart heading keeps the config's title.
+`--label` overrides the name in the Matrix dropdown (default: the config's
+`"label"`); the chart heading is the config's `"title"`.
 
 ## Daylight shading
 
@@ -86,8 +79,7 @@ exporter samples the sun's elevation every 10 minutes (`daylight.elevations`)
 and the page draws one smooth gradient: clear in daylight, then progressively
 darker through civil (0 to -6 deg), nautical (to -12 deg) and astronomical
 (to -18 deg) twilight to full night. This replaces the notebook's three fixed
-15-minute layers, so `"Number of Shading Layers"` and `"Shading Time Delta"`
-are no longer used. Hover the background for dawn, sunrise, sunset and dusk
+15-minute layers. Hover the background for dawn, sunrise, sunset and dusk
 times. Polar day and night need no special handling.
 
 ## ICOD (Information Cut-Off Date)
@@ -110,8 +102,6 @@ reflected in the matrix. It is provenance, so:
   Add `icodmark=1` to the page URL to show a purple ICOD line with the period
   after it hatched ("After ICOD").
 - Click messages to the dashboard carry the payload's `icod` and `icod_source`.
-
-The config's `"Show ICOD?"` flag is no longer used: ICOD is always shown.
 
 ## Embed
 
@@ -178,14 +168,14 @@ same checks locally before pushing:
 .venv/bin/python -m pytest -q tests --ignore=tests/browser
 .venv/bin/python -m pytest -q tests/browser
 .venv/bin/python scripts/check_data.py
-.venv/bin/python scripts/check_notebook_configs.py
+.venv/bin/python scripts/check_demo_data.py
 .venv/bin/python scripts/check_js_syntax.py
 ```
 
 | Check | What it catches |
 |---|---|
-| `tests/` | ICOD rules (missing or future ICOD fails, demo is labelled), the default matrix label and `<matrix>/<locality>/<date>.json` layout, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
+| `tests/` | Config checks (missing title, duplicate rows, a grouping with different rows, bad banner times), ICOD rules (missing or future ICOD fails, demo is labelled), locality required, the `<matrix>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
 | `check_data.py` | A `web/data` file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
-| `check_notebook_configs.py` | `Config_*.json` drifting from the notebook cell that writes them |
+| `check_demo_data.py` | `web/data` out of date with `config/` or the exporter (rebuilds it into a temp folder and compares, ignoring timestamps) |
 | `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |
 | `tests/browser/` | The real page in headless Chromium (Playwright), against the committed demo data: default view, layout (groups, 29 rows, 24 hour labels), localities north to south, ICOD badge, Group by Provider (same events), Partner always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |

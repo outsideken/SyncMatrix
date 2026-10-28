@@ -15,8 +15,8 @@ import pytest
 import export_payload as ep
 from conftest import REPO
 
-ABSTRACTED = REPO / "Config_Abstracted_Sync_Matrix.json"
-PARTNER = REPO / "Config_PARTNER_Sync_Matrix.json"
+ABSTRACTED = REPO / "config" / "abstracted.json"
+PARTNER = REPO / "config" / "partner.json"
 EXPORTER = REPO / "python" / "export_payload.py"
 
 
@@ -61,22 +61,15 @@ def test_exporter_cli_refuses_missing_icod(tmp_path):
     events = tmp_path / "events.json"
     events.write_text(json.dumps([{"row": "EO", "start": "2026-10-27T06:00:00Z",
                                    "end": "2026-10-27T07:00:00Z"}]))
-    result = run_exporter("--config", PARTNER, "--date", "2026-10-27",
-                          "--events", events, "--out", tmp_path / "out.json")
+    result = run_exporter("--config", PARTNER, "--date", "2026-10-27", "--events", events,
+                          "--locality", "POINT(-100 40)", "--locality-name", "Mid-north 40°N",
+                          "--out", tmp_path / "out.json")
     assert result.returncode == 2
     assert "No ICOD" in result.stderr
 
 ################################################################################
 ## Matrix id, label and output layout
 ################################################################################
-
-@pytest.mark.parametrize("title, slug", [("PARTNER Sync Matrix", "partner"),
-                                         ("Abstracted Sync Matrix", "abstracted"),
-                                         ("Sync Matrix", "sync-matrix"),
-                                         ("Ops Board", "ops-board")])
-def test_default_slug_drops_sync_matrix_suffix(title, slug):
-    assert ep.default_slug(title) == slug
-
 
 def test_out_dir_layout_and_default_label(tmp_path):
     data = tmp_path / "data"
@@ -87,17 +80,17 @@ def test_out_dir_layout_and_default_label(tmp_path):
                               "--out-dir", data)
         assert result.returncode == 0, result.stderr
 
+    # Matrix id = config file name; dropdown label = the config's "label".
     assert (data / "partner" / "mid-north-40-n" / "2026-10-27.json").is_file()
     manifest = json.loads((data / "index.json").read_text())
     labels = {m["id"]: m["label"] for m in manifest["matrices"]}
-    # Not "Partner Sync Matrix Sync Matrix".
     assert labels == {"abstracted": "Abstracted Sync Matrix", "partner": "Partner Sync Matrix"}
 
 
 def test_manifest_lists_localities_north_to_south(tmp_path):
     data = tmp_path / "data"
     for name, point in (("South", "POINT(-70 -40)"), ("North", "POINT(25 65)"), ("Middle", "POINT(25 0)")):
-        result = run_exporter("--config", ABSTRACTED, "--slug", "abstracted", "--date", "2026-10-27",
+        result = run_exporter("--config", ABSTRACTED, "--date", "2026-10-27",
                               "--demo-events", 1, "--locality", point, "--locality-name", name,
                               "--out-dir", data)
         assert result.returncode == 0, result.stderr
@@ -108,30 +101,73 @@ def test_manifest_lists_localities_north_to_south(tmp_path):
 ## Alternate groupings ("Group by")
 ################################################################################
 
-def load_config(path):
-    return json.loads(path.read_text())
-
-
 def test_abstracted_offers_provider_grouping_over_the_same_rows():
-    config = load_config(ABSTRACTED)
-    groups = ep.build_groups(config["Y-Axis Data"], {})
-    [provider] = ep.build_alt_groupings(config, {}, groups)
+    config = ep.load_config(ABSTRACTED)
+    groups = ep.build_groups(config["groups"])
+    [provider] = ep.build_alt_groupings(config)
     assert (provider["id"], provider["label"]) == ("provider", "Provider")
     assert [g["label"] for g in provider["groups"]] == ["Capella", "Copernicus", "NASA FIRMS", "Vantor"]
     row_ids = lambda gs: sorted(r["id"] for g in gs for r in g["rows"])
     assert row_ids(provider["groups"]) == row_ids(groups)
 
 
-def test_alternate_grouping_must_have_the_same_rows():
-    config = load_config(ABSTRACTED)
-    config["Y-Axis Alternate Groupings"]["Provider"]["Capella"].remove("Capella-11")
-    with pytest.raises(ValueError, match=r"missing: \['Capella-11'\]"):
-        ep.build_alt_groupings(config, {}, ep.build_groups(config["Y-Axis Data"], {}))
-
-
 def test_partner_has_no_alternate_grouping():
-    config = load_config(PARTNER)
-    assert ep.build_alt_groupings(config, {}, ep.build_groups(config["Y-Axis Data"], {})) == []
+    assert ep.build_alt_groupings(ep.load_config(PARTNER)) == []
+
+################################################################################
+## Config checks
+################################################################################
+
+def write_config(tmp_path, **changes):
+    config = json.loads(ABSTRACTED.read_text())
+    config.update(changes)
+    path = tmp_path / "matrix.json"
+    path.write_text(json.dumps(config))
+    return path
+
+
+def test_committed_configs_load():
+    for path in (ABSTRACTED, PARTNER):
+        assert ep.load_config(path)["groups"]
+
+
+def test_alternate_grouping_must_have_the_same_rows(tmp_path):
+    config = json.loads(ABSTRACTED.read_text())
+    capella = next(g for g in config["alt_groupings"]["Provider"] if g["name"] == "Capella")
+    capella["rows"].remove("Capella-11")
+    with pytest.raises(ValueError, match=r"missing: \['Capella-11'\]"):
+        ep.load_config(write_config(tmp_path, alt_groupings=config["alt_groupings"]))
+
+
+def test_duplicate_row_is_an_error(tmp_path):
+    groups = [{"name": "EO", "rows": ["GeoEye-1"]}, {"name": "IR", "rows": ["GeoEye-1"]}]
+    with pytest.raises(ValueError, match="rows listed twice"):
+        ep.load_config(write_config(tmp_path, groups=groups, alt_groupings={}))
+
+
+def test_missing_title_is_an_error(tmp_path):
+    path = write_config(tmp_path)
+    config = json.loads(path.read_text())
+    del config["title"]
+    path.write_text(json.dumps(config))
+    with pytest.raises(ValueError, match="missing 'title'"):
+        ep.load_config(path)
+
+
+def test_banner_times(tmp_path):
+    with pytest.raises(ValueError, match="ends before it starts"):
+        ep.load_config(write_config(tmp_path, banners=[{"text": "X", "start": "12:00", "end": "06:00", "fill": "red"}]))
+    with pytest.raises(ValueError, match="not HH:MM"):
+        ep.load_config(write_config(tmp_path, banners=[{"text": "X", "start": "00:00", "end": "25:00", "fill": "red"}]))
+    start, _ = day_window("2026-10-27")
+    [banner] = ep.build_banners({"banners": [{"text": "X", "start": "12:00", "end": "24:00", "fill": "red"}]}, start)
+    assert (banner["start"], banner["end"]) == ("2026-10-27T12:00:00Z", "2026-10-28T00:00:00Z")
+
+
+def test_row_with_separate_label():
+    [group] = ep.build_groups([{"name": "COM", "rows": [{"id": "CIRCUS", "label": "Circus"}]}])
+    assert group["rows"] == [{"id": "CIRCUS", "label": "Circus"}]
+    assert group["color"] == ep.DEFAULT_GROUP_COLOR
 
 ################################################################################
 ## Events and locality
@@ -162,8 +198,13 @@ def test_events_outside_the_window_are_skipped():
     assert [(e["start"], e["end"]) for e in kept] == [("2026-10-27T00:00:00Z", "2026-10-27T03:00:00Z")]
 
 
+def test_locality_is_required():
+    with pytest.raises(ValueError, match="No locality"):
+        ep.resolve_locality(None)
+
+
 def test_locality_from_events_file_gets_a_timezone():
-    loc = ep.resolve_locality({}, {"name": "Mid-north 40°N", "point": "POINT(-100 40)"})
+    loc = ep.resolve_locality({"name": "Mid-north 40°N", "point": "POINT(-100 40)"})
     assert loc == {"id": "mid-north-40-n", "name": "Mid-north 40°N", "lon": -100.0, "lat": 40.0,
                    "timezone": "America/Chicago"}
 
