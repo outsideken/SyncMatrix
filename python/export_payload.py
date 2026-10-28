@@ -131,6 +131,11 @@ def load_config(path) -> dict:
             raise ValueError("%s: grouping %r does not have the same rows as \"groups\" "
                              "(missing: %s; extra: %s)"
                              % (path, label, sorted(rows - alt) or "none", sorted(alt - rows) or "none"))
+    for row, spec in config.get("satellites", {}).items():
+        if row not in rows:
+            raise ValueError("%s: satellites entry %r is not a row" % (path, row))
+        if not spec.get("norad") or "min_elevation" not in spec:
+            raise ValueError("%s: satellites[%r] needs \"norad\" and \"min_elevation\"" % (path, row))
     for banner in config.get("banners", []):
         if parse_hhmm(banner["end"]) <= parse_hhmm(banner["start"]):
             raise ValueError("%s: banner %r ends before it starts" % (path, banner.get("id")))

@@ -9,7 +9,8 @@
     "Moderate": "#cb181d",
     "Low": "orange",
     "No Concern": "#525252",
-    "Planned": "orange"
+    "Planned": "orange",
+    "Predicted": "#3182bd"
   },
   "grouping": "Phenomenology",
   "groups": [
@@ -45,7 +46,6 @@
       "name": "SAR",
       "rows": [
         "Capella-11",
-        "Capella-12",
         "Capella-13",
         "Capella-14",
         "Capella-15",
@@ -64,7 +64,6 @@
         "name": "Capella",
         "rows": [
           "Capella-11",
-          "Capella-12",
           "Capella-13",
           "Capella-14",
           "Capella-15",
@@ -157,5 +156,203 @@
       "fill": "orange",
       "text_color": "yellow"
     }
-  ]
+  ],
+  "satellites": {
+    "GeoEye-1": {
+      "norad": [
+        33331
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-1": {
+      "norad": [
+        59625
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-2": {
+      "norad": [
+        59626
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-3": {
+      "norad": [
+        60452
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-4": {
+      "norad": [
+        60453
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-5": {
+      "norad": [
+        62900
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-6": {
+      "norad": [
+        62901
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Sentinel-2": {
+      "norad": [
+        40697,
+        42063,
+        60989
+      ],
+      "min_elevation": 78,
+      "needs_daylight": true
+    },
+    "Sentinel-3 OLCI": {
+      "norad": [
+        41335,
+        43437
+      ],
+      "min_elevation": 50,
+      "needs_daylight": true
+    },
+    "WorldView-1": {
+      "norad": [
+        32060
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "WorldView-2": {
+      "norad": [
+        35946
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "WorldView-3": {
+      "norad": [
+        40115
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Aqua MODIS": {
+      "norad": [
+        27424
+      ],
+      "min_elevation": 25
+    },
+    "NOAA-20 VIIRS": {
+      "norad": [
+        43013
+      ],
+      "min_elevation": 20
+    },
+    "NOAA-21 VIIRS": {
+      "norad": [
+        54234
+      ],
+      "min_elevation": 20
+    },
+    "S-NPP VIIRS": {
+      "norad": [
+        37849
+      ],
+      "min_elevation": 20
+    },
+    "Sentinel-3 SLSTR": {
+      "norad": [
+        41335,
+        43437
+      ],
+      "min_elevation": 45
+    },
+    "Terra MODIS": {
+      "norad": [
+        25994
+      ],
+      "min_elevation": 25
+    },
+    "Capella-11": {
+      "norad": [
+        57693
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-13": {
+      "norad": [
+        60419
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-14": {
+      "norad": [
+        59444
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-15": {
+      "norad": [
+        60544
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-16": {
+      "norad": [
+        65318
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-17": {
+      "norad": [
+        64583
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-18": {
+      "norad": [
+        67385
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-19": {
+      "norad": [
+        67384
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-20": {
+      "norad": [
+        68485
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Sentinel-1": {
+      "norad": [
+        39634,
+        62261,
+        66315
+      ],
+      "min_elevation": 44,
+      "max_elevation": 61
+    }
+  }
 }
