@@ -9,25 +9,26 @@ Each payload is one matrix, one locality and one UTC day.
 Usage
 -----
     # Add a day to the page's library: writes
-    # <out-dir>/<slug>/<locality>/<YYYY-MM-DD>.json and rebuilds <out-dir>/index.json.
-    python export_payload.py --config ../Config_PARTNER_Sync_Matrix.json --slug partner \
-                             --date 2026-10-27 --events events.json --out-dir ../web/data
+    # <out-dir>/<matrix>/<locality>/<YYYY-MM-DD>.json and rebuilds <out-dir>/index.json.
+    python export_payload.py --config ../config/partner.json --date 2026-10-27 \
+                             --events events.json --out-dir ../web/data
 
     # No events yet? Generate deterministic sample events for a demo
     # (the locality can come from the events file or --locality/--locality-name).
-    python export_payload.py --config ../Config_Abstracted_Sync_Matrix.json --slug abstracted \
-                             --demo-events 14 --locality "POINT(-100 40)" \
-                             --locality-name "Mid-north 40°N" --out-dir ../web/data
+    python export_payload.py --config ../config/abstracted.json --demo-events 14 \
+                             --locality "POINT(-100 40)" --locality-name "Mid-north 40°N" \
+                             --icod 2026-10-27T12:00:00Z --out-dir ../web/data
 
     # Write a single payload file, without touching the manifest.
-    python export_payload.py --config ../Config_PARTNER_Sync_Matrix.json \
+    python export_payload.py --config ../config/partner.json \
                              --events events.json --out partner-mid-north.json
 
     # Rebuild only the manifest (e.g. after deleting old days).
     python export_payload.py --rebuild-manifest ../web/data
 
---slug defaults to the config's title stub without "Sync Matrix" (e.g.
-"PARTNER Sync Matrix" -> "partner"), and --label to "<Slug> Sync Matrix".
+The matrix id (--slug) defaults to the config file name (config/partner.json ->
+"partner"); the dropdown label comes from the config's "label". See
+config/README.md for the config format.
 
 Events file format (start/end/icod are ISO 8601 UTC)::
 
@@ -55,11 +56,7 @@ from astral.sun import dawn, dusk, elevation, sunrise, sunset
 from timezonefinder import TimezoneFinder
 
 PAYLOAD_VERSION = 1
-DEFAULT_STATUS_COLORS = {"High": "red",
-                         "Moderate": "#cb181d",
-                         "Low": "orange",
-                         "No Concern": "#525252",
-                         "Planned": "orange"}
+DEFAULT_GROUP_COLOR = "#525252"
 
 ################################################################################
 ## HELPERS
@@ -82,85 +79,105 @@ def parse_wkt_point(wkt: str):
     """Return (lon, lat) from a WKT 'POINT(lon lat)' string."""
     match = re.match(r"\s*POINT\s*\(\s*(-?[\d.]+)\s+(-?[\d.]+)\s*\)\s*$", wkt, re.I)
     if not match:
-        raise ValueError("Could not parse Locality Point %r" % wkt)
+        raise ValueError("Could not parse point %r; expected POINT(lon lat)" % wkt)
     return float(match.group(1)), float(match.group(2))
 
 
-def unpack_colors(colors: dict) -> dict:
-    """Invert the legacy {color: [keys...]} map into {key: color}."""
-    return {key: color for color, keys in colors.items() for key in keys}
+def parse_hhmm(text: str) -> timedelta:
+    """'HH:MM' time of day as an offset from midnight; '24:00' is the day's end."""
+    match = re.fullmatch(r"(\d{1,2}):(\d{2})", text)
+    if not match or int(match.group(1)) > 24 or int(match.group(2)) > 59 or \
+            (int(match.group(1)) == 24 and int(match.group(2)) != 0):
+        raise ValueError("Time %r is not HH:MM between 00:00 and 24:00" % text)
+    return timedelta(hours=int(match.group(1)), minutes=int(match.group(2)))
+
+################################################################################
+## CONFIG
+################################################################################
+
+def row_id(row) -> str:
+    """A row is a name ("Legion-1") or {"id": ..., "label": ...}."""
+    return row if isinstance(row, str) else row["id"]
+
+
+def load_config(path) -> dict:
+    """Read a matrix config (config/*.json) and check it before anything is built.
+
+    Fails with a clear message on: missing title/groups, a duplicate group or
+    row, an alternative grouping whose rows differ from "groups" (events must
+    land on the same row in every grouping), or a banner time that isn't
+    HH:MM.
+    """
+    with open(path, "r") as f:
+        config = json.load(f)
+    for key in ("title", "groups"):
+        if key not in config:
+            raise ValueError("%s: missing %r" % (path, key))
+
+    def rows_of(groups, where):
+        names = [g["name"] for g in groups]
+        if len(set(names)) != len(names):
+            raise ValueError("%s: duplicate group name in %s" % (path, where))
+        rows = [row_id(r) for g in groups for r in g["rows"]]
+        dupes = sorted({r for r in rows if rows.count(r) > 1})
+        if dupes:
+            raise ValueError("%s: rows listed twice in %s: %s" % (path, where, dupes))
+        return set(rows)
+
+    rows = rows_of(config["groups"], "groups")
+    for label, groups in config.get("alt_groupings", {}).items():
+        alt = rows_of(groups, "alt_groupings[%r]" % label)
+        if alt != rows:
+            raise ValueError("%s: grouping %r does not have the same rows as \"groups\" "
+                             "(missing: %s; extra: %s)"
+                             % (path, label, sorted(rows - alt) or "none", sorted(alt - rows) or "none"))
+    for banner in config.get("banners", []):
+        if parse_hhmm(banner["end"]) <= parse_hhmm(banner["start"]):
+            raise ValueError("%s: banner %r ends before it starts" % (path, banner.get("id")))
+    return config
 
 ################################################################################
 ## PAYLOAD SECTIONS
 ################################################################################
 
 def build_window(config: dict, day: date) -> dict:
-    """Window covers one UTC day, split into X-Axis Max equal ticks."""
+    """Window covers one UTC day, with grid ticks every tick_minutes."""
     start = datetime.combine(day, time(0, 0), tzinfo=timezone.utc)
-    slots = int(config.get("X-Axis Max", 48))
     return {"start": iso(start),
             "end": iso(start + timedelta(days=1)),
-            "tick_minutes": (24 * 60) // slots}
+            "tick_minutes": int(config.get("tick_minutes", 30))}
 
 
-def build_groups(y_axis_data: dict, color_map: dict) -> list:
-    """Groups and rows in display order, top to bottom.
+def build_groups(groups: list) -> list:
+    """Payload groups from the config's "groups" (already top to bottom)."""
+    return [{"id": g["name"],
+             "label": g["name"],
+             "color": g.get("color", DEFAULT_GROUP_COLOR),
+             "rows": [{"id": row_id(r), "label": r if isinstance(r, str) else r.get("label", r["id"])}
+                      for r in g["rows"]]}
+            for g in groups]
 
-    The matplotlib version plots the first group at the bottom (y = 0), so
-    both the groups and the rows inside them are reversed here. A blank row
-    label (e.g. the NEW config's [""]) means a single row named after its group.
+
+def build_alt_groupings(config: dict) -> list:
+    """Other ways to group the same rows, offered by the page's "Group by" control.
+
+    load_config() has already checked each one has exactly the rows of
+    "groups", so events land on the same row whichever grouping is shown.
     """
-    groups = []
-    for name, rows in reversed(list(y_axis_data.items())):
-        groups.append({"id": name,
-                       "label": name,
-                       "color": color_map.get(name, "#525252"),
-                       "rows": [{"id": row or name, "label": row or name} for row in reversed(rows)]})
-    return groups
+    return [{"id": slugify(label), "label": label, "groups": build_groups(groups)}
+            for label, groups in config.get("alt_groupings", {}).items()]
 
 
-def build_alt_groupings(config: dict, color_map: dict, groups: list) -> list:
-    """Other ways to group the same rows (config "Y-Axis Alternate Groupings").
-
-    The page offers these in its "Group by" control. Each must contain exactly
-    the rows of "Y-Axis Data", so events (which reference rows) land in the
-    same place whichever grouping is shown.
-    """
-    row_ids = sorted(row["id"] for group in groups for row in group["rows"])
-    alternates = []
-    for label, y_axis_data in config.get("Y-Axis Alternate Groupings", {}).items():
-        alt = build_groups(y_axis_data, color_map)
-        alt_ids = sorted(row["id"] for group in alt for row in group["rows"])
-        if alt_ids != row_ids:
-            raise ValueError("Grouping %r does not have the same rows as \"Y-Axis Data\" "
-                             "(missing: %s; extra: %s)"
-                             % (label, sorted(set(row_ids) - set(alt_ids)) or "none",
-                                sorted(set(alt_ids) - set(row_ids)) or "none"))
-        alternates.append({"id": slugify(label), "label": label, "groups": alt})
-    return alternates
-
-
-def build_banners(config: dict, window_start: datetime, tick_minutes: int) -> list:
-    """Convert legacy slot/y-unit banners into time-positioned banner rows."""
-    if not config.get("Add Banners?"):
-        return []
-
-    banners = config.get("Banners", {})
-    # Legacy banners stack downward with decreasing y; level 0 sits nearest the grid.
-    levels = sorted({b["Lower Left Corner XY"][1] for b in banners.values()}, reverse=True)
-
-    out = []
-    for key, banner in banners.items():
-        x, y = banner["Lower Left Corner XY"]
-        start = window_start + timedelta(minutes=tick_minutes * x)
-        out.append({"id": key,
-                    "text": banner["Text"],
-                    "start": iso(start),
-                    "end": iso(start + timedelta(minutes=tick_minutes * banner["Banner Width"])),
-                    "level": levels.index(y),
-                    "fill": banner["Banner Face"],
-                    "text_color": banner["Font Color"]})
-    return out
+def build_banners(config: dict, window_start: datetime) -> list:
+    """Banner bars under the plot; start/end are times of day (HH:MM, UTC)."""
+    return [{"id": b.get("id", "banner-%d" % (i + 1)),
+             "text": b["text"],
+             "start": iso(window_start + parse_hhmm(b["start"])),
+             "end": iso(window_start + parse_hhmm(b["end"])),
+             "level": b.get("level", 0),
+             "fill": b["fill"],
+             "text_color": b.get("text_color", "#ffffff")}
+            for i, b in enumerate(config.get("banners", []))]
 
 
 def build_daylight(lon: float, lat: float, window_start: datetime, window_end: datetime,
@@ -191,22 +208,21 @@ def build_daylight(lon: float, lat: float, window_start: datetime, window_end: d
     return {"step_minutes": step_minutes, "elevations": elevations, "sun": sun_times}
 
 
-def resolve_locality(config: dict, locality: dict = None) -> dict:
+def resolve_locality(locality: dict = None) -> dict:
     """The one locality this payload covers.
 
     Each payload is one locality and one day. The locality comes from the
-    events file ({"name": ..., "point": "POINT(lon lat)"} or name/lon/lat);
-    the config's "Locality Point" is only a fallback for demos.
+    events file ({"name": ..., "point": "POINT(lon lat)"} or name/lon/lat) or
+    from --locality/--locality-name; there is no default.
     """
-    if locality:
-        name = locality["name"]
-        if "point" in locality:
-            lon, lat = parse_wkt_point(locality["point"])
-        else:
-            lon, lat = float(locality["lon"]), float(locality["lat"])
+    if not locality:
+        raise ValueError("No locality: give it as \"locality\" in the events file or with "
+                         "--locality and --locality-name.")
+    name = locality["name"]
+    if "point" in locality:
+        lon, lat = parse_wkt_point(locality["point"])
     else:
-        name = config.get("Locality Name", "Default")
-        lon, lat = parse_wkt_point(config["Locality Point"])
+        lon, lat = float(locality["lon"]), float(locality["lat"])
 
     tz_name = TimezoneFinder().timezone_at(lat=lat, lng=lon)
     if tz_name is None:
@@ -298,26 +314,20 @@ def build_payload(config: dict, events: list = None, day: date = None,
     day = day or now.date()
     icod_dt, icod_source = resolve_icod(icod, icod_source, bool(demo_count), now)
 
-    color_map = unpack_colors(config.get("Colors", {}))
     window = build_window(config, day)
     window_start, window_end = parse_iso(window["start"]), parse_iso(window["end"])
-    groups = build_groups(config["Y-Axis Data"], color_map)
-    alt_groupings = build_alt_groupings(config, color_map, groups)
+    groups = build_groups(config["groups"])
 
-    loc = resolve_locality(config, locality)
-    daylight = build_daylight(loc["lon"], loc["lat"], window_start, window_end) if config.get("Show Sunrise/Sunset?") else None
-    markers = build_end_of_local_day(loc["timezone"], window_start, window_end) if config.get("Show End of Local Day?") else []
+    loc = resolve_locality(locality)
+    daylight = build_daylight(loc["lon"], loc["lat"], window_start, window_end) if config.get("show_daylight") else None
+    markers = build_end_of_local_day(loc["timezone"], window_start, window_end) if config.get("show_end_of_local_day") else []
 
     if demo_count:
         events = demo_events(groups, window_start, window["tick_minutes"], demo_count, seed)
     events = validate_events(events or [], groups, window_start, window_end)
 
-    # Legacy configs may define status colors (e.g. the NEW config); fall back to defaults.
-    status_colors = dict(DEFAULT_STATUS_COLORS)
-    status_colors.update({k: v for k, v in color_map.items() if k in DEFAULT_STATUS_COLORS})
-
     return {"version": PAYLOAD_VERSION,
-            "title": config["Sync Matrix Title Stub"],
+            "title": config["title"],
             "subtitle": "%s · %s" % (loc["name"], window_start.strftime("%d %B %Y")),
             "icod": iso(icod_dt),
             "icod_source": icod_source,
@@ -325,26 +335,18 @@ def build_payload(config: dict, events: list = None, day: date = None,
             "locality": loc,
             "window": window,
             "groups": groups,
-            "grouping": config.get("Y-Axis Grouping Name", "Group"),
-            "alt_groupings": alt_groupings,
+            "grouping": config.get("grouping", "Group"),
+            "alt_groupings": build_alt_groupings(config),
             "events": events,
-            "status_colors": status_colors,
+            "status_colors": config.get("status_colors", {}),
             "daylight": daylight,
             "markers": markers,
-            "banners": build_banners(config, window_start, window["tick_minutes"])}
+            "banners": build_banners(config, window_start),
+            "label": config.get("label", config["title"])}
 
 
 def slugify(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
-
-
-def default_slug(title_stub: str) -> str:
-    """Matrix id from the config title, without the "Sync Matrix" suffix.
-
-    "PARTNER Sync Matrix" -> "partner", so the default label becomes
-    "Partner Sync Matrix" rather than "Partner Sync Matrix Sync Matrix".
-    """
-    return slugify(re.sub(r"\s*sync\s*matrix\s*$", "", title_stub, flags=re.I)) or slugify(title_stub)
 
 
 def rebuild_manifest(data_dir: str) -> dict:
@@ -393,7 +395,7 @@ def rebuild_manifest(data_dir: str) -> dict:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--rebuild-manifest", metavar="DATA_DIR", help="Only rebuild DATA_DIR/index.json")
-    parser.add_argument("--config", help="Legacy Sync Matrix config JSON")
+    parser.add_argument("--config", help="Matrix config, e.g. config/partner.json (see config/README.md)")
     parser.add_argument("--events", help="Events JSON: {\"icod\": ..., \"events\": [...]}")
     parser.add_argument("--demo-events", type=int, default=0, help="Generate N sample events instead")
     parser.add_argument("--seed", type=int, default=7, help="Seed for --demo-events")
@@ -402,10 +404,9 @@ def main():
     parser.add_argument("--locality", metavar="WKT", help="Locality as POINT(lon lat) (overrides the events file)")
     parser.add_argument("--locality-name", help="Name for --locality, e.g. 'Mid-north 40°N'")
     parser.add_argument("--out", help="Payload JSON to write")
-    parser.add_argument("--out-dir", help="Data folder: write <slug>/<locality>/<date>.json and rebuild index.json")
-    parser.add_argument("--slug", help="Matrix id for --out-dir (default: config title without "
-                                       "'Sync Matrix', e.g. partner)")
-    parser.add_argument("--label", help="Name for the Matrix dropdown (default: from --slug, e.g. Partner Sync Matrix)")
+    parser.add_argument("--out-dir", help="Data folder: write <matrix>/<locality>/<date>.json and rebuild index.json")
+    parser.add_argument("--slug", help="Matrix id for --out-dir (default: the config file name, e.g. partner)")
+    parser.add_argument("--label", help="Name for the Matrix dropdown (default: the config's \"label\")")
     args = parser.parse_args()
 
     if args.rebuild_manifest:
@@ -414,8 +415,10 @@ def main():
     if not args.config or not (args.out or args.out_dir):
         parser.error("--config and one of --out/--out-dir are required")
 
-    with open(args.config, "r") as f:
-        config = json.load(f)
+    try:
+        config = load_config(args.config)
+    except ValueError as err:
+        parser.exit(2, "Error: %s\n" % err)
 
     events, icod, icod_source, locality = None, None, "data", None
     if args.events:
@@ -438,9 +441,9 @@ def main():
     except ValueError as err:
         parser.exit(2, "Error: %s\n" % err)
 
-    # Name for the page's Matrix dropdown, e.g. "Partner Sync Matrix"; the chart keeps the config title.
-    slug = args.slug or default_slug(config["Sync Matrix Title Stub"])
-    payload["label"] = args.label or slug.replace("-", " ").title() + " Sync Matrix"
+    slug = args.slug or Path(args.config).stem
+    if args.label:
+        payload["label"] = args.label
 
     out = args.out
     if args.out_dir:
