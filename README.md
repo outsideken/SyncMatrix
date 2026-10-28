@@ -28,7 +28,7 @@ python3 -m venv .venv && .venv/bin/pip install astral timezonefinder
     --slug partner --date 2026-10-27 --events events.json --out-dir web/data
 ```
 
-`--out-dir` writes `web/data/partner/tehran/2026-10-27.json` and rebuilds
+`--out-dir` writes `web/data/partner/mid-north-40-n/2026-10-27.json` and rebuilds
 `web/data/index.json` from the files on disk, so the new day shows up in the
 page's Date dropdown. After deleting old days, run
 `export_payload.py --rebuild-manifest web/data`. `--out FILE` still writes a
@@ -39,13 +39,13 @@ to today (UTC). The events file is
 
 ```json
 {"icod": "2026-10-27T19:28:00Z",
- "locality": {"name": "Tehran", "point": "POINT(51.389722 35.688889)"},
+ "locality": {"name": "Mid-north 40°N", "point": "POINT(-100 40)"},
  "events": [{"row": "EO", "start": "...", "end": "...", "status": "High", "label": "...", "notes": "..."}]}
 ```
 
 with ISO 8601 UTC times; unknown rows or end-before-start fail loudly. Each
 file is **one locality, one day**. The locality can also be given with
-`--locality "POINT(lon lat)" --locality-name Tehran`; the config's
+`--locality "POINT(lon lat)" --locality-name "Mid-north 40°N"`; the config's
 `"Locality Point"` is only a fallback for demos. Its timezone is looked up and
 stored in the payload.
 

@@ -16,12 +16,12 @@ Usage
     # No events yet? Generate deterministic sample events for a demo
     # (the locality can come from the events file or --locality/--locality-name).
     python export_payload.py --config ../Config_Abstracted_Sync_Matrix.json --slug abstracted \
-                             --demo-events 14 --locality "POINT(51.389722 35.688889)" \
-                             --locality-name Tehran --out-dir ../web/data
+                             --demo-events 14 --locality "POINT(-100 40)" \
+                             --locality-name "Mid-north 40°N" --out-dir ../web/data
 
     # Write a single payload file, without touching the manifest.
     python export_payload.py --config ../Config_PARTNER_Sync_Matrix.json \
-                             --events events.json --out partner-tehran.json
+                             --events events.json --out partner-mid-north.json
 
     # Rebuild only the manifest (e.g. after deleting old days).
     python export_payload.py --rebuild-manifest ../web/data
@@ -32,7 +32,7 @@ Usage
 Events file format (start/end/icod are ISO 8601 UTC)::
 
     {"icod": "2026-10-27T19:28:00Z",
-     "locality": {"name": "Tehran", "point": "POINT(51.389722 35.688889)"},
+     "locality": {"name": "Mid-north 40°N", "point": "POINT(-100 40)"},
      "events": [{"row": "EO", "start": "2026-10-27T06:30:00Z", "end": "2026-10-27T07:00:00Z",
                  "status": "High", "label": "Collection window", "notes": "optional"}]}
 
@@ -351,9 +351,11 @@ def rebuild_manifest(data_dir: str) -> dict:
             if dates:
                 dates.sort(key=lambda d: d["date"], reverse=True)  # newest first
                 localities.append({"id": locality_dir.name, "name": loc.get("name", locality_dir.name),
-                                   "timezone": loc.get("timezone"), "dates": dates})
+                                   "lat": loc.get("lat"), "timezone": loc.get("timezone"), "dates": dates})
                 files += len(dates)
         if localities:
+            # North to south, so the Locality dropdown reads like a map.
+            localities.sort(key=lambda l: -(l["lat"] if l["lat"] is not None else 0))
             matrices.append({"id": matrix_dir.name, "label": label or title, "title": title,
                              "localities": localities})
 
@@ -374,7 +376,7 @@ def main():
     parser.add_argument("--date", help="UTC day to render, YYYY-MM-DD (default: today)")
     parser.add_argument("--icod", help="Information Cut-Off Date, ISO 8601 UTC (overrides the events file)")
     parser.add_argument("--locality", metavar="WKT", help="Locality as POINT(lon lat) (overrides the events file)")
-    parser.add_argument("--locality-name", help="Name for --locality, e.g. Tehran")
+    parser.add_argument("--locality-name", help="Name for --locality, e.g. 'Mid-north 40°N'")
     parser.add_argument("--out", help="Payload JSON to write")
     parser.add_argument("--out-dir", help="Data folder: write <slug>/<locality>/<date>.json and rebuild index.json")
     parser.add_argument("--slug", help="Matrix id for --out-dir (default: config title without "
