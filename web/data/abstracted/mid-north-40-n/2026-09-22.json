@@ -4,7 +4,7 @@
   "subtitle": "Mid-north 40\u00b0N \u00b7 22 September 2026",
   "icod": "2026-09-22T18:00:00Z",
   "icod_source": "demo",
-  "generated": "2026-10-28T18:26:02Z",
+  "generated": "2026-10-28T18:28:50Z",
   "locality": {
     "id": "mid-north-40-n",
     "name": "Mid-north 40\u00b0N",
@@ -19,9 +19,9 @@
   },
   "groups": [
     {
-      "id": "Vantor",
-      "label": "Vantor",
-      "color": "darkcyan",
+      "id": "EO",
+      "label": "EO",
+      "color": "#525252",
       "rows": [
         {
           "id": "WorldView-1",
@@ -62,144 +62,96 @@
         {
           "id": "GeoEye-1",
           "label": "GeoEye-1"
-        }
-      ]
-    },
-    {
-      "id": "Sentinel",
-      "label": "Sentinel",
-      "color": "darkslateblue",
-      "rows": [
-        {
-          "id": "Sentinel-1",
-          "label": "Sentinel-1"
         },
         {
           "id": "Sentinel-2",
           "label": "Sentinel-2"
         },
         {
-          "id": "Sentinel-3",
-          "label": "Sentinel-3"
-        },
-        {
-          "id": "Sentinel-4",
-          "label": "Sentinel-4"
-        },
-        {
-          "id": "Sentinel-5",
-          "label": "Sentinel-5"
-        },
-        {
-          "id": "Sentinel-6",
-          "label": "Sentinel-6"
+          "id": "Sentinel-3 OLCI",
+          "label": "Sentinel-3 OLCI"
         }
       ]
     },
     {
-      "id": "Auxilary",
-      "label": "Auxilary",
-      "color": "yellow",
+      "id": "IR",
+      "label": "IR",
+      "color": "#525252",
       "rows": [
         {
-          "id": "Aux 02",
-          "label": "Aux 02"
+          "id": "Terra MODIS",
+          "label": "Terra MODIS"
         },
         {
-          "id": "Aux 01",
-          "label": "Aux 01"
+          "id": "Aqua MODIS",
+          "label": "Aqua MODIS"
+        },
+        {
+          "id": "S-NPP VIIRS",
+          "label": "S-NPP VIIRS"
+        },
+        {
+          "id": "NOAA-20 VIIRS",
+          "label": "NOAA-20 VIIRS"
+        },
+        {
+          "id": "NOAA-21 VIIRS",
+          "label": "NOAA-21 VIIRS"
+        },
+        {
+          "id": "Sentinel-3 SLSTR",
+          "label": "Sentinel-3 SLSTR"
         }
       ]
     },
     {
-      "id": "Series D",
-      "label": "Series D",
-      "color": "purple",
+      "id": "SAR",
+      "label": "SAR",
+      "color": "#525252",
       "rows": [
         {
-          "id": "172.16.0.1",
-          "label": "172.16.0.1"
+          "id": "Sentinel-1",
+          "label": "Sentinel-1"
         },
         {
-          "id": "10.0.0.5",
-          "label": "10.0.0.5"
+          "id": "Capella-11",
+          "label": "Capella-11"
         },
         {
-          "id": "192.168.1.100",
-          "label": "192.168.1.100"
-        }
-      ]
-    },
-    {
-      "id": "Series C",
-      "label": "Series C",
-      "color": "royalblue",
-      "rows": [
-        {
-          "id": "Express",
-          "label": "Express"
+          "id": "Capella-12",
+          "label": "Capella-12"
         },
         {
-          "id": "Divinci",
-          "label": "Divinci"
+          "id": "Capella-13",
+          "label": "Capella-13"
         },
         {
-          "id": "Weber",
-          "label": "Weber"
+          "id": "Capella-14",
+          "label": "Capella-14"
         },
         {
-          "id": "Rapter",
-          "label": "Rapter"
-        }
-      ]
-    },
-    {
-      "id": "Series B",
-      "label": "Series B",
-      "color": "forestgreen",
-      "rows": [
-        {
-          "id": "-",
-          "label": "-"
+          "id": "Capella-15",
+          "label": "Capella-15"
         },
         {
-          "id": "B98890",
-          "label": "B98890"
+          "id": "Capella-16",
+          "label": "Capella-16"
         },
         {
-          "id": "B94578",
-          "label": "B94578"
+          "id": "Capella-17",
+          "label": "Capella-17"
         },
         {
-          "id": "B67434",
-          "label": "B67434"
+          "id": "Capella-18",
+          "label": "Capella-18"
         },
         {
-          "id": "B54756",
-          "label": "B54756"
-        }
-      ]
-    },
-    {
-      "id": "Series A",
-      "label": "Series A",
-      "color": "firebrick",
-      "rows": [
-        {
-          "id": "1011",
-          "label": "1011"
+          "id": "Capella-19",
+          "label": "Capella-19"
         },
         {
-          "id": "1010",
-          "label": "1010"
-        },
-        {
-          "id": "1001",
-          "label": "1001"
-        },
-        {
-          "id": "1000",
-          "label": "1000"
+          "id": "Capella-20",
+          "label": "Capella-20"
         }
       ]
     }
@@ -207,7 +159,7 @@
   "events": [
     {
       "id": "demo-00",
-      "row": "Weber",
+      "row": "Capella-19",
       "start": "2026-09-22T19:30:00Z",
       "end": "2026-09-22T20:00:00Z",
       "status": "Low",
@@ -216,191 +168,173 @@
     },
     {
       "id": "demo-01",
-      "row": "WorldView-1",
-      "start": "2026-09-22T00:30:00Z",
-      "end": "2026-09-22T01:00:00Z",
-      "status": "Moderate",
+      "row": "WorldView-2",
+      "start": "2026-09-22T09:00:00Z",
+      "end": "2026-09-22T09:30:00Z",
+      "status": "High",
       "label": "Demo event 2",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-02",
-      "row": "172.16.0.1",
-      "start": "2026-09-22T06:30:00Z",
-      "end": "2026-09-22T07:00:00Z",
-      "status": "High",
+      "row": "Legion-3",
+      "start": "2026-09-22T05:00:00Z",
+      "end": "2026-09-22T05:30:00Z",
+      "status": "Low",
       "label": "Demo event 3",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-03",
-      "row": "Aux 01",
-      "start": "2026-09-22T15:00:00Z",
-      "end": "2026-09-22T15:30:00Z",
-      "status": "Moderate",
+      "row": "Capella-12",
+      "start": "2026-09-22T03:30:00Z",
+      "end": "2026-09-22T05:00:00Z",
+      "status": "High",
       "label": "Demo event 4",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-04",
-      "row": "192.168.1.100",
-      "start": "2026-09-22T15:30:00Z",
-      "end": "2026-09-22T16:00:00Z",
+      "row": "NOAA-20 VIIRS",
+      "start": "2026-09-22T08:30:00Z",
+      "end": "2026-09-22T09:00:00Z",
       "status": "Moderate",
       "label": "Demo event 5",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-05",
-      "row": "Sentinel-6",
-      "start": "2026-09-22T09:00:00Z",
-      "end": "2026-09-22T09:30:00Z",
-      "status": "High",
+      "row": "GeoEye-1",
+      "start": "2026-09-22T10:00:00Z",
+      "end": "2026-09-22T10:30:00Z",
+      "status": "Moderate",
       "label": "Demo event 6",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-06",
-      "row": "1000",
-      "start": "2026-09-22T03:30:00Z",
-      "end": "2026-09-22T04:00:00Z",
-      "status": "Low",
+      "row": "Capella-18",
+      "start": "2026-09-22T07:30:00Z",
+      "end": "2026-09-22T08:00:00Z",
+      "status": "High",
       "label": "Demo event 7",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-07",
-      "row": "WorldView-2",
-      "start": "2026-09-22T01:30:00Z",
-      "end": "2026-09-22T02:00:00Z",
-      "status": "High",
+      "row": "NOAA-21 VIIRS",
+      "start": "2026-09-22T06:30:00Z",
+      "end": "2026-09-22T08:30:00Z",
+      "status": "Low",
       "label": "Demo event 8",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-08",
-      "row": "WorldView-2",
-      "start": "2026-09-22T10:00:00Z",
-      "end": "2026-09-22T11:00:00Z",
-      "status": "Moderate",
+      "row": "Capella-13",
+      "start": "2026-09-22T01:30:00Z",
+      "end": "2026-09-22T02:00:00Z",
+      "status": "High",
       "label": "Demo event 9",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-09",
-      "row": "192.168.1.100",
-      "start": "2026-09-22T11:00:00Z",
-      "end": "2026-09-22T11:30:00Z",
-      "status": "No Concern",
+      "row": "Capella-14",
+      "start": "2026-09-22T18:00:00Z",
+      "end": "2026-09-22T18:30:00Z",
+      "status": "Low",
       "label": "Demo event 10",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-10",
-      "row": "1001",
-      "start": "2026-09-22T02:30:00Z",
-      "end": "2026-09-22T03:30:00Z",
-      "status": "Low",
+      "row": "Capella-20",
+      "start": "2026-09-22T09:00:00Z",
+      "end": "2026-09-22T09:30:00Z",
+      "status": "Moderate",
       "label": "Demo event 11",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-11",
-      "row": "Sentinel-6",
-      "start": "2026-09-22T20:00:00Z",
-      "end": "2026-09-22T22:00:00Z",
+      "row": "Capella-13",
+      "start": "2026-09-22T11:00:00Z",
+      "end": "2026-09-22T11:30:00Z",
       "status": "Low",
       "label": "Demo event 12",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-12",
-      "row": "WorldView-1",
-      "start": "2026-09-22T01:30:00Z",
-      "end": "2026-09-22T03:00:00Z",
-      "status": "High",
+      "row": "Capella-17",
+      "start": "2026-09-22T14:00:00Z",
+      "end": "2026-09-22T14:30:00Z",
+      "status": "Low",
       "label": "Demo event 13",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-13",
-      "row": "Sentinel-1",
+      "row": "Sentinel-3 OLCI",
       "start": "2026-09-22T21:00:00Z",
-      "end": "2026-09-22T22:00:00Z",
-      "status": "No Concern",
+      "end": "2026-09-22T23:00:00Z",
+      "status": "Moderate",
       "label": "Demo event 14",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-14",
-      "row": "Express",
-      "start": "2026-09-22T02:30:00Z",
-      "end": "2026-09-22T03:30:00Z",
-      "status": "Low",
+      "row": "Aqua MODIS",
+      "start": "2026-09-22T08:30:00Z",
+      "end": "2026-09-22T09:00:00Z",
+      "status": "High",
       "label": "Demo event 15",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-15",
-      "row": "1000",
-      "start": "2026-09-22T10:00:00Z",
-      "end": "2026-09-22T10:30:00Z",
+      "row": "Legion-3",
+      "start": "2026-09-22T01:30:00Z",
+      "end": "2026-09-22T02:30:00Z",
       "status": "No Concern",
       "label": "Demo event 16",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-16",
-      "row": "Sentinel-6",
-      "start": "2026-09-22T14:30:00Z",
-      "end": "2026-09-22T15:30:00Z",
-      "status": "Moderate",
+      "row": "Sentinel-2",
+      "start": "2026-09-22T02:30:00Z",
+      "end": "2026-09-22T03:30:00Z",
+      "status": "Low",
       "label": "Demo event 17",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-17",
-      "row": "Express",
-      "start": "2026-09-22T18:00:00Z",
-      "end": "2026-09-22T18:30:00Z",
-      "status": "High",
+      "row": "Capella-13",
+      "start": "2026-09-22T10:00:00Z",
+      "end": "2026-09-22T10:30:00Z",
+      "status": "No Concern",
       "label": "Demo event 18",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-18",
-      "row": "B54756",
-      "start": "2026-09-22T15:30:00Z",
-      "end": "2026-09-22T16:30:00Z",
-      "status": "No Concern",
+      "row": "Legion-5",
+      "start": "2026-09-22T14:30:00Z",
+      "end": "2026-09-22T15:30:00Z",
+      "status": "Moderate",
       "label": "Demo event 19",
       "notes": "Generated sample (seed 492)."
     },
     {
       "id": "demo-19",
-      "row": "WorldView-2",
-      "start": "2026-09-22T15:30:00Z",
-      "end": "2026-09-22T17:00:00Z",
-      "status": "Moderate",
+      "row": "Capella-19",
+      "start": "2026-09-22T18:00:00Z",
+      "end": "2026-09-22T18:30:00Z",
+      "status": "Low",
       "label": "Demo event 20",
-      "notes": "Generated sample (seed 492)."
-    },
-    {
-      "id": "demo-20",
-      "row": "Sentinel-2",
-      "start": "2026-09-22T15:00:00Z",
-      "end": "2026-09-22T16:00:00Z",
-      "status": "High",
-      "label": "Demo event 21",
-      "notes": "Generated sample (seed 492)."
-    },
-    {
-      "id": "demo-21",
-      "row": "WorldView-3",
-      "start": "2026-09-22T14:30:00Z",
-      "end": "2026-09-22T16:00:00Z",
-      "status": "No Concern",
-      "label": "Demo event 22",
       "notes": "Generated sample (seed 492)."
     }
   ],
