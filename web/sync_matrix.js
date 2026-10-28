@@ -33,6 +33,7 @@
  * postMessage protocol
  *   in : {type: "sync-matrix:data", payload: {...}}       replace the data
  *   in : {type: "sync-matrix:select", matrix, locality, date}  choose from the manifest
+ *   in : {type: "sync-matrix:export", format: "png"|"svg"}  download the chart
  *   out: {type: "sync-matrix:ready"}                       sent once on load
  *   out: {type: "sync-matrix:selection", matrix, locality, date}  selection changed
  *   out: {type: "sync-matrix:event-click", event: {...}}  user clicked an event
@@ -99,6 +100,7 @@
   let manifest = null;    // library mode only
   let selection = { matrix: params.get("matrix"), locality: params.get("locality"), date: params.get("date") };
   let dataUrl = options.dataUrl;
+  let dataSource = options.dataUrl; // shown on exported images as provenance
 
   //============================================================================
   // DATA
@@ -189,6 +191,7 @@
 
     // Manifest paths are relative to the manifest, not to this page.
     dataUrl = new URL(day.file, new URL(options.manifestUrl, window.location.href)).href;
+    dataSource = new URL(dataUrl).pathname;
 
     updateControls();
     rememberSelection();
@@ -766,6 +769,129 @@
   }
 
   //============================================================================
+  // EXPORT (PNG / SVG for briefings)
+  //============================================================================
+
+  // The exported image is the chart as drawn, plus its provenance: title and
+  // subtitle (even when title=0 hides them on the page), the ICOD, the data
+  // file, the Y-axis grouping and the export time. Styles are copied inline so
+  // the image looks the same outside the page (CSS classes and variables do not
+  // travel with an SVG file).
+
+  const EXPORT_STYLES = ["fill", "fill-opacity", "stroke", "stroke-width", "stroke-dasharray",
+    "stroke-opacity", "opacity", "font-family", "font-size", "font-weight", "letter-spacing",
+    "stop-color", "stop-opacity", "display"];
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const formatExportTime = d3.utcFormat("%d %b %Y @ %H%MZ");
+
+  function exportFileName(ext) {
+    const p = current;
+    const parts = manifest
+      ? [selection.matrix, selection.locality, selection.date]
+      : [slug(p.title || "sync-matrix"), p.locality && p.locality.id, d3.utcFormat("%Y-%m-%d")(p.window.start)];
+    const grouping = (groupingOptions(p).find((c) => c.id === options.grouping) || groupingOptions(p)[0]).id;
+    if ((p.alt_groupings || []).length) parts.push(grouping);
+    return parts.filter(Boolean).join("_") + "." + ext;
+  }
+
+  function exportSvgText() {
+    const live = container.select("svg.sm-root").node();
+    if (!live || !current) return null;
+    const p = current;
+    const clone = live.cloneNode(true);
+
+    // Inline the computed styles, element by element (clone and live match 1:1).
+    const liveEls = [live, ...live.querySelectorAll("*")];
+    const cloneEls = [clone, ...clone.querySelectorAll("*")];
+    liveEls.forEach((el, i) => {
+      const cs = getComputedStyle(el);
+      // Replace any style attribute (some use var(--…)) with resolved values.
+      cloneEls[i].setAttribute("style", EXPORT_STYLES.map((k) => k + ":" + cs.getPropertyValue(k)).join(";"));
+    });
+
+    const width = +live.getAttribute("width");
+    const height = +live.getAttribute("height");
+    const header = options.showTitle ? 0 : 44;
+    const footer = 44;
+    const ink = getComputedStyle(document.body).color;
+    const font = getComputedStyle(document.body).fontFamily;
+
+    const chart = document.createElementNS(SVG_NS, "g");
+    chart.setAttribute("transform", `translate(0,${header})`);
+    while (clone.firstChild) chart.appendChild(clone.firstChild);
+
+    const out = d3.select(clone)
+      .attr("xmlns", SVG_NS)
+      .attr("width", width).attr("height", height + header + footer)
+      .attr("viewBox", `0 0 ${width} ${height + header + footer}`)
+      .attr("style", `font-family:${font}`);
+    out.append("rect").attr("width", "100%").attr("height", "100%")
+      .attr("fill", getComputedStyle(document.body).backgroundColor);
+    out.node().appendChild(chart);
+
+    if (header) {
+      out.append("text").attr("x", width / 2).attr("y", 18).attr("text-anchor", "middle")
+        .attr("style", `fill:${ink};font-size:15px;font-weight:700`).text(p.title || "");
+      out.append("text").attr("x", width / 2).attr("y", 34).attr("text-anchor", "middle")
+        .attr("style", `fill:${ink};font-size:12px;font-weight:600;opacity:0.7`).text(p.subtitle || "");
+    }
+
+    const grouping = (groupingOptions(p).find((c) => c.id === options.grouping) || groupingOptions(p)[0]).label;
+    const provenance = [
+      icodLabel(p),
+      [dataSource ? "Data: " + dataSource : null,
+       (p.alt_groupings || []).length ? "Y-axis: " + grouping : null,
+       "Exported " + formatExportTime(new Date())].filter(Boolean).join(" · "),
+    ];
+    out.selectAll("text.sm-export-provenance").data(provenance).join("text")
+      .attr("class", "sm-export-provenance")
+      .attr("x", 8).attr("y", (_, i) => height + header + 18 + i * 15)
+      .attr("style", (_, i) => `fill:${i === 0 && (!p.icod || p.icod_source === "demo") ? "#cb181d" : ink};` +
+        `font-size:11px;font-weight:${i === 0 ? 700 : 400}`)
+      .text((d) => d);
+
+    return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone);
+  }
+
+  function download(blob, name) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  }
+
+  async function exportImage(format) {
+    const svgText = exportSvgText();
+    if (!svgText) return;
+    const svgBlob = new Blob([svgText], { type: "image/svg+xml" });
+    if (format === "svg") return download(svgBlob, exportFileName("svg"));
+
+    // PNG: draw the SVG onto a canvas at 2x for crisp slides.
+    const img = new Image();
+    const url = URL.createObjectURL(svgBlob);
+    try {
+      img.src = url;
+      await img.decode();
+      const scale = 2;
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth * scale;
+      canvas.height = img.naturalHeight * scale;
+      const ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+      ctx.drawImage(img, 0, 0);
+      const png = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+      download(png, exportFileName("png"));
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  d3.selectAll("#sm-export button").on("click", (ev) => exportImage(ev.currentTarget.dataset.format));
+
+  //============================================================================
   // DASHBOARD MESSAGING
   //============================================================================
 
@@ -786,7 +912,11 @@
   window.addEventListener("message", (ev) => {
     if (ev.origin !== options.trustedOrigin) return;
     if (!ev.data) return;
-    if (ev.data.type === "sync-matrix:data") setPayload(ev.data.payload);
+    if (ev.data.type === "sync-matrix:data") {
+      dataSource = "pushed by the dashboard (postMessage)";
+      setPayload(ev.data.payload);
+    }
+    if (ev.data.type === "sync-matrix:export") exportImage(ev.data.format === "svg" ? "svg" : "png");
     if (ev.data.type === "sync-matrix:select" && manifest) {
       const { matrix, locality, date } = ev.data;
       select({ matrix: matrix || selection.matrix, locality: locality || selection.locality,
