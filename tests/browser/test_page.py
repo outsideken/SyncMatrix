@@ -52,7 +52,8 @@ def test_abstracted_layout(page, base_url, errors):
 def test_localities_run_north_to_south(page, base_url, errors):
     open_page(page, base_url + ABSTRACTED)
     names = [re.sub(r" \(.*\)$", "", t) for t in texts(page, "#sm-locality option")]
-    assert names == ["High Arctic 78°N", "Arctic 70°N", "Subarctic 65°N", "Mid-north 40°N",
+    assert names == ["High Arctic 78°N", "Arctic 70°N", "Subarctic 65°N", "London", "Kiev", "Assisi",
+                     "Mid-north 40°N", "Tokyo", "Tehran", "Cairo", "Kathmandu", "Gao",
                      "Equator 0°", "Mid-south 40°S", "Antarctic 78°S"]
     assert errors == []
 
@@ -234,4 +235,13 @@ def test_boxes_take_their_phenomenology_colour(page, base_url, errors):
         assert dash is None             # solid outline
         assert fill in ("#c6dbef", "#fcbba1", "#d9d9d9")  # light phenomenology tint
     assert seen == {"#08519c", "#cb181d", "#525252"}
+    assert errors == []
+
+
+def test_city_locality_quarter_hour_timezone(page, base_url, errors):
+    # Kathmandu is UTC+5:45: its timezone shows in the Locality dropdown and its passes load.
+    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=abstracted&locality=kathmandu")
+    expect(page.locator(".sm-subtitle")).to_contain_text("Kathmandu")
+    assert "Kathmandu (Asia/Kathmandu)" in texts(page, "#sm-locality option")
+    assert page.locator(".sm-event").count() > 0
     assert errors == []
