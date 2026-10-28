@@ -11,7 +11,7 @@ from playwright.sync_api import Page, expect
 
 DAY = "2026-10-28"
 ABSTRACTED = "/index.html?matrix=abstracted&locality=mid-north-40-n&date=%s" % DAY
-PARTNER = "/index.html?matrix=partner&locality=mid-north-40-n&date=%s" % DAY
+SIMPLIFIED = "/index.html?matrix=simplified&locality=mid-north-40-n&date=%s" % DAY
 
 
 def open_page(page: Page, path: str):
@@ -34,7 +34,7 @@ def test_default_view_loads_from_the_manifest(page, base_url, errors):
     open_page(page, base_url + "/index.html")
     assert query(page)["matrix"] == "abstracted"
     assert "locality" in query(page) and "date" in query(page)
-    assert texts(page, "#sm-matrix option") == ["Abstracted Sync Matrix", "Partner Sync Matrix"]
+    assert texts(page, "#sm-matrix option") == ["Abstracted Sync Matrix", "Simplified Sync Matrix"]
     assert errors == []
 
 
@@ -82,8 +82,8 @@ def test_group_by_provider_regroups_the_same_events(page, base_url, errors):
     assert errors == []
 
 
-def test_partner_is_always_phenomenology(page, base_url, errors):
-    open_page(page, base_url + PARTNER + "&group=provider")
+def test_simplified_is_always_phenomenology(page, base_url, errors):
+    open_page(page, base_url + SIMPLIFIED + "&group=provider")
     expect(page.locator("#sm-grouping")).to_be_hidden()
     assert texts(page, ".sm-group-label") == ["COM", "IR", "SAR", "EO"]
     assert page.locator(".sm-row-label").count() == 0  # group bars only
@@ -132,17 +132,17 @@ def test_export_png(page, base_url, errors, tmp_path):
 
 
 def test_export_svg_carries_provenance(page, base_url, errors, tmp_path):
-    open_page(page, base_url + PARTNER + "&title=0")
+    open_page(page, base_url + SIMPLIFIED + "&title=0")
     with page.expect_download() as info:
         page.locator("#sm-export button[data-format=svg]").click()
     download = info.value
-    assert download.suggested_filename == "partner_mid-north-40-n_2026-10-28.svg"
+    assert download.suggested_filename == "simplified_mid-north-40-n_2026-10-28.svg"
     path = tmp_path / download.suggested_filename
     download.save_as(path)
     svg = path.read_text()
-    assert "PARTNER Sync Matrix" in svg  # title added even with title=0
+    assert "Simplified Sync Matrix" in svg  # title added even with title=0
     assert "ICOD: 28 Oct 2026 @ 1200Z" in svg and "DEMO DATA" in svg
-    assert "Data: /data/partner/mid-north-40-n/2026-10-28.json" in svg
+    assert "Data: /data/simplified/mid-north-40-n/2026-10-28.json" in svg
     assert "var(--" not in svg  # self-contained
     assert errors == []
 
@@ -151,7 +151,7 @@ def test_export_svg_carries_provenance(page, base_url, errors, tmp_path):
 ################################################################################
 
 def test_single_file_mode_shows_icod_in_footer(page, base_url, errors):
-    open_page(page, base_url + "/index.html?data=data/partner/mid-north-40-n/%s.json" % DAY)
+    open_page(page, base_url + "/index.html?data=data/simplified/mid-north-40-n/%s.json" % DAY)
     expect(page.locator(".sm-toolbar")).to_be_hidden()
     expect(page.locator(".sm-icod")).to_contain_text("ICOD: 28 Oct 2026 @ 1200Z")
     assert errors == []
@@ -177,7 +177,7 @@ def test_predicted_pass_library(page, base_url, errors):
     labels = page.locator(".sm-event").evaluate_all("els => els.map(e => e.getAttribute('aria-label'))")
     assert labels and all(" pass" in l for l in labels)
     assert "Predicted" in texts(page, ".sm-legend text")
-    page.locator("#sm-matrix").select_option("partner")
+    page.locator("#sm-matrix").select_option("simplified")
     page.wait_for_selector("svg.sm-root .sm-event")
     assert any(re.search(r"\d+ (EO|IR|SAR) pass", l) for l in
                page.locator(".sm-event").evaluate_all("els => els.map(e => e.getAttribute('aria-label'))"))
@@ -203,7 +203,7 @@ def test_strips_use_phenomenology_colours(page, base_url, errors):
 
 
 def test_export_lists_provenance_per_phenomenology(page, base_url, errors, tmp_path):
-    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=partner&locality=mid-north-40-n")
+    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=simplified&locality=mid-north-40-n")
     with page.expect_download() as info:
         page.locator("#sm-export button[data-format=svg]").click()
     path = tmp_path / "x.svg"

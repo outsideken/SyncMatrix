@@ -4,7 +4,7 @@ For each demo site and for the snapshot's day plus the next two days:
 
 - Abstracted: one event per satellite pass that can image the site
   (python/predict_passes.py, thresholds in config/abstracted.json "satellites").
-- Partner: the same passes rolled up into its EO / IR / SAR rows.
+- Simplified: the same passes rolled up into its EO / IR / SAR rows.
 
 The ICOD of every payload is the snapshot's "fetched" time (when the orbits
 were downloaded), with icod_source "celestrak". Predictions are only good for
@@ -43,7 +43,7 @@ def latest_snapshot() -> Path:
 def group_provenance(config: dict, events: list, row_group: dict, abstracted: dict) -> dict:
     """Per-phenomenology notes: how many passes, from how many of the configured satellites.
 
-    A group with no satellites in the Abstracted config (e.g. Partner's COM)
+    A group with no satellites in the Abstracted config (e.g. Simplified's COM)
     has no feed, so it gets no source or ICOD.
     """
     out = {}
@@ -75,10 +75,10 @@ def main() -> int:
     snapshot = pp.load_snapshot(tle_path)
     out_dir = Path(args.out)
     abstracted = ep.load_config(REPO / "config" / "abstracted.json")
-    partner = ep.load_config(REPO / "config" / "partner.json")
+    simplified = ep.load_config(REPO / "config" / "simplified.json")
 
     row_group = {ep.row_id(r): g["name"] for g in abstracted["groups"] for r in g["rows"]}
-    partner_row = {g["name"]: ep.row_id(g["rows"][0]) for g in partner["groups"]}
+    simplified_row = {g["name"]: ep.row_id(g["rows"][0]) for g in simplified["groups"]}
     source = SOURCE % tle_path.name
     first_day = date.fromisoformat(snapshot["fetched"][:10])
 
@@ -90,9 +90,9 @@ def main() -> int:
             window = ep.build_window(abstracted, day)
             start, end = ep.parse_iso(window["start"]), ep.parse_iso(window["end"])
             events = pp.predict_events(abstracted, snapshot, lat, lon, start, end)
-            rolled = [dict(e, row=partner_row[e["row"]]) for e in pp.roll_up(events, row_group)]
+            rolled = [dict(e, row=simplified_row[e["row"]]) for e in pp.roll_up(events, row_group)]
 
-            for matrix, config, matrix_events in (("abstracted", abstracted, events), ("partner", partner, rolled)):
+            for matrix, config, matrix_events in (("abstracted", abstracted, events), ("simplified", simplified, rolled)):
                 payload = ep.build_payload(config, matrix_events, day, icod=snapshot["fetched"],
                                            icod_source="celestrak", locality=locality, source=source,
                                            provenance=group_provenance(config, events, row_group, abstracted))
