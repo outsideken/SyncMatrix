@@ -1,10 +1,12 @@
 # Checks that reviews used to do by hand. Runs on every PR and on main.
 #
 # checks:
-#   - exporter tests (pytest): config checks, ICOD rules, output layout, events,
+#   - exporter and pass-prediction tests (pytest): config checks, ICOD rules,
+#     output layout, events, pass thresholds/daylight/SAR swath, roll-up,
 #     day/night shading at extreme latitudes, end of local day
-#   - data: every web/data JSON parses and matches index.json
-#   - demo data: web/data matches a fresh build from config/
+#   - data: every web/data and web/live JSON parses and matches its index.json
+#   - libraries: web/data matches a fresh build from config/, and web/live a
+#     fresh pass prediction from the committed TLE snapshot
 #   - JavaScript: web/*.js and inline <script> blocks pass `node --check`
 # browser:
 #   - the real page in headless Chromium (tests/browser): layout, controls,
@@ -49,10 +51,14 @@ jobs:
         run: python -m pytest -q tests --ignore=tests/browser
 
       - name: Data files
-        run: python scripts/check_data.py
+        run: |
+          python scripts/check_data.py
+          python scripts/check_data.py --live
 
-      - name: Demo data matches config/
-        run: python scripts/check_demo_data.py
+      - name: Libraries match a fresh build
+        run: |
+          python scripts/check_demo_data.py
+          python scripts/check_demo_data.py --live
 
       - name: JavaScript syntax
         run: python scripts/check_js_syntax.py
