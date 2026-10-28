@@ -216,22 +216,38 @@ def test_export_lists_provenance_per_phenomenology(page, base_url, errors, tmp_p
     assert errors == []
 
 
-def test_boxes_take_their_phenomenology_colour(page, base_url, errors):
-    # Under Group by Provider too: colour follows the row's phenomenology, not the provider.
-    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=abstracted&locality=mid-north-40-n&group=provider")
-    boxes = page.locator(".sm-event").evaluate_all("""els => els.map(g => {
+def box_colours(page):
+    return page.locator(".sm-event").evaluate_all("""els => els.map(g => {
         const r = g.querySelector('rect');
         return [g.getAttribute('aria-label'), r.getAttribute('stroke'), r.getAttribute('stroke-dasharray'), r.getAttribute('fill')];
     })""")
-    expected = {"WorldView": "#08519c", "Legion": "#08519c", "MODIS": "#cb181d", "VIIRS": "#cb181d",
-                "Capella": "#525252", "Sentinel-1": "#525252"}
+
+
+def check_boxes(boxes, expected):
     seen = set()
     for label, stroke, dash, fill in boxes:
-        for key, colour in expected.items():
+        for key, (colour, tint) in expected.items():
             if key in label:
-                assert stroke == colour, label
+                assert (stroke, fill) == (colour, tint), label
                 seen.add(colour)
         assert dash is None             # solid outline
-        assert fill in ("#c6dbef", "#fcbba1", "#d9d9d9")  # light phenomenology tint
+    return seen
+
+
+def test_boxes_take_the_colour_of_the_group_shown(page, base_url, errors):
+    live = base_url + "/index.html?manifest=live/index.json&matrix=abstracted&locality=mid-north-40-n"
+    # Phenomenology: EO blue, IR red, SAR grey.
+    open_page(page, live)
+    seen = check_boxes(box_colours(page), {
+        "WorldView": ("#08519c", "#c6dbef"), "Legion": ("#08519c", "#c6dbef"), "MODIS": ("#cb181d", "#fcbba1"),
+        "VIIRS": ("#cb181d", "#fcbba1"), "Capella": ("#525252", "#d9d9d9"), "Sentinel-1": ("#525252", "#d9d9d9")})
     assert seen == {"#08519c", "#cb181d", "#525252"}
+    # Provider: Vantor purple, Copernicus blue, NASA FIRMS red, Capella grey; strips match.
+    page.get_by_role("radio", name="Provider").click()
+    seen = check_boxes(box_colours(page), {
+        "WorldView": ("#6a51a3", "#dadaeb"), "Legion": ("#6a51a3", "#dadaeb"), "SENTINEL": ("#08519c", "#c6dbef"),
+        "MODIS": ("#cb181d", "#fcbba1"), "VIIRS": ("#cb181d", "#fcbba1"), "Capella": ("#525252", "#d9d9d9")})
+    assert {"#6a51a3", "#cb181d", "#525252"} <= seen
+    strips = page.locator("svg.sm-root rect[fill]").evaluate_all("els => els.map(e => e.getAttribute('fill'))")
+    assert "#6a51a3" in strips
     assert errors == []
