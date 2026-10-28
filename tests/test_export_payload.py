@@ -300,3 +300,15 @@ def test_status_styles_and_tints():
 def test_status_style_fill_is_checked(tmp_path):
     with pytest.raises(ValueError, match="fill must be one of solid, tint, none"):
         ep.load_config(write_config(tmp_path, status_styles={"Predicted": {"fill": "stripes"}}))
+
+
+def test_config_readme_sample_is_a_valid_config(tmp_path):
+    # The sample in config/README.md must stay loadable, so the docs can't drift from the format.
+    import re
+    readme = (REPO / "config" / "README.md").read_text()
+    sample = re.search(r"```json\n(.*?)\n```", readme, re.S).group(1)
+    path = tmp_path / "sample.json"
+    path.write_text(sample)
+    config = ep.load_config(path)
+    assert "status_styles" in config and "status_colors" not in config
+    assert ep.build_groups(config["groups"])[1]["tint"] == "#d9d9d9"

@@ -760,9 +760,12 @@
     return Math.floor(hours / 24) + "d " + (hours % 24) + "h ago";
   }
 
+  // The oldest ICOD across phenomenologies, so the badge, the footer and the
+  // export's first line agree.
   function icodLabel(p) {
-    if (!p.icod) return "ICOD: not provided — data currency unknown";
-    return "ICOD: " + formatIcod(p.icod) + " (" + formatAge(p.icod) + ")" +
+    const icod = oldestIcod(p);
+    if (!icod) return "ICOD: not provided — data currency unknown";
+    return "ICOD: " + formatIcod(icod) + " (" + formatAge(icod) + ")" +
       (p.icod_source === "demo" ? " · DEMO DATA" : "");
   }
 

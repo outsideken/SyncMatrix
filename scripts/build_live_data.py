@@ -41,7 +41,7 @@ def latest_snapshot() -> Path:
 
 
 def group_provenance(config: dict, events: list, row_group: dict, abstracted: dict) -> dict:
-    """Per-phenomenology notes: how many passes, from which satellites.
+    """Per-phenomenology notes: how many passes, from how many of the configured satellites.
 
     A group with no satellites in the Abstracted config (e.g. Partner's COM)
     has no feed, so it gets no source or ICOD.
@@ -53,10 +53,15 @@ def group_provenance(config: dict, events: list, row_group: dict, abstracted: di
         if not rows:
             out[name] = {"source": "No data source for %s" % name, "icod": None, "icod_source": None}
             continue
-        sats = sum(len(abstracted["satellites"][r]["norad"]) for r in rows)
-        passes = sum(1 for e in events if row_group[e["row"]] == name)
-        out[name] = {"notes": "%d predicted pass%s from %d satellite%s"
-                              % (passes, "" if passes == 1 else "es", sats, "" if sats == 1 else "s")}
+        configured = sum(len(abstracted["satellites"][r]["norad"]) for r in rows)
+        group_events = [e for e in events if row_group[e["row"]] == name]
+        passing = len({e["label"] for e in group_events})  # one label per spacecraft ("LEGION 3 pass")
+        if group_events:
+            notes = "%d predicted pass%s from %d of %d configured satellites" % (
+                len(group_events), "" if len(group_events) == 1 else "es", passing, configured)
+        else:
+            notes = "No predicted passes from the %d configured satellites" % configured
+        out[name] = {"notes": notes}
     return out
 
 

@@ -125,3 +125,19 @@ def test_live_partner_provenance():
     for group in ("EO", "IR", "SAR"):
         assert prov[group]["icod"] == payload["icod"] and prov[group]["icod_source"] == "celestrak"
         assert "predicted pass" in prov[group]["notes"]
+
+
+def test_live_notes_count_the_spacecraft_that_pass():
+    # "N predicted passes from K of M configured satellites": K = spacecraft that pass.
+    for path in (REPO / "web" / "live" / "abstracted").glob("*/*.json"):
+        payload = json.loads(path.read_text())
+        group_of = {r["id"]: g["id"] for g in payload["groups"] for r in g["rows"]}
+        for group in ("EO", "IR", "SAR"):
+            events = [e for e in payload["events"] if group_of[e["row"]] == group]
+            notes = payload["provenance"][group]["notes"]
+            if events:
+                spacecraft = len({e["label"] for e in events})
+                assert notes.startswith("%d predicted pass" % len(events)), (path.name, notes)
+                assert " from %d of " % spacecraft in notes, (path.name, notes)
+            else:
+                assert notes.startswith("No predicted passes"), (path.name, notes)
