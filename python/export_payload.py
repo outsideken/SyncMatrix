@@ -56,7 +56,9 @@ from astral.sun import dawn, dusk, elevation, sunrise, sunset
 from timezonefinder import TimezoneFinder
 
 PAYLOAD_VERSION = 1
-DEFAULT_GROUP_COLOR = "#525252"
+DEFAULT_GROUP_COLOR = "#525252"   # ColorBrewer Greys, dark end
+DEFAULT_GROUP_TINT = "#d9d9d9"    # ColorBrewer Greys, light end
+STATUS_FILLS = ("solid", "tint", "none")
 
 ################################################################################
 ## HELPERS
@@ -131,6 +133,9 @@ def load_config(path) -> dict:
             raise ValueError("%s: grouping %r does not have the same rows as \"groups\" "
                              "(missing: %s; extra: %s)"
                              % (path, label, sorted(rows - alt) or "none", sorted(alt - rows) or "none"))
+    for status, style in config.get("status_styles", {}).items():
+        if style.get("fill", "tint") not in STATUS_FILLS:
+            raise ValueError("%s: status_styles[%r] fill must be one of %s" % (path, status, ", ".join(STATUS_FILLS)))
     for row, spec in config.get("satellites", {}).items():
         if row not in rows:
             raise ValueError("%s: satellites entry %r is not a row" % (path, row))
@@ -158,6 +163,7 @@ def build_groups(groups: list) -> list:
     return [{"id": g["name"],
              "label": g["name"],
              "color": g.get("color", DEFAULT_GROUP_COLOR),
+             "tint": g.get("tint", DEFAULT_GROUP_TINT),
              "rows": [{"id": row_id(r), "label": r if isinstance(r, str) else r.get("label", r["id"])}
                       for r in g["rows"]]}
             for g in groups]
@@ -311,10 +317,32 @@ def resolve_icod(icod: str, icod_source: str, demo: bool, now: datetime):
     return icod_dt, icod_source
 
 
+def build_provenance(config: dict, source: str, icod: str, icod_source: str, overrides: dict = None) -> dict:
+    """Provenance for the matrix ("all") and for each group (phenomenology).
+
+    Each phenomenology can come from a different feed with its own ICOD, so
+    each gets {"source", "icod", "icod_source", "notes"?}. Groups without an
+    override share the matrix's provenance. The page shows a group's entry in
+    the popup of its events and lists all of them on exports; this replaces
+    the legacy per-phenomenology banners.
+    """
+    base = {"source": source, "icod": icod, "icod_source": icod_source}
+    provenance = {"all": dict(base)}
+    for group in config["groups"]:
+        provenance[group["name"]] = dict(base, **(overrides or {}).get(group["name"], {}))
+    return provenance
+
+
 def build_payload(config: dict, events: list = None, day: date = None,
                   demo_count: int = 0, seed: int = 7,
                   icod: str = None, icod_source: str = "data",
-                  locality: dict = None) -> dict:
+                  locality: dict = None, source: str = None,
+                  provenance: dict = None) -> dict:
+    """One matrix, one locality, one UTC day.
+
+    source: where the events came from (one line, shown on exports);
+    provenance: per-group overrides for build_provenance().
+    """
     now = datetime.now(timezone.utc)
     day = day or now.date()
     icod_dt, icod_source = resolve_icod(icod, icod_source, bool(demo_count), now)
@@ -331,11 +359,16 @@ def build_payload(config: dict, events: list = None, day: date = None,
         events = demo_events(groups, window_start, window["tick_minutes"], demo_count, seed)
     events = validate_events(events or [], groups, window_start, window_end)
 
+    if source is None:
+        source = "Demo data: generated sample events" if demo_count else "Events file"
+
     return {"version": PAYLOAD_VERSION,
             "title": config["title"],
             "subtitle": "%s · %s" % (loc["name"], window_start.strftime("%d %B %Y")),
             "icod": iso(icod_dt),
             "icod_source": icod_source,
+            "source": source,
+            "provenance": build_provenance(config, source, iso(icod_dt), icod_source, provenance),
             "generated": iso(now),
             "locality": loc,
             "window": window,
@@ -343,7 +376,7 @@ def build_payload(config: dict, events: list = None, day: date = None,
             "grouping": config.get("grouping", "Group"),
             "alt_groupings": build_alt_groupings(config),
             "events": events,
-            "status_colors": config.get("status_colors", {}),
+            "status_styles": config.get("status_styles", {}),
             "daylight": daylight,
             "markers": markers,
             "banners": build_banners(config, window_start),
@@ -442,7 +475,9 @@ def main():
 
     day = date.fromisoformat(args.date) if args.date else None
     try:
-        payload = build_payload(config, events, day, args.demo_events, args.seed, icod, icod_source, locality)
+        source = "Events file %s" % Path(args.events).name if args.events else None
+        payload = build_payload(config, events, day, args.demo_events, args.seed, icod, icod_source, locality,
+                                source=source)
     except ValueError as err:
         parser.exit(2, "Error: %s\n" % err)
 

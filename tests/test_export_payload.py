@@ -260,3 +260,55 @@ def test_end_of_local_day_quarter_hour_offset():
     # Kathmandu is UTC+5:45.
     start, end = day_window("2026-10-27")
     assert [m["time"] for m in ep.build_end_of_local_day("Asia/Kathmandu", start, end)] == ["2026-10-27T18:15:00Z"]
+
+################################################################################
+## Provenance per phenomenology
+################################################################################
+
+def test_provenance_defaults_to_the_matrix_for_every_group():
+    config = ep.load_config(ABSTRACTED)
+    prov = ep.build_provenance(config, "Events file x.json", "2026-10-28T12:00:00Z", "data")
+    assert set(prov) == {"all", "EO", "IR", "SAR"}
+    assert prov["EO"] == prov["all"] == {"source": "Events file x.json", "icod": "2026-10-28T12:00:00Z",
+                                          "icod_source": "data"}
+
+
+def test_provenance_overrides_per_phenomenology():
+    config = ep.load_config(ABSTRACTED)
+    prov = ep.build_provenance(config, "Feeds", "2026-10-28T12:00:00Z", "data",
+                               {"IR": {"source": "NASA FIRMS", "icod": "2026-10-28T09:00:00Z"}})
+    assert prov["IR"] == {"source": "NASA FIRMS", "icod": "2026-10-28T09:00:00Z", "icod_source": "data"}
+    assert prov["EO"]["source"] == "Feeds"
+
+
+def test_payload_carries_source_provenance_and_group_colours():
+    payload = ep.build_payload(ep.load_config(ABSTRACTED), day=date(2026, 10, 27), demo_count=2,
+                               icod="2026-10-27T12:00:00Z", locality={"name": "X", "point": "POINT(-100 40)"})
+    assert payload["source"].startswith("Demo data")
+    assert payload["provenance"]["SAR"]["icod_source"] == "demo"
+    assert {g["label"]: g["color"] for g in payload["groups"]} == {"EO": "#08519c", "IR": "#cb181d", "SAR": "#525252"}
+    assert payload["banners"] == []  # provenance replaces the legacy banners
+
+
+def test_status_styles_and_tints():
+    payload = ep.build_payload(ep.load_config(ABSTRACTED), day=date(2026, 10, 27), demo_count=1,
+                               icod="2026-10-27T12:00:00Z", locality={"name": "X", "point": "POINT(-100 40)"})
+    assert payload["status_styles"]["Predicted"] == {"fill": "tint"}  # solid outline + light tint, for now
+    assert {g["label"]: g["tint"] for g in payload["groups"]} == {"EO": "#c6dbef", "IR": "#fcbba1", "SAR": "#d9d9d9"}
+
+
+def test_status_style_fill_is_checked(tmp_path):
+    with pytest.raises(ValueError, match="fill must be one of solid, tint, none"):
+        ep.load_config(write_config(tmp_path, status_styles={"Predicted": {"fill": "stripes"}}))
+
+
+def test_config_readme_sample_is_a_valid_config(tmp_path):
+    # The sample in config/README.md must stay loadable, so the docs can't drift from the format.
+    import re
+    readme = (REPO / "config" / "README.md").read_text()
+    sample = re.search(r"```json\n(.*?)\n```", readme, re.S).group(1)
+    path = tmp_path / "sample.json"
+    path.write_text(sample)
+    config = ep.load_config(path)
+    assert "status_styles" in config and "status_colors" not in config
+    assert ep.build_groups(config["groups"])[1]["tint"] == "#d9d9d9"

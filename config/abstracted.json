@@ -4,18 +4,32 @@
   "tick_minutes": 30,
   "show_daylight": true,
   "show_end_of_local_day": false,
-  "status_colors": {
-    "High": "red",
-    "Moderate": "#cb181d",
-    "Low": "orange",
-    "No Concern": "#525252",
-    "Planned": "orange",
-    "Predicted": "#3182bd"
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint"
+    },
+    "Collected": {
+      "fill": "tint"
+    },
+    "High": {
+      "fill": "tint"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "tint"
+    },
+    "No Concern": {
+      "fill": "tint"
+    }
   },
   "grouping": "Phenomenology",
   "groups": [
     {
       "name": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         "GeoEye-1",
         "Legion-1",
@@ -33,6 +47,8 @@
     },
     {
       "name": "IR",
+      "color": "#cb181d",
+      "tint": "#fcbba1",
       "rows": [
         "Aqua MODIS",
         "NOAA-20 VIIRS",
@@ -44,6 +60,8 @@
     },
     {
       "name": "SAR",
+      "color": "#525252",
+      "tint": "#d9d9d9",
       "rows": [
         "Capella-11",
         "Capella-13",
@@ -110,53 +128,6 @@
       }
     ]
   },
-  "banners": [
-    {
-      "id": "Banner #1",
-      "text": "BANNER #1",
-      "start": "00:00",
-      "end": "24:00",
-      "level": 0,
-      "fill": "#252525",
-      "text_color": "yellow"
-    },
-    {
-      "id": "Banner #2",
-      "text": "BANNER #2",
-      "start": "00:00",
-      "end": "12:00",
-      "level": 1,
-      "fill": "blue",
-      "text_color": "yellow"
-    },
-    {
-      "id": "Banner #3",
-      "text": "BANNER #3",
-      "start": "12:00",
-      "end": "24:00",
-      "level": 1,
-      "fill": "green",
-      "text_color": "yellow"
-    },
-    {
-      "id": "Banner #4",
-      "text": "BANNER #4",
-      "start": "00:00",
-      "end": "12:00",
-      "level": 2,
-      "fill": "red",
-      "text_color": "yellow"
-    },
-    {
-      "id": "Banner #5",
-      "text": "BANNER #5",
-      "start": "12:00",
-      "end": "24:00",
-      "level": 2,
-      "fill": "orange",
-      "text_color": "yellow"
-    }
-  ],
   "satellites": {
     "GeoEye-1": {
       "norad": [

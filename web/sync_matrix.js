@@ -72,7 +72,10 @@
     footerHeight: 26,
     hourLabelGap: 6,
   };
-  const FALLBACK_EVENT_COLOR = "#ff8c00";
+  // Event boxes: colour = the row's phenomenology (its group in the payload's
+  // own grouping); status = style (dash and fill), from the payload's
+  // status_styles. Neutral ColorBrewer Greys when a group has no colour.
+  const NEUTRAL = { color: "#525252", tint: "#d9d9d9" };
 
   const parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
   const formatTick = d3.utcFormat("%H%MZ");
@@ -126,7 +129,7 @@
       } : null,
       markers: (raw.markers || []).map((m) => ({ ...m, time: t(m.time) })),
       banners: (raw.banners || []).map((b) => ({ ...b, start: t(b.start), end: t(b.end) })),
-      status_colors: raw.status_colors || {},
+      status_styles: raw.status_styles || {},
     };
   }
 
@@ -459,13 +462,14 @@
     //--------------------------------------------------------------------------
 
     const pad = Math.min(4, rowHeight * 0.15);
-    const colorOf = (e) => p.status_colors[e.status] || FALLBACK_EVENT_COLOR;
     // Name events by what the Y-axis shows: the group (e.g. COM) in group-only
     // matrices, else the row. e.row stays the data's row id (e.g. CIRCUS).
     const rowById = new Map(rows.map((r) => [r.id, r]));
+    const phenomenologyOf = new Map(p.groups.flatMap((g) => g.rows.map((r) => [r.id, g])));
     const visibleEvents = p.events.filter((e) => rowY.has(e.row)).map((e) => {
       const r = rowById.get(e.row);
-      return { ...e, group: r.group.label, where: groupOnly ? r.group.label : r.label };
+      return { ...e, group: r.group.label, where: groupOnly ? r.group.label : r.label,
+               phenomenology: phenomenologyOf.get(e.row) };
     });
 
     const events = plot.append("g").selectAll("g").data(visibleEvents).join("g")
@@ -480,9 +484,9 @@
       .attr("width", (e) => Math.max(6, x(Math.min(e.end, p.window.end)) - x(Math.max(e.start, p.window.start)) - 3))
       .attr("height", rowHeight - pad * 2)
       .attr("rx", 2)
-      .attr("stroke", colorOf)
-      .attr("fill", colorOf)
-      .attr("fill-opacity", 0.14);
+      .each(function (e) {
+        styleBox(d3.select(this), e.phenomenology || NEUTRAL, p.status_styles[e.status]);
+      });
 
     events
       .on("mouseenter focus", (ev, e) => showTooltip(ev, e))
@@ -566,7 +570,8 @@
     }
 
     const usedStatuses = Array.from(new Set(p.events.map((e) => e.status))).filter(Boolean);
-    const legendItems = usedStatuses.map((s) => ({ label: s, color: p.status_colors[s] || FALLBACK_EVENT_COLOR }));
+    // Status legend in neutral grey: colour already means phenomenology (the strips).
+    const legendItems = usedStatuses.map((s) => ({ label: s, style: p.status_styles[s] }));
     if (afterIcod) legendItems.unshift({ label: "After ICOD", hatch: true });
 
     const legend = plot.append("g").attr("class", "sm-legend").attr("transform", `translate(${plotWidth},${footerY})`);
@@ -582,7 +587,8 @@
         swatch.attr("fill", "url(#sm-hatch)").attr("stroke", "var(--sm-icod)").attr("stroke-width", 1);
         item.append("title").text(ICOD_MEANING);
       } else {
-        swatch.attr("stroke", d.color).attr("stroke-width", 2).attr("fill", d.color).attr("fill-opacity", 0.14);
+        styleBox(swatch, NEUTRAL, d.style);
+        swatch.attr("stroke-width", 2);
       }
       lx -= 14;
     });
@@ -707,7 +713,17 @@
       `<span class="muted">${formatFull(e.start)} – ${formatTick(e.end)}</span>`,
     ];
     if (e.notes) parts.push(`<span class="muted">${escapeHtml(e.notes)}</span>`);
-    tooltip.html(parts.join("<br>")).attr("hidden", null);
+    let html = parts.join("<br>");
+    const g = e.phenomenology;
+    const prov = g && current && current.provenance && current.provenance[g.id];
+    if (prov) {
+      const lines = [`<strong>${escapeHtml(g.label)} provenance</strong>`, escapeHtml(prov.source || "Source not given"),
+                     prov.icod ? "ICOD " + formatIcod(parseTime(prov.icod)) + " (" + formatAge(parseTime(prov.icod)) + ")"
+                               : "ICOD not provided"];
+      if (prov.notes) lines.push(escapeHtml(prov.notes));
+      html += `<div class="sm-tooltip-provenance" style="border-left-color:${g.color || "#525252"}">${lines.join("<br>")}</div>`;
+    }
+    tooltip.html(html).attr("hidden", null);
     moveTooltip(ev);
   }
 
@@ -744,19 +760,48 @@
     return Math.floor(hours / 24) + "d " + (hours % 24) + "h ago";
   }
 
+  // The oldest ICOD across phenomenologies, so the badge, the footer and the
+  // export's first line agree.
   function icodLabel(p) {
-    if (!p.icod) return "ICOD: not provided — data currency unknown";
-    return "ICOD: " + formatIcod(p.icod) + " (" + formatAge(p.icod) + ")" +
+    const icod = oldestIcod(p);
+    if (!icod) return "ICOD: not provided — data currency unknown";
+    return "ICOD: " + formatIcod(icod) + " (" + formatAge(icod) + ")" +
       (p.icod_source === "demo" ? " · DEMO DATA" : "");
   }
 
+  // Phenomenologies with their provenance, in the payload's group order.
+  function phenomenologyProvenance(p) {
+    return (p.groups || []).filter((g) => p.provenance && p.provenance[g.id])
+      .map((g) => ({ group: g, prov: p.provenance[g.id] }));
+  }
+
+  function oldestIcod(p) {
+    const icods = phenomenologyProvenance(p).map((x) => x.prov.icod).filter(Boolean).map(parseTime);
+    return icods.length ? d3.min(icods) : p.icod;
+  }
+
   function updateIcodBadge(p) {
+    const icod = oldestIcod(p);
+    const each = phenomenologyProvenance(p).map((x) => x.group.label + ": " +
+      (x.prov.icod ? formatIcodShort(parseTime(x.prov.icod)) : "none") + (x.prov.source ? " (" + x.prov.source + ")" : ""));
     d3.select("#sm-icod-badge")
-      .text(p.icod ? "ICOD " + formatIcodShort(p.icod) + " · " + formatAge(p.icod) +
-                     (p.icod_source === "demo" ? " · DEMO DATA" : "")
-                   : "ICOD not provided")
-      .classed("warn", !p.icod || p.icod_source === "demo")
-      .attr("title", ICOD_MEANING + (p.icod_source ? " Source: " + p.icod_source + "." : ""));
+      .text(icod ? "ICOD " + formatIcodShort(icod) + " · " + formatAge(icod) +
+                   (p.icod_source === "demo" ? " · DEMO DATA" : "")
+                 : "ICOD not provided")
+      .classed("warn", !icod || p.icod_source === "demo")
+      .attr("title", ICOD_MEANING + (each.length ? " Oldest shown. " + each.join("; ") + "." :
+                                     p.icod_source ? " Source: " + p.icod_source + "." : ""));
+  }
+
+  // Fill: "solid" (the colour), "tint" (the light ramp colour), "none".
+  function styleBox(sel, group, style) {
+    const st = style || { fill: "tint" };
+    sel.attr("stroke", group.color || NEUTRAL.color)
+      .attr("stroke-width", null)
+      .attr("stroke-dasharray", st.dash || null)
+      .attr("fill", st.fill === "solid" ? group.color || NEUTRAL.color
+                  : st.fill === "none" ? "none" : group.tint || NEUTRAL.tint)
+      .attr("fill-opacity", st.fill === "solid" ? 0.8 : st.fill === "none" ? null : 0.9);
   }
 
   function readableInk(background) {
@@ -812,7 +857,8 @@
     const width = +live.getAttribute("width");
     const height = +live.getAttribute("height");
     const header = options.showTitle ? 0 : 44;
-    const footer = 44;
+    const phenomenologyLines = exportProvenanceLines(p);
+    const footer = 44 + phenomenologyLines.length * 15;
     const ink = getComputedStyle(document.body).color;
     const font = getComputedStyle(document.body).fontFamily;
 
@@ -851,7 +897,39 @@
         `font-size:11px;font-weight:${i === 0 ? 700 : 400}`)
       .text((d) => d);
 
+    // Per-phenomenology provenance (what the legacy banners carried), colour-keyed.
+    const top = height + header + 18 + provenance.length * 15;
+    const rows = out.selectAll("g.sm-export-phenomenology").data(phenomenologyLines).join("g")
+      .attr("class", "sm-export-phenomenology")
+      .attr("transform", (_, i) => `translate(8,${top + i * 15})`);
+    rows.selectAll("rect").data((d) => d.colors).join("rect")
+      .attr("x", (_, j) => j * 12).attr("y", -9).attr("width", 10).attr("height", 10).attr("rx", 2)
+      .attr("style", (c) => `fill:${c}`);
+    rows.append("text").attr("x", (d) => d.colors.length * 12 + 4)
+      .attr("style", `fill:${ink};font-size:11px`).text((d) => d.text);
+
     return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone);
+  }
+
+  function exportProvenanceLines(p) {
+    // Phenomenologies whose provenance is just the matrix's share one line.
+    const items = phenomenologyProvenance(p);
+    const all = p.provenance && p.provenance.all;
+    const same = (prov) => all && prov.source === all.source && prov.icod === all.icod && !prov.notes;
+    const lines = [];
+    const shared = items.filter((x) => same(x.prov));
+    if (shared.length) {
+      lines.push({ colors: shared.map((x) => x.group.color),
+                   text: shared.map((x) => x.group.label).join(", ") + ": source and ICOD as above" });
+    }
+    items.filter((x) => !same(x.prov)).forEach(({ group, prov }) => {
+      lines.push({ colors: [group.color],
+                   text: [group.label,
+                          prov.source && (!all || prov.source !== all.source) ? prov.source : null,
+                          prov.icod ? "ICOD " + formatIcod(parseTime(prov.icod)) : "ICOD not provided",
+                          prov.notes].filter(Boolean).join(" · ") });
+    });
+    return lines;
   }
 
   function download(blob, name) {

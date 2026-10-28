@@ -4,7 +4,35 @@
   "subtitle": "Arctic 70\u00b0N \u00b7 21 June 2026",
   "icod": "2026-06-21T18:00:00Z",
   "icod_source": "demo",
-  "generated": "2026-10-28T20:30:31Z",
+  "source": "Demo data: generated sample events",
+  "provenance": {
+    "all": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-06-21T18:00:00Z",
+      "icod_source": "demo"
+    },
+    "COM": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-06-21T18:00:00Z",
+      "icod_source": "demo"
+    },
+    "IR": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-06-21T18:00:00Z",
+      "icod_source": "demo"
+    },
+    "SAR": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-06-21T18:00:00Z",
+      "icod_source": "demo"
+    },
+    "EO": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-06-21T18:00:00Z",
+      "icod_source": "demo"
+    }
+  },
+  "generated": "2026-10-28T21:02:53Z",
   "locality": {
     "id": "arctic-70-n",
     "name": "Arctic 70\u00b0N",
@@ -21,7 +49,8 @@
     {
       "id": "COM",
       "label": "COM",
-      "color": "#525252",
+      "color": "#238b45",
+      "tint": "#c7e9c0",
       "rows": [
         {
           "id": "CIRCUS",
@@ -32,7 +61,8 @@
     {
       "id": "IR",
       "label": "IR",
-      "color": "#525252",
+      "color": "#cb181d",
+      "tint": "#fcbba1",
       "rows": [
         {
           "id": "IR",
@@ -44,6 +74,7 @@
       "id": "SAR",
       "label": "SAR",
       "color": "#525252",
+      "tint": "#d9d9d9",
       "rows": [
         {
           "id": "SAR",
@@ -54,7 +85,8 @@
     {
       "id": "EO",
       "label": "EO",
-      "color": "#525252",
+      "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         {
           "id": "EO",
@@ -139,13 +171,25 @@
       "notes": "Generated sample (seed 268)."
     }
   ],
-  "status_colors": {
-    "High": "red",
-    "Moderate": "#cb181d",
-    "Low": "orange",
-    "No Concern": "#525252",
-    "Planned": "orange",
-    "Predicted": "#3182bd"
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint"
+    },
+    "Collected": {
+      "fill": "tint"
+    },
+    "High": {
+      "fill": "tint"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "tint"
+    },
+    "No Concern": {
+      "fill": "tint"
+    }
   },
   "daylight": {
     "step_minutes": 10,
