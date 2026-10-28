@@ -1,9 +1,9 @@
 # Checks that reviews used to do by hand. Runs on every PR and on main.
 #
-#   - exporter tests (pytest): ICOD rules, labels and output layout, events,
+#   - exporter tests (pytest): config checks, ICOD rules, output layout, events,
 #     day/night shading at extreme latitudes, end of local day
 #   - data: every web/data JSON parses and matches index.json
-#   - notebook: the config-writing cell still reproduces Config_*.json
+#   - demo data: web/data matches a fresh build from config/
 #   - JavaScript: web/*.js and inline <script> blocks pass `node --check`
 
 name: CI
@@ -47,8 +47,8 @@ jobs:
       - name: Data files
         run: python scripts/check_data.py
 
-      - name: Notebook writes the committed configs
-        run: python scripts/check_notebook_configs.py
+      - name: Demo data matches config/
+        run: python scripts/check_demo_data.py
 
       - name: JavaScript syntax
         run: python scripts/check_js_syntax.py

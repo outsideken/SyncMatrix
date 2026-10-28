@@ -1,0 +1,161 @@
+{
+  "title": "Abstracted Sync Matrix",
+  "label": "Abstracted Sync Matrix",
+  "tick_minutes": 30,
+  "show_daylight": true,
+  "show_end_of_local_day": false,
+  "status_colors": {
+    "High": "red",
+    "Moderate": "#cb181d",
+    "Low": "orange",
+    "No Concern": "#525252",
+    "Planned": "orange"
+  },
+  "grouping": "Phenomenology",
+  "groups": [
+    {
+      "name": "EO",
+      "rows": [
+        "GeoEye-1",
+        "Legion-1",
+        "Legion-2",
+        "Legion-3",
+        "Legion-4",
+        "Legion-5",
+        "Legion-6",
+        "Sentinel-2",
+        "Sentinel-3 OLCI",
+        "WorldView-1",
+        "WorldView-2",
+        "WorldView-3"
+      ]
+    },
+    {
+      "name": "IR",
+      "rows": [
+        "Aqua MODIS",
+        "NOAA-20 VIIRS",
+        "NOAA-21 VIIRS",
+        "S-NPP VIIRS",
+        "Sentinel-3 SLSTR",
+        "Terra MODIS"
+      ]
+    },
+    {
+      "name": "SAR",
+      "rows": [
+        "Capella-11",
+        "Capella-12",
+        "Capella-13",
+        "Capella-14",
+        "Capella-15",
+        "Capella-16",
+        "Capella-17",
+        "Capella-18",
+        "Capella-19",
+        "Capella-20",
+        "Sentinel-1"
+      ]
+    }
+  ],
+  "alt_groupings": {
+    "Provider": [
+      {
+        "name": "Capella",
+        "rows": [
+          "Capella-11",
+          "Capella-12",
+          "Capella-13",
+          "Capella-14",
+          "Capella-15",
+          "Capella-16",
+          "Capella-17",
+          "Capella-18",
+          "Capella-19",
+          "Capella-20"
+        ]
+      },
+      {
+        "name": "Copernicus",
+        "rows": [
+          "Sentinel-1",
+          "Sentinel-2",
+          "Sentinel-3 OLCI",
+          "Sentinel-3 SLSTR"
+        ]
+      },
+      {
+        "name": "NASA FIRMS",
+        "rows": [
+          "Aqua MODIS",
+          "NOAA-20 VIIRS",
+          "NOAA-21 VIIRS",
+          "S-NPP VIIRS",
+          "Terra MODIS"
+        ]
+      },
+      {
+        "name": "Vantor",
+        "rows": [
+          "GeoEye-1",
+          "Legion-1",
+          "Legion-2",
+          "Legion-3",
+          "Legion-4",
+          "Legion-5",
+          "Legion-6",
+          "WorldView-1",
+          "WorldView-2",
+          "WorldView-3"
+        ]
+      }
+    ]
+  },
+  "banners": [
+    {
+      "id": "Banner #1",
+      "text": "BANNER #1",
+      "start": "00:00",
+      "end": "24:00",
+      "level": 0,
+      "fill": "#252525",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #2",
+      "text": "BANNER #2",
+      "start": "00:00",
+      "end": "12:00",
+      "level": 1,
+      "fill": "blue",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #3",
+      "text": "BANNER #3",
+      "start": "12:00",
+      "end": "24:00",
+      "level": 1,
+      "fill": "green",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #4",
+      "text": "BANNER #4",
+      "start": "00:00",
+      "end": "12:00",
+      "level": 2,
+      "fill": "red",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #5",
+      "text": "BANNER #5",
+      "start": "12:00",
+      "end": "24:00",
+      "level": 2,
+      "fill": "orange",
+      "text_color": "yellow"
+    }
+  ]
+}
