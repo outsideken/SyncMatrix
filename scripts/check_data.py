@@ -5,18 +5,24 @@
 - each payload has the fields the page needs, an ICOD, and events that
   point at rows that exist.
 
+Checks web/data by default; --live checks web/live (predicted passes).
+
 Exit code 1 with a list of problems if anything is wrong.
 """
 
+import argparse
 import json
 import sys
 from pathlib import Path
 
-DATA = Path(__file__).resolve().parents[1] / "web" / "data"
+WEB = Path(__file__).resolve().parents[1] / "web"
 REQUIRED = ("version", "title", "icod", "icod_source", "locality", "window", "groups", "events")
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--live", action="store_true", help="Check web/live instead of web/data")
+    DATA = WEB / ("live" if parser.parse_args().live else "data")
     problems = []
 
     payloads = {}
@@ -61,8 +67,8 @@ def main() -> int:
 
     for problem in problems:
         print("FAIL", problem)
-    print("%s: %d payloads, %d listed in index.json, %d problem(s)"
-          % ("OK" if not problems else "FAILED", len(payloads), len(listed), len(problems)))
+    print("%s: %s: %d payloads, %d listed in index.json, %d problem(s)"
+          % ("OK" if not problems else "FAILED", DATA.name, len(payloads), len(listed), len(problems)))
     return 1 if problems else 0
 
 

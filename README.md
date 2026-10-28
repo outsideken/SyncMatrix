@@ -6,12 +6,17 @@ embedded in a dashboard with an `<iframe>`.
 ```
 config/<matrix>.json       matrix definitions: groups, rows, groupings, banners (see config/README.md)
 python/export_payload.py   config + events -> payload JSON
+python/predict_passes.py   predicted satellite passes over a locality (Skyfield)
+scripts/fetch_tles.py      snapshots current orbits from Celestrak into data/tle/
+scripts/build_live_data.py builds the predicted-pass library in web/live from a snapshot
 scripts/build_demo_data.py rebuilds the demo library in web/data from config/
+data/tle/                  committed orbit snapshots (provenance + reproducible builds)
 web/index.html             the renderer (embed this)
 web/sync_matrix.js|css     renderer code and theme
 web/vendor/d3.v7.9.0.min.js  vendored d3, so no CDN access is needed
 web/data/index.json        manifest: matrices -> localities -> days (generated)
-web/data/<matrix>/<locality>/<date>.json  one locality, one UTC day (demo events for now)
+web/data/<matrix>/<locality>/<date>.json  one locality, one UTC day (demo events)
+web/live/...               same layout: predicted passes (open the page with ?manifest=live/index.json)
 web/demo_dashboard.html    stand-in dashboard for testing iframe + postMessage
 legacy/                    the original matplotlib notebook, its configs and PNGs (reference only)
 ```
@@ -27,7 +32,8 @@ Two matrices, defined in [`config/`](config/README.md):
     Sentinel-3 OLCI.
   - **IR**: the NASA FIRMS active-fire sources (Aqua and Terra MODIS; S-NPP,
     NOAA-20 and NOAA-21 VIIRS); Sentinel-3 SLSTR.
-  - **SAR**: Capella Acadia satellites Capella-11 to -20; Sentinel-1.
+  - **SAR**: Capella Acadia satellites Capella-11 and -13 to -20 (Capella-12
+    is not in Celestrak's catalogue); Sentinel-1.
 
   The same rows can be grouped by **provider** with the page's **Group by:
   Phenomenology | Provider** control: Capella; Copernicus (Sentinel-1, -2,
@@ -40,6 +46,37 @@ Two matrices, defined in [`config/`](config/README.md):
 
 To change a matrix, edit its config and run `python scripts/build_demo_data.py`
 (CI fails if the committed demo data doesn't match the configs).
+
+## Predicted passes (live data)
+
+`web/live` holds **real predicted passes**: for each demo site and the three
+days from the orbit snapshot, when each satellite row can image the site.
+
+```bash
+.venv/bin/python scripts/fetch_tles.py       # snapshot current orbits -> data/tle/celestrak-<time>.json
+.venv/bin/python scripts/build_live_data.py  # predict passes -> web/live (from the newest snapshot)
+```
+
+Open the page with `?manifest=live/index.json` to view them.
+
+- **Orbits** come from Celestrak (one request per satellite, with a pause),
+  saved with their download time. Passes are computed with Skyfield, so a
+  committed snapshot always rebuilds the same library; CI checks it does.
+- **A pass counts** when the satellite is above the row's elevation threshold
+  over the site; optical (EO) rows also need the sun up; side-looking SAR rows
+  (Sentinel-1, Capella) need the site in the swath. Thresholds and NORAD
+  numbers are in `config/abstracted.json` under `satellites` (table in
+  [config/README.md](config/README.md#pass-thresholds-abstracted)).
+- **Events** are status `Predicted` (blue). Hover shows the highest elevation,
+  the sun's elevation, the threshold and the orbit's NORAD number, epoch and
+  download time.
+- **Partner** is built from the same passes, rolled up into EO / IR / SAR;
+  overlapping passes become one event ("2 EO passes": names in the notes).
+- **ICOD** is the snapshot's download time (`icod_source: "celestrak"`), so the
+  badge shows how old the orbits are, without "DEMO DATA". Exports add a
+  `Source:` line.
+- Predictions are only good for a few days around the orbit epochs. Refresh
+  the snapshot and rebuild to move the window forward.
 
 ## Build payloads
 
@@ -167,15 +204,15 @@ same checks locally before pushing:
 .venv/bin/python -m playwright install chromium
 .venv/bin/python -m pytest -q tests --ignore=tests/browser
 .venv/bin/python -m pytest -q tests/browser
-.venv/bin/python scripts/check_data.py
-.venv/bin/python scripts/check_demo_data.py
+.venv/bin/python scripts/check_data.py && .venv/bin/python scripts/check_data.py --live
+.venv/bin/python scripts/check_demo_data.py && .venv/bin/python scripts/check_demo_data.py --live
 .venv/bin/python scripts/check_js_syntax.py
 ```
 
 | Check | What it catches |
 |---|---|
-| `tests/` | Config checks (missing title, duplicate rows, a grouping with different rows, bad banner times), ICOD rules (missing or future ICOD fails, demo is labelled), locality required, the `<matrix>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
-| `check_data.py` | A `web/data` file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
-| `check_demo_data.py` | `web/data` out of date with `config/` or the exporter (rebuilds it into a temp folder and compares, ignoring timestamps) |
+| `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the late-October High Arctic, Sentinel-1 stays in its swath, Partner roll-up merges overlaps), config checks (missing title, duplicate rows, a grouping with different rows, bad banner times), ICOD rules (missing or future ICOD fails, demo is labelled), locality required, the `<matrix>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
+| `check_data.py` | A `web/data` (or `--live`: `web/live`) file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
+| `check_demo_data.py` | `web/data` out of date with `config/` or the exporter; with `--live`, `web/live` out of date with the newest committed TLE snapshot or the pass prediction (rebuilds into a temp folder and compares, ignoring timestamps) |
 | `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |
 | `tests/browser/` | The real page in headless Chromium (Playwright), against the committed demo data: default view, layout (groups, 29 rows, 24 hour labels), localities north to south, ICOD badge, Group by Provider (same events), Partner always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |

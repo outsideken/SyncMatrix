@@ -44,6 +44,28 @@ checks a config before building anything (`load_config` in
 | `groups` | yes | Y-axis groups and rows, **top to bottom as drawn**. A row is a name, or `{"id", "label"}` when the label shown differs from the id events use. `color` is optional (default grey) |
 | `alt_groupings` | | Other ways to group **the same rows** (e.g. Provider), offered by the page's Group by control |
 | `banners` | | Bars under the plot; `start`/`end` are UTC times of day (`HH:MM`, up to `24:00`); `level` 0 is nearest the plot |
+| `satellites` | | For predicted passes: per row, `norad` (list of NORAD catalogue numbers; a mission row like Sentinel-2 lists each spacecraft), `min_elevation` (degrees above the locality's horizon for a pass to count), optional `max_elevation` (side-looking SAR: the highest point must stay at or below this so the locality is in the swath) and `needs_daylight` (optical rows: sun up at the locality) |
+
+### Pass thresholds (Abstracted)
+
+Elevation = 90° − incidence angle, so a threshold stands in for each sensor's
+field of regard. They are approximations from published sensor geometry, not
+tasking rules; tune them here.
+
+| Rows | Elevation | Why |
+|---|---|---|
+| GeoEye-1, Legion-1…6, WorldView-1…3 | ≥ 40°, daylight | ~45° off-nadir pointing |
+| Sentinel-2 | ≥ 78°, daylight | 290 km swath, ±10° from nadir |
+| Sentinel-3 OLCI | ≥ 50°, daylight | 1270 km swath |
+| Sentinel-3 SLSTR | ≥ 45° | 1400 km nadir swath (thermal, day and night) |
+| Aqua / Terra MODIS | ≥ 25° | ±55° scan, 2330 km swath |
+| NOAA-20 / NOAA-21 / S-NPP VIIRS | ≥ 20° | ±56° scan, 3040 km swath |
+| Capella-11, -13…-20 | 35°–75° | incidence ~15–55° |
+| Sentinel-1 (1A, 1C, 1D) | 44°–61° | IW mode, incidence ~29–46° |
+
+Capella-12 is not in Celestrak's catalogue, so it has no row. Sentinel-1B is
+in orbit but out of service since 2021; Sentinel-3C is left out until it is
+in routine operations.
 
 The exporter refuses a config with a missing `title`/`groups`, a duplicate
 group or row, an alternative grouping whose rows differ from `groups` (events
