@@ -17,6 +17,8 @@
  *   date=<Y-M-D>    Initial day (default: newest for that locality).
  *   controls=0      Hide the dropdowns (e.g. the dashboard drives selection itself).
  *   daylight=0      Start with day/night shading switched off (toolbar switch).
+ *   group=<id>      Y-axis grouping, e.g. group=provider, when the payload offers
+ *                   alternatives ("Group by" control; default: the payload's own).
  *   icodmark=1      Draw the ICOD line and hatch the period after it (off by
  *                   default; ICOD is always shown in the badge and footer).
  *   data=<url>      Single-file mode. Works with a relative path, GitHub Pages
@@ -49,6 +51,7 @@
     manifestUrl: params.get("manifest") || "data/index.json",
     showControls: params.get("controls") !== "0",
     showDaylight: params.get("daylight") !== "0",
+    grouping: params.get("group"),
     showIcodMark: params.get("icodmark") === "1",
     refreshSeconds: Math.max(0, Number(params.get("refresh")) || 0),
     showTitle: params.get("title") !== "0",
@@ -297,15 +300,17 @@
     // Layout
     //--------------------------------------------------------------------------
 
-    const rows = p.groups.flatMap((g) => g.rows.map((r) => ({ ...r, group: g })));
+    // The Y-axis grouping chosen in the "Group by" control (same rows either way).
+    const groups = activeGroups(p);
+    const rows = groups.flatMap((g) => g.rows.map((r) => ({ ...r, group: g })));
     const bannerLevels = p.banners.length ? d3.max(p.banners, (b) => b.level) + 1 : 0;
 
     // Group-only matrices (e.g. Partner: one row per group) show just the group
     // bar with a horizontal label; sub-group matrices (Abstracted) show a narrow
     // rotated group strip plus a label per row.
-    const groupOnly = p.groups.every((g) => g.rows.length === 1);
+    const groupOnly = groups.every((g) => g.rows.length === 1);
     const stripWidth = groupOnly
-      ? measureLabelWidth(p.groups.map((g) => g.label), "sm-group-label") + 2 * LAYOUT.labelGap
+      ? measureLabelWidth(groups.map((g) => g.label), "sm-group-label") + 2 * LAYOUT.labelGap
       : LAYOUT.groupStripWidth;
 
     const left = stripWidth + LAYOUT.labelGap +
@@ -371,6 +376,7 @@
 
     plot.append("rect").attr("class", "sm-plot-bg").attr("width", plotWidth).attr("height", plotHeight);
     updateDaylightToggle(p);
+    updateGroupingControl(p);
     if (p.daylight && options.showDaylight) drawDaylight(svg, plot, p, x, plotWidth, plotHeight);
 
     // After ICOD the picture may be incomplete: hatch from the ICOD to the window end.
@@ -400,7 +406,7 @@
       .attr("y1", (i) => i * rowHeight).attr("y2", (i) => i * rowHeight);
 
     let offset = 0;
-    const groupSpans = p.groups.map((g) => {
+    const groupSpans = groups.map((g) => {
       const span = { group: g, y: offset * rowHeight, h: g.rows.length * rowHeight };
       offset += g.rows.length;
       return span;
@@ -583,6 +589,53 @@
       legend.attr("transform", `translate(${plotWidth},${footerY + 18})`);
       svg.attr("height", svgHeight + 18);
     }
+  }
+
+  //============================================================================
+  // GROUP BY (Y-axis grouping)
+  //============================================================================
+
+  // A payload groups its rows one way ("groups", named by "grouping", e.g.
+  // Phenomenology) and may offer others ("alt_groupings", e.g. Provider) over
+  // the same rows. The choice is a URL parameter (group=provider), so it
+  // survives changes of matrix, locality and date.
+
+  const groupingPicker = d3.select("#sm-grouping");
+
+  function groupingOptions(p) {
+    const primary = { id: slug(p.grouping || "default"), label: p.grouping || "Default", groups: p.groups };
+    return [primary, ...(p.alt_groupings || [])];
+  }
+
+  function activeGroups(p) {
+    const chosen = (p.alt_groupings || []).find((g) => g.id === options.grouping);
+    return chosen ? chosen.groups : p.groups;
+  }
+
+  function updateGroupingControl(p) {
+    const choices = groupingOptions(p);
+    // Only worth showing when there is something to switch between (e.g. not on Partner).
+    groupingPicker.attr("hidden", choices.length > 1 ? null : true);
+    if (choices.length < 2) return;
+
+    const active = (choices.find((c) => c.id === options.grouping) || choices[0]).id;
+    groupingPicker.select(".sm-segmented").selectAll("button").data(choices, (c) => c.id).join("button")
+      .attr("type", "button")
+      .attr("role", "radio")
+      .attr("aria-checked", (c) => String(c.id === active))
+      .text((c) => c.label)
+      .on("click", (ev, c) => {
+        options.grouping = c.id === choices[0].id ? null : c.id;
+        const url = new URL(window.location.href);
+        if (options.grouping) url.searchParams.set("group", options.grouping);
+        else url.searchParams.delete("group");
+        window.history.replaceState(null, "", url);
+        render();
+      });
+  }
+
+  function slug(text) {
+    return String(text).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   }
 
   //============================================================================

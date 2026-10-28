@@ -103,7 +103,7 @@ def build_window(config: dict, day: date) -> dict:
             "tick_minutes": (24 * 60) // slots}
 
 
-def build_groups(config: dict, color_map: dict) -> list:
+def build_groups(y_axis_data: dict, color_map: dict) -> list:
     """Groups and rows in display order, top to bottom.
 
     The matplotlib version plots the first group at the bottom (y = 0), so
@@ -111,12 +111,33 @@ def build_groups(config: dict, color_map: dict) -> list:
     label (e.g. the NEW config's [""]) means a single row named after its group.
     """
     groups = []
-    for name, rows in reversed(list(config["Y-Axis Data"].items())):
+    for name, rows in reversed(list(y_axis_data.items())):
         groups.append({"id": name,
                        "label": name,
                        "color": color_map.get(name, "#525252"),
                        "rows": [{"id": row or name, "label": row or name} for row in reversed(rows)]})
     return groups
+
+
+def build_alt_groupings(config: dict, color_map: dict, groups: list) -> list:
+    """Other ways to group the same rows (config "Y-Axis Alternate Groupings").
+
+    The page offers these in its "Group by" control. Each must contain exactly
+    the rows of "Y-Axis Data", so events (which reference rows) land in the
+    same place whichever grouping is shown.
+    """
+    row_ids = sorted(row["id"] for group in groups for row in group["rows"])
+    alternates = []
+    for label, y_axis_data in config.get("Y-Axis Alternate Groupings", {}).items():
+        alt = build_groups(y_axis_data, color_map)
+        alt_ids = sorted(row["id"] for group in alt for row in group["rows"])
+        if alt_ids != row_ids:
+            raise ValueError("Grouping %r does not have the same rows as \"Y-Axis Data\" "
+                             "(missing: %s; extra: %s)"
+                             % (label, sorted(set(row_ids) - set(alt_ids)) or "none",
+                                sorted(set(alt_ids) - set(row_ids)) or "none"))
+        alternates.append({"id": slugify(label), "label": label, "groups": alt})
+    return alternates
 
 
 def build_banners(config: dict, window_start: datetime, tick_minutes: int) -> list:
@@ -280,7 +301,8 @@ def build_payload(config: dict, events: list = None, day: date = None,
     color_map = unpack_colors(config.get("Colors", {}))
     window = build_window(config, day)
     window_start, window_end = parse_iso(window["start"]), parse_iso(window["end"])
-    groups = build_groups(config, color_map)
+    groups = build_groups(config["Y-Axis Data"], color_map)
+    alt_groupings = build_alt_groupings(config, color_map, groups)
 
     loc = resolve_locality(config, locality)
     daylight = build_daylight(loc["lon"], loc["lat"], window_start, window_end) if config.get("Show Sunrise/Sunset?") else None
@@ -303,6 +325,8 @@ def build_payload(config: dict, events: list = None, day: date = None,
             "locality": loc,
             "window": window,
             "groups": groups,
+            "grouping": config.get("Y-Axis Grouping Name", "Group"),
+            "alt_groupings": alt_groupings,
             "events": events,
             "status_colors": status_colors,
             "daylight": daylight,

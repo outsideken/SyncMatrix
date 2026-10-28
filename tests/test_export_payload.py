@@ -105,6 +105,35 @@ def test_manifest_lists_localities_north_to_south(tmp_path):
     assert [l["name"] for l in manifest["matrices"][0]["localities"]] == ["North", "Middle", "South"]
 
 ################################################################################
+## Alternate groupings ("Group by")
+################################################################################
+
+def load_config(path):
+    return json.loads(path.read_text())
+
+
+def test_abstracted_offers_provider_grouping_over_the_same_rows():
+    config = load_config(ABSTRACTED)
+    groups = ep.build_groups(config["Y-Axis Data"], {})
+    [provider] = ep.build_alt_groupings(config, {}, groups)
+    assert (provider["id"], provider["label"]) == ("provider", "Provider")
+    assert [g["label"] for g in provider["groups"]] == ["Capella", "Copernicus", "NASA FIRMS", "Vantor"]
+    row_ids = lambda gs: sorted(r["id"] for g in gs for r in g["rows"])
+    assert row_ids(provider["groups"]) == row_ids(groups)
+
+
+def test_alternate_grouping_must_have_the_same_rows():
+    config = load_config(ABSTRACTED)
+    config["Y-Axis Alternate Groupings"]["Provider"]["Capella"].remove("Capella-11")
+    with pytest.raises(ValueError, match=r"missing: \['Capella-11'\]"):
+        ep.build_alt_groupings(config, {}, ep.build_groups(config["Y-Axis Data"], {}))
+
+
+def test_partner_has_no_alternate_grouping():
+    config = load_config(PARTNER)
+    assert ep.build_alt_groupings(config, {}, ep.build_groups(config["Y-Axis Data"], {})) == []
+
+################################################################################
 ## Events and locality
 ################################################################################
 

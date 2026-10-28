@@ -113,6 +113,19 @@ body {
 .sm-switch input:focus-visible + .sm-switch-track { outline: 2px solid var(--sm-now); outline-offset: 2px; }
 .sm-switch.disabled { opacity: 0.4; cursor: default; }
 
+/* "Group by" segmented control: one button per way of grouping the Y-axis. */
+.sm-grouping { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.sm-segmented { display: inline-flex; }
+.sm-toolbar .sm-segmented button { border-radius: 0; margin-left: -1px; }
+.sm-toolbar .sm-segmented button:first-child { border-radius: 4px 0 0 4px; margin-left: 0; }
+.sm-toolbar .sm-segmented button:last-child { border-radius: 0 4px 4px 0; }
+.sm-toolbar .sm-segmented button[aria-checked="true"] {
+  position: relative;
+  background: var(--sm-now);
+  border-color: var(--sm-now);
+  color: #ffffff;
+}
+
 /* ICOD (Information Cut-Off Date): data received after it is not reflected. */
 .sm-icod-badge {
   margin-left: auto;
