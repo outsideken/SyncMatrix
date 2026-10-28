@@ -22,13 +22,15 @@ The Abstracted config's placeholder groups (Series A–D, Auxilary) are
 replaced by satellites grouped by **phenomenology**, matching Partner's
 group names:
 
-- **EO**: Vantor WorldView-1 to -3, Legion-1 to -6 and GeoEye-1; Sentinel-2;
+- **EO**: GeoEye-1, Legion-1 to -6 and WorldView-1 to -3 (Vantor); Sentinel-2;
   Sentinel-3 OLCI.
-- **IR**: the NASA FIRMS active-fire sources (Terra and Aqua MODIS; S-NPP,
+- **IR**: the NASA FIRMS active-fire sources (Aqua and Terra MODIS; S-NPP,
   NOAA-20 and NOAA-21 VIIRS); Sentinel-3 SLSTR.
 - **SAR**: Sentinel-1; Capella Acadia satellites Capella-11 to -20.
 
-Re-running that notebook cell reproduces the committed configs.
+Within each group the rows are alphabetical, numbers in numeric order
+(Capella-11 before Capella-20). Re-running that notebook cell reproduces the
+committed configs.
 
 ## Build payloads
 
