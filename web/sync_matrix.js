@@ -72,7 +72,10 @@
     footerHeight: 26,
     hourLabelGap: 6,
   };
-  const FALLBACK_EVENT_COLOR = "#ff8c00";
+  // Event boxes: colour = the row's phenomenology (its group in the payload's
+  // own grouping); status = style (dash and fill), from the payload's
+  // status_styles. Neutral ColorBrewer Greys when a group has no colour.
+  const NEUTRAL = { color: "#525252", tint: "#d9d9d9" };
 
   const parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
   const formatTick = d3.utcFormat("%H%MZ");
@@ -126,7 +129,7 @@
       } : null,
       markers: (raw.markers || []).map((m) => ({ ...m, time: t(m.time) })),
       banners: (raw.banners || []).map((b) => ({ ...b, start: t(b.start), end: t(b.end) })),
-      status_colors: raw.status_colors || {},
+      status_styles: raw.status_styles || {},
     };
   }
 
@@ -459,7 +462,6 @@
     //--------------------------------------------------------------------------
 
     const pad = Math.min(4, rowHeight * 0.15);
-    const colorOf = (e) => p.status_colors[e.status] || FALLBACK_EVENT_COLOR;
     // Name events by what the Y-axis shows: the group (e.g. COM) in group-only
     // matrices, else the row. e.row stays the data's row id (e.g. CIRCUS).
     const rowById = new Map(rows.map((r) => [r.id, r]));
@@ -482,9 +484,9 @@
       .attr("width", (e) => Math.max(6, x(Math.min(e.end, p.window.end)) - x(Math.max(e.start, p.window.start)) - 3))
       .attr("height", rowHeight - pad * 2)
       .attr("rx", 2)
-      .attr("stroke", colorOf)
-      .attr("fill", colorOf)
-      .attr("fill-opacity", 0.14);
+      .each(function (e) {
+        styleBox(d3.select(this), e.phenomenology || NEUTRAL, p.status_styles[e.status]);
+      });
 
     events
       .on("mouseenter focus", (ev, e) => showTooltip(ev, e))
@@ -568,7 +570,8 @@
     }
 
     const usedStatuses = Array.from(new Set(p.events.map((e) => e.status))).filter(Boolean);
-    const legendItems = usedStatuses.map((s) => ({ label: s, color: p.status_colors[s] || FALLBACK_EVENT_COLOR }));
+    // Status legend in neutral grey: colour already means phenomenology (the strips).
+    const legendItems = usedStatuses.map((s) => ({ label: s, style: p.status_styles[s] }));
     if (afterIcod) legendItems.unshift({ label: "After ICOD", hatch: true });
 
     const legend = plot.append("g").attr("class", "sm-legend").attr("transform", `translate(${plotWidth},${footerY})`);
@@ -584,7 +587,8 @@
         swatch.attr("fill", "url(#sm-hatch)").attr("stroke", "var(--sm-icod)").attr("stroke-width", 1);
         item.append("title").text(ICOD_MEANING);
       } else {
-        swatch.attr("stroke", d.color).attr("stroke-width", 2).attr("fill", d.color).attr("fill-opacity", 0.14);
+        styleBox(swatch, NEUTRAL, d.style);
+        swatch.attr("stroke-width", 2);
       }
       lx -= 14;
     });
@@ -784,6 +788,17 @@
       .classed("warn", !icod || p.icod_source === "demo")
       .attr("title", ICOD_MEANING + (each.length ? " Oldest shown. " + each.join("; ") + "." :
                                      p.icod_source ? " Source: " + p.icod_source + "." : ""));
+  }
+
+  // Fill: "solid" (the colour), "tint" (the light ramp colour), "none".
+  function styleBox(sel, group, style) {
+    const st = style || { fill: "tint" };
+    sel.attr("stroke", group.color || NEUTRAL.color)
+      .attr("stroke-width", null)
+      .attr("stroke-dasharray", st.dash || null)
+      .attr("fill", st.fill === "solid" ? group.color || NEUTRAL.color
+                  : st.fill === "none" ? "none" : group.tint || NEUTRAL.tint)
+      .attr("fill-opacity", st.fill === "solid" ? 0.8 : st.fill === "none" ? null : 0.9);
   }
 
   function readableInk(background) {
