@@ -114,18 +114,7 @@ body {
 .sm-switch.disabled { opacity: 0.4; cursor: default; }
 
 /* ICOD (Information Cut-Off Date): data received after it is not reflected. */
-.sm-icod-badge {
-  margin-left: auto;
-  padding: 3px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--sm-icod);
-  color: var(--sm-icod);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-.sm-icod-badge:empty { display: none; }
-.sm-icod-badge.warn,
-.sm-icod.warn { color: var(--sm-eod); fill: var(--sm-eod); border-color: var(--sm-eod); }
+.sm-icod.warn { fill: var(--sm-eod); }
 .sm-icod-line   { stroke: var(--sm-icod); stroke-width: 2.5; }
 .sm-icod-tag    { font-size: 10px; font-weight: 700; fill: var(--sm-icod); }
 .sm-icod-tag-bg { fill: var(--sm-bg); opacity: 0.85; }
