@@ -38,7 +38,8 @@ Two matrices, defined in [`config/`](config/README.md):
   The same rows can be grouped by **provider** with the page's **Group by:
   Phenomenology | Provider** control: Capella; Copernicus (Sentinel-1, -2,
   -3 OLCI, -3 SLSTR); NASA FIRMS (MODIS and VIIRS); Vantor (GeoEye-1, Legion,
-  WorldView).
+  WorldView). Each grouping has its own colours (see config/README.md); event
+  boxes follow the grouping shown.
 - **Simplified Sync Matrix** (`config/simplified.json`): the phenomenology groups
   only (COM, IR, SAR, EO), drawn as grey bars without row labels. Always
   phenomenology, so the Group by control is hidden. The COM row's id is

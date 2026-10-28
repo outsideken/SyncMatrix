@@ -107,6 +107,9 @@ def test_abstracted_offers_provider_grouping_over_the_same_rows():
     [provider] = ep.build_alt_groupings(config)
     assert (provider["id"], provider["label"]) == ("provider", "Provider")
     assert [g["label"] for g in provider["groups"]] == ["Capella", "Copernicus", "NASA FIRMS", "Vantor"]
+    assert {g["label"]: (g["color"], g["tint"]) for g in provider["groups"]} == {
+        "Capella": ("#525252", "#d9d9d9"), "Copernicus": ("#08519c", "#c6dbef"),
+        "NASA FIRMS": ("#cb181d", "#fcbba1"), "Vantor": ("#6a51a3", "#dadaeb")}
     row_ids = lambda gs: sorted(r["id"] for g in gs for r in g["rows"])
     assert row_ids(provider["groups"]) == row_ids(groups)
 
