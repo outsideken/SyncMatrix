@@ -1,0 +1,548 @@
+{
+  "version": 1,
+  "title": "Abstracted Sync Matrix",
+  "subtitle": "High Arctic 78\u00b0N \u00b7 21 December 2026",
+  "icod": "2026-10-28T12:00:00Z",
+  "icod_source": "demo",
+  "generated": "2026-10-28T18:31:44Z",
+  "locality": {
+    "id": "high-arctic-78-n",
+    "name": "High Arctic 78\u00b0N",
+    "lon": 16.0,
+    "lat": 78.0,
+    "timezone": "Arctic/Longyearbyen"
+  },
+  "window": {
+    "start": "2026-12-21T00:00:00Z",
+    "end": "2026-12-22T00:00:00Z",
+    "tick_minutes": 30
+  },
+  "groups": [
+    {
+      "id": "EO",
+      "label": "EO",
+      "color": "#525252",
+      "rows": [
+        {
+          "id": "GeoEye-1",
+          "label": "GeoEye-1"
+        },
+        {
+          "id": "Legion-1",
+          "label": "Legion-1"
+        },
+        {
+          "id": "Legion-2",
+          "label": "Legion-2"
+        },
+        {
+          "id": "Legion-3",
+          "label": "Legion-3"
+        },
+        {
+          "id": "Legion-4",
+          "label": "Legion-4"
+        },
+        {
+          "id": "Legion-5",
+          "label": "Legion-5"
+        },
+        {
+          "id": "Legion-6",
+          "label": "Legion-6"
+        },
+        {
+          "id": "Sentinel-2",
+          "label": "Sentinel-2"
+        },
+        {
+          "id": "Sentinel-3 OLCI",
+          "label": "Sentinel-3 OLCI"
+        },
+        {
+          "id": "WorldView-1",
+          "label": "WorldView-1"
+        },
+        {
+          "id": "WorldView-2",
+          "label": "WorldView-2"
+        },
+        {
+          "id": "WorldView-3",
+          "label": "WorldView-3"
+        }
+      ]
+    },
+    {
+      "id": "IR",
+      "label": "IR",
+      "color": "#525252",
+      "rows": [
+        {
+          "id": "Aqua MODIS",
+          "label": "Aqua MODIS"
+        },
+        {
+          "id": "NOAA-20 VIIRS",
+          "label": "NOAA-20 VIIRS"
+        },
+        {
+          "id": "NOAA-21 VIIRS",
+          "label": "NOAA-21 VIIRS"
+        },
+        {
+          "id": "S-NPP VIIRS",
+          "label": "S-NPP VIIRS"
+        },
+        {
+          "id": "Sentinel-3 SLSTR",
+          "label": "Sentinel-3 SLSTR"
+        },
+        {
+          "id": "Terra MODIS",
+          "label": "Terra MODIS"
+        }
+      ]
+    },
+    {
+      "id": "SAR",
+      "label": "SAR",
+      "color": "#525252",
+      "rows": [
+        {
+          "id": "Capella-11",
+          "label": "Capella-11"
+        },
+        {
+          "id": "Capella-12",
+          "label": "Capella-12"
+        },
+        {
+          "id": "Capella-13",
+          "label": "Capella-13"
+        },
+        {
+          "id": "Capella-14",
+          "label": "Capella-14"
+        },
+        {
+          "id": "Capella-15",
+          "label": "Capella-15"
+        },
+        {
+          "id": "Capella-16",
+          "label": "Capella-16"
+        },
+        {
+          "id": "Capella-17",
+          "label": "Capella-17"
+        },
+        {
+          "id": "Capella-18",
+          "label": "Capella-18"
+        },
+        {
+          "id": "Capella-19",
+          "label": "Capella-19"
+        },
+        {
+          "id": "Capella-20",
+          "label": "Capella-20"
+        },
+        {
+          "id": "Sentinel-1",
+          "label": "Sentinel-1"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "demo-00",
+      "row": "Legion-2",
+      "start": "2026-12-21T07:30:00Z",
+      "end": "2026-12-21T09:00:00Z",
+      "status": "No Concern",
+      "label": "Demo event 1",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-01",
+      "row": "Capella-19",
+      "start": "2026-12-21T08:30:00Z",
+      "end": "2026-12-21T10:30:00Z",
+      "status": "Moderate",
+      "label": "Demo event 2",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-02",
+      "row": "NOAA-21 VIIRS",
+      "start": "2026-12-21T11:00:00Z",
+      "end": "2026-12-21T13:00:00Z",
+      "status": "High",
+      "label": "Demo event 3",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-03",
+      "row": "Capella-13",
+      "start": "2026-12-21T01:00:00Z",
+      "end": "2026-12-21T02:00:00Z",
+      "status": "High",
+      "label": "Demo event 4",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-04",
+      "row": "NOAA-20 VIIRS",
+      "start": "2026-12-21T08:00:00Z",
+      "end": "2026-12-21T08:30:00Z",
+      "status": "No Concern",
+      "label": "Demo event 5",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-05",
+      "row": "Sentinel-1",
+      "start": "2026-12-21T21:30:00Z",
+      "end": "2026-12-21T22:00:00Z",
+      "status": "High",
+      "label": "Demo event 6",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-06",
+      "row": "Sentinel-3 OLCI",
+      "start": "2026-12-21T11:00:00Z",
+      "end": "2026-12-21T11:30:00Z",
+      "status": "High",
+      "label": "Demo event 7",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-07",
+      "row": "Capella-15",
+      "start": "2026-12-21T19:30:00Z",
+      "end": "2026-12-21T20:00:00Z",
+      "status": "No Concern",
+      "label": "Demo event 8",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-08",
+      "row": "Capella-18",
+      "start": "2026-12-21T03:00:00Z",
+      "end": "2026-12-21T04:30:00Z",
+      "status": "Low",
+      "label": "Demo event 9",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-09",
+      "row": "Legion-2",
+      "start": "2026-12-21T16:30:00Z",
+      "end": "2026-12-21T18:00:00Z",
+      "status": "Low",
+      "label": "Demo event 10",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-10",
+      "row": "Legion-4",
+      "start": "2026-12-21T00:30:00Z",
+      "end": "2026-12-21T01:30:00Z",
+      "status": "Moderate",
+      "label": "Demo event 11",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-11",
+      "row": "S-NPP VIIRS",
+      "start": "2026-12-21T06:00:00Z",
+      "end": "2026-12-21T06:30:00Z",
+      "status": "High",
+      "label": "Demo event 12",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-12",
+      "row": "Legion-5",
+      "start": "2026-12-21T12:00:00Z",
+      "end": "2026-12-21T13:30:00Z",
+      "status": "High",
+      "label": "Demo event 13",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-13",
+      "row": "Capella-15",
+      "start": "2026-12-21T16:00:00Z",
+      "end": "2026-12-21T16:30:00Z",
+      "status": "No Concern",
+      "label": "Demo event 14",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-14",
+      "row": "Capella-20",
+      "start": "2026-12-21T01:30:00Z",
+      "end": "2026-12-21T02:00:00Z",
+      "status": "Moderate",
+      "label": "Demo event 15",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-15",
+      "row": "NOAA-20 VIIRS",
+      "start": "2026-12-21T20:30:00Z",
+      "end": "2026-12-21T21:30:00Z",
+      "status": "High",
+      "label": "Demo event 16",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-16",
+      "row": "Capella-17",
+      "start": "2026-12-21T07:30:00Z",
+      "end": "2026-12-21T09:30:00Z",
+      "status": "Moderate",
+      "label": "Demo event 17",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-17",
+      "row": "S-NPP VIIRS",
+      "start": "2026-12-21T05:00:00Z",
+      "end": "2026-12-21T06:30:00Z",
+      "status": "Moderate",
+      "label": "Demo event 18",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-18",
+      "row": "Legion-5",
+      "start": "2026-12-21T00:30:00Z",
+      "end": "2026-12-21T01:30:00Z",
+      "status": "High",
+      "label": "Demo event 19",
+      "notes": "Generated sample (seed 221)."
+    },
+    {
+      "id": "demo-19",
+      "row": "GeoEye-1",
+      "start": "2026-12-21T09:00:00Z",
+      "end": "2026-12-21T10:30:00Z",
+      "status": "Moderate",
+      "label": "Demo event 20",
+      "notes": "Generated sample (seed 221)."
+    }
+  ],
+  "status_colors": {
+    "High": "red",
+    "Moderate": "#cb181d",
+    "Low": "orange",
+    "No Concern": "#525252",
+    "Planned": "orange"
+  },
+  "daylight": {
+    "step_minutes": 10,
+    "elevations": [
+      -34.9,
+      -34.7,
+      -34.5,
+      -34.3,
+      -34.0,
+      -33.8,
+      -33.5,
+      -33.2,
+      -32.8,
+      -32.5,
+      -32.1,
+      -31.7,
+      -31.3,
+      -30.9,
+      -30.5,
+      -30.1,
+      -29.6,
+      -29.1,
+      -28.7,
+      -28.2,
+      -27.7,
+      -27.2,
+      -26.7,
+      -26.2,
+      -25.7,
+      -25.2,
+      -24.6,
+      -24.1,
+      -23.6,
+      -23.1,
+      -22.6,
+      -22.1,
+      -21.5,
+      -21.0,
+      -20.5,
+      -20.0,
+      -19.5,
+      -19.1,
+      -18.6,
+      -18.1,
+      -17.7,
+      -17.2,
+      -16.8,
+      -16.4,
+      -16.0,
+      -15.6,
+      -15.2,
+      -14.8,
+      -14.5,
+      -14.2,
+      -13.8,
+      -13.6,
+      -13.3,
+      -13.0,
+      -12.8,
+      -12.5,
+      -12.3,
+      -12.2,
+      -12.0,
+      -11.8,
+      -11.7,
+      -11.6,
+      -11.5,
+      -11.5,
+      -11.4,
+      -11.4,
+      -11.4,
+      -11.4,
+      -11.5,
+      -11.5,
+      -11.6,
+      -11.7,
+      -11.9,
+      -12.0,
+      -12.2,
+      -12.4,
+      -12.6,
+      -12.8,
+      -13.1,
+      -13.3,
+      -13.6,
+      -13.9,
+      -14.2,
+      -14.6,
+      -14.9,
+      -15.3,
+      -15.7,
+      -16.1,
+      -16.5,
+      -16.9,
+      -17.3,
+      -17.8,
+      -18.2,
+      -18.7,
+      -19.2,
+      -19.6,
+      -20.1,
+      -20.6,
+      -21.1,
+      -21.6,
+      -22.2,
+      -22.7,
+      -23.2,
+      -23.7,
+      -24.2,
+      -24.7,
+      -25.3,
+      -25.8,
+      -26.3,
+      -26.8,
+      -27.3,
+      -27.8,
+      -28.3,
+      -28.8,
+      -29.2,
+      -29.7,
+      -30.1,
+      -30.6,
+      -31.0,
+      -31.4,
+      -31.8,
+      -32.2,
+      -32.6,
+      -32.9,
+      -33.2,
+      -33.5,
+      -33.8,
+      -34.1,
+      -34.3,
+      -34.5,
+      -34.7,
+      -34.9,
+      -35.1,
+      -35.2,
+      -35.3,
+      -35.4,
+      -35.4,
+      -35.4,
+      -35.4,
+      -35.4,
+      -35.3,
+      -35.3,
+      -35.2,
+      -35.0,
+      -34.9
+    ],
+    "sun": {}
+  },
+  "markers": [],
+  "banners": [
+    {
+      "id": "Banner #1",
+      "text": "BANNER #1",
+      "start": "2026-12-21T00:00:00Z",
+      "end": "2026-12-22T00:00:00Z",
+      "level": 0,
+      "fill": "#252525",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #2",
+      "text": "BANNER #2",
+      "start": "2026-12-21T00:00:00Z",
+      "end": "2026-12-21T12:00:00Z",
+      "level": 1,
+      "fill": "blue",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #3",
+      "text": "BANNER #3",
+      "start": "2026-12-21T12:00:00Z",
+      "end": "2026-12-22T00:00:00Z",
+      "level": 1,
+      "fill": "green",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #4",
+      "text": "BANNER #4",
+      "start": "2026-12-21T00:00:00Z",
+      "end": "2026-12-21T12:00:00Z",
+      "level": 2,
+      "fill": "red",
+      "text_color": "yellow"
+    },
+    {
+      "id": "Banner #5",
+      "text": "BANNER #5",
+      "start": "2026-12-21T12:00:00Z",
+      "end": "2026-12-22T00:00:00Z",
+      "level": 2,
+      "fill": "orange",
+      "text_color": "yellow"
+    }
+  ],
+  "label": "Abstracted Sync Matrix"
+}
