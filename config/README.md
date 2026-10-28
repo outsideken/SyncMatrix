@@ -82,3 +82,10 @@ ColorBrewer2, the dark end of the 9-class sequential ramps, the same in both
 matrices: **EO `#08519c`** (Blues), **IR `#cb181d`** (Reds), **SAR `#525252`**
 (Greys), **COM `#238b45`** (Greens). Lighter tints, if needed, come from the
 same ramps.
+
+Provider groups (Abstracted's `alt_groupings.Provider`) reuse that palette,
+plus purple for Vantor: **Capella `#525252`**, **Copernicus `#08519c`**,
+**NASA FIRMS `#cb181d`**, **Vantor `#6a51a3`** (Purples, tint `#dadaeb`).
+Event boxes take the colour of the group they are shown in, so under Group by
+Provider they turn provider colours; the provenance in popups and exports
+stays per phenomenology.

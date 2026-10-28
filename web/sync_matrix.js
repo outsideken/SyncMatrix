@@ -72,9 +72,11 @@
     footerHeight: 26,
     hourLabelGap: 6,
   };
-  // Event boxes: colour = the row's phenomenology (its group in the payload's
-  // own grouping); status = style (dash and fill), from the payload's
-  // status_styles. Neutral ColorBrewer Greys when a group has no colour.
+  // Event boxes: colour = the group the row is shown in (phenomenology, or e.g.
+  // provider under Group by Provider), so a strip and its boxes always match;
+  // status = style (dash and fill), from the payload's status_styles. Neutral
+  // ColorBrewer Greys when a group has no colour. Provenance stays per
+  // phenomenology (the popup uses the row's phenomenology).
   const NEUTRAL = { color: "#525252", tint: "#d9d9d9" };
 
   const parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
@@ -469,7 +471,7 @@
     const visibleEvents = p.events.filter((e) => rowY.has(e.row)).map((e) => {
       const r = rowById.get(e.row);
       return { ...e, group: r.group.label, where: groupOnly ? r.group.label : r.label,
-               phenomenology: phenomenologyOf.get(e.row) };
+               shownIn: r.group, phenomenology: phenomenologyOf.get(e.row) };
     });
 
     const events = plot.append("g").selectAll("g").data(visibleEvents).join("g")
@@ -485,7 +487,7 @@
       .attr("height", rowHeight - pad * 2)
       .attr("rx", 2)
       .each(function (e) {
-        styleBox(d3.select(this), e.phenomenology || NEUTRAL, p.status_styles[e.status]);
+        styleBox(d3.select(this), e.shownIn || NEUTRAL, p.status_styles[e.status]);
       });
 
     events
