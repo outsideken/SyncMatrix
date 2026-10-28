@@ -113,6 +113,19 @@ body {
 .sm-switch input:focus-visible + .sm-switch-track { outline: 2px solid var(--sm-now); outline-offset: 2px; }
 .sm-switch.disabled { opacity: 0.4; cursor: default; }
 
+/* "Group by" segmented control: one button per way of grouping the Y-axis. */
+.sm-grouping { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.sm-segmented { display: inline-flex; }
+.sm-toolbar .sm-segmented button { border-radius: 0; margin-left: -1px; }
+.sm-toolbar .sm-segmented button:first-child { border-radius: 4px 0 0 4px; margin-left: 0; }
+.sm-toolbar .sm-segmented button:last-child { border-radius: 0 4px 4px 0; }
+.sm-toolbar .sm-segmented button[aria-checked="true"] {
+  position: relative;
+  background: var(--sm-now);
+  border-color: var(--sm-now);
+  color: #ffffff;
+}
+
 /* ICOD (Information Cut-Off Date): data received after it is not reflected. */
 .sm-icod-badge {
   margin-left: auto;
@@ -137,7 +150,8 @@ body {
 .sm-subtitle { font-size: 12px; font-weight: 600; fill: var(--sm-ink-muted); }
 .sm-icod     { font-size: 11px; font-weight: 700; fill: var(--sm-ink); }
 
-.sm-axis text   { font-size: 10px; fill: var(--sm-ink); font-variant-numeric: tabular-nums; }
+.sm-axis text,
+.sm-axis-label  { font-size: 10px; fill: var(--sm-ink); font-variant-numeric: tabular-nums; }
 .sm-axis line   { stroke: var(--sm-ink); }
 .sm-axis path   { display: none; }
 .sm-row-label   { font-size: 11px; fill: var(--sm-ink); }
@@ -186,7 +200,7 @@ body {
 .sm-tooltip {
   position: fixed;
   z-index: 10;
-  max-width: 260px;
+  max-width: 300px;
   padding: 7px 9px;
   border-radius: 4px;
   background: var(--sm-tooltip-bg);
@@ -198,3 +212,11 @@ body {
 }
 .sm-tooltip strong { display: block; margin-bottom: 2px; }
 .sm-tooltip .muted { opacity: 0.75; }
+
+/* Popup: provenance of the event's phenomenology, keyed by its colour. */
+.sm-tooltip-provenance {
+  margin-top: 6px;
+  padding: 4px 0 2px 7px;
+  border-left: 3px solid #525252;
+  opacity: 0.9;
+}
