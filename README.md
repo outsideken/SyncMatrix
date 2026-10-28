@@ -81,7 +81,7 @@ Open the page with `?manifest=live/index.json` to view them.
 ## Build payloads
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt -c constraints.txt
 .venv/bin/python python/export_payload.py --config config/partner.json \
     --date 2026-10-27 --events events.json --out-dir web/data
 ```
@@ -201,13 +201,24 @@ URL also works (it allows cross-origin reads) but is cached for about 5 minutes,
 so a short `refresh` won't show changes faster than that. A private repo's raw
 URLs need a token: don't put one in the iframe URL.
 
+## Dependencies
+
+`requirements.txt` (runtime) and `requirements-dev.txt` (tests) pin the direct
+dependencies; `constraints.txt` pins every package, transitive ones included
+(e.g. `sgp4`, `numpy`, `timezonefinder-data`), as resolved on Python 3.12, the
+version CI uses. Pass predictions depend on those exact versions, and CI
+checks `web/live` against a fresh build, so an unpinned upgrade could change
+the results without any code change. To upgrade: change a pin, install both
+files into a fresh Python 3.12 venv, `pip freeze` into `constraints.txt`,
+rebuild `web/data` and `web/live`, and commit together.
+
 ## Checks (CI)
 
 `.github/workflows/ci.yml` runs on every pull request and on `main`. Run the
 same checks locally before pushing:
 
 ```bash
-.venv/bin/pip install -r requirements.txt -r requirements-dev.txt
+.venv/bin/pip install -r requirements.txt -r requirements-dev.txt -c constraints.txt
 .venv/bin/python -m playwright install chromium
 .venv/bin/python -m pytest -q tests --ignore=tests/browser
 .venv/bin/python -m pytest -q tests/browser
