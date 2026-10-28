@@ -38,14 +38,16 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: requirements*.txt
+          cache-dependency-path: |
+            requirements*.txt
+            constraints.txt
 
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
 
       - name: Install
-        run: pip install -r requirements.txt pytest
+        run: pip install -r requirements.txt -r requirements-dev.txt -c constraints.txt
 
       - name: Exporter tests
         run: python -m pytest -q tests --ignore=tests/browser
@@ -73,11 +75,13 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: requirements*.txt
+          cache-dependency-path: |
+            requirements*.txt
+            constraints.txt
 
       - name: Install
         run: |
-          pip install -r requirements.txt -r requirements-dev.txt
+          pip install -r requirements.txt -r requirements-dev.txt -c constraints.txt
           python -m playwright install --with-deps chromium
 
       - name: Browser tests
