@@ -9,7 +9,10 @@
  *   - Single-file mode: data=<url> draws exactly that payload, no dropdowns.
  *
  * URL parameters
- *   manifest=<url>  Manifest to read in library mode (default: data/index.json).
+ *   source=demo     Start on the demo library (generated events). Default:
+ *                   the predicted-pass library. The toolbar's Data switch
+ *                   changes it.
+ *   manifest=<url>  Read this manifest instead (hides the Data switch).
  *   matrix=<id>     Initial matrix (default: first in the manifest).
  *   locality=<id>   Initial locality (default: first for that matrix). Each
  *                   file is one locality and one day; the Locality dropdown
@@ -47,9 +50,13 @@
   //============================================================================
 
   const params = new URLSearchParams(window.location.search);
+  // The two libraries: real predicted passes (default) and generated demo events.
+  const SOURCES = { predicted: "live/index.json", demo: "data/index.json" };
   const options = {
     dataUrl: params.get("data"),
-    manifestUrl: params.get("manifest") || "data/index.json",
+    source: params.get("source") === "demo" ? "demo" : "predicted",
+    manifestUrl: params.get("manifest") || (params.get("source") === "demo" ? SOURCES.demo : SOURCES.predicted),
+    sourceSwitch: !params.get("manifest"),
     showControls: params.get("controls") !== "0",
     showDaylight: params.get("daylight") !== "0",
     grouping: params.get("group"),
@@ -257,6 +264,38 @@
   dateSelect.on("change", (ev) => select({ ...selection, date: ev.target.value }));
   olderButton.on("click", () => stepDate(1));
   newerButton.on("click", () => stepDate(-1));
+
+  //============================================================================
+  // DATA SOURCE (Predicted | Demo)
+  //============================================================================
+
+  const sourcePicker = d3.select("#sm-source");
+
+  function updateSourceControl() {
+    sourcePicker.selectAll("button").attr("aria-checked", function () {
+      return String(this.dataset.source === options.source);
+    });
+  }
+
+  sourcePicker.selectAll("button").on("click", async (ev) => {
+    const source = ev.currentTarget.dataset.source;
+    if (source === options.source) return;
+    options.source = source;
+    options.manifestUrl = SOURCES[source];
+    updateSourceControl();
+    const url = new URL(window.location.href);
+    if (source === "demo") url.searchParams.set("source", "demo");
+    else url.searchParams.delete("source");
+    window.history.replaceState(null, "", url);
+    try {
+      await loadManifest();
+      // Keep matrix and locality; the date falls back to today or the newest
+      // day when the other library doesn't have it.
+      select(selection, { notify: false });
+    } catch (err) {
+      showError("Could not load " + options.manifestUrl + " (" + err.message + ")");
+    }
+  });
 
   async function refresh() {
     if (manifest) {
@@ -1025,6 +1064,8 @@
       try {
         await loadManifest();
         toolbar.attr("hidden", options.showControls ? null : true);
+        sourcePicker.attr("hidden", options.sourceSwitch ? null : true);
+        updateSourceControl();
         select(selection, { notify: false });
       } catch (err) {
         showError("Could not load " + options.manifestUrl + " (" + err.message + ")");
