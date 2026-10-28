@@ -293,7 +293,7 @@ def test_payload_carries_source_provenance_and_group_colours():
 def test_status_styles_and_tints():
     payload = ep.build_payload(ep.load_config(ABSTRACTED), day=date(2026, 10, 27), demo_count=1,
                                icod="2026-10-27T12:00:00Z", locality={"name": "X", "point": "POINT(-100 40)"})
-    assert payload["status_styles"]["Predicted"] == {"fill": "tint", "dash": "4 3"}
+    assert payload["status_styles"]["Predicted"] == {"fill": "tint"}  # solid outline + light tint, for now
     assert {g["label"]: g["tint"] for g in payload["groups"]} == {"EO": "#c6dbef", "IR": "#fcbba1", "SAR": "#d9d9d9"}
 
 
