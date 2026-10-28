@@ -1,7 +1,7 @@
 # Matrix configs
 
-One JSON file per matrix. The file name is the matrix id (`partner.json` →
-`partner`, used in `web/data/partner/…` and `?matrix=partner`). The exporter
+One JSON file per matrix. The file name is the matrix id (`simplified.json` →
+`simplified`, used in `web/data/simplified/…` and `?matrix=simplified`). The exporter
 checks a config before building anything (`load_config` in
 `python/export_payload.py`).
 
