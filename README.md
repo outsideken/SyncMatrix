@@ -18,7 +18,19 @@ settings changed for the d3 version, in both `Config_PARTNER_Sync_Matrix.json`
 and the notebook cell that writes it: `"Show Sunrise/Sunset?"` is now `true`
 (so Partner gets day/night shading), and the `Commercial` group is renamed
 `COM` (its row id is still `CIRCUS`, which is what events reference).
-Re-running that notebook cell reproduces the committed configs.
+The Abstracted config's placeholder groups (Series A–D, Auxilary) are
+replaced by satellites grouped by **phenomenology**, matching Partner's
+group names:
+
+- **EO**: GeoEye-1, Legion-1 to -6 and WorldView-1 to -3 (Vantor); Sentinel-2;
+  Sentinel-3 OLCI.
+- **IR**: the NASA FIRMS active-fire sources (Aqua and Terra MODIS; S-NPP,
+  NOAA-20 and NOAA-21 VIIRS); Sentinel-3 SLSTR.
+- **SAR**: Sentinel-1; Capella Acadia satellites Capella-11 to -20.
+
+Within each group the rows are alphabetical, numbers in numeric order
+(Capella-11 before Capella-20). Re-running that notebook cell reproduces the
+committed configs.
 
 ## Build payloads
 
@@ -28,7 +40,7 @@ python3 -m venv .venv && .venv/bin/pip install astral timezonefinder
     --slug partner --date 2026-10-27 --events events.json --out-dir web/data
 ```
 
-`--out-dir` writes `web/data/partner/tehran/2026-10-27.json` and rebuilds
+`--out-dir` writes `web/data/partner/mid-north-40-n/2026-10-27.json` and rebuilds
 `web/data/index.json` from the files on disk, so the new day shows up in the
 page's Date dropdown. After deleting old days, run
 `export_payload.py --rebuild-manifest web/data`. `--out FILE` still writes a
@@ -39,13 +51,13 @@ to today (UTC). The events file is
 
 ```json
 {"icod": "2026-10-27T19:28:00Z",
- "locality": {"name": "Tehran", "point": "POINT(51.389722 35.688889)"},
+ "locality": {"name": "Mid-north 40°N", "point": "POINT(-100 40)"},
  "events": [{"row": "EO", "start": "...", "end": "...", "status": "High", "label": "...", "notes": "..."}]}
 ```
 
 with ISO 8601 UTC times; unknown rows or end-before-start fail loudly. Each
 file is **one locality, one day**. The locality can also be given with
-`--locality "POINT(lon lat)" --locality-name Tehran`; the config's
+`--locality "POINT(lon lat)" --locality-name "Mid-north 40°N"`; the config's
 `"Locality Point"` is only a fallback for demos. Its timezone is looked up and
 stored in the payload.
 
