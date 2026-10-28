@@ -260,3 +260,31 @@ def test_end_of_local_day_quarter_hour_offset():
     # Kathmandu is UTC+5:45.
     start, end = day_window("2026-10-27")
     assert [m["time"] for m in ep.build_end_of_local_day("Asia/Kathmandu", start, end)] == ["2026-10-27T18:15:00Z"]
+
+################################################################################
+## Provenance per phenomenology
+################################################################################
+
+def test_provenance_defaults_to_the_matrix_for_every_group():
+    config = ep.load_config(ABSTRACTED)
+    prov = ep.build_provenance(config, "Events file x.json", "2026-10-28T12:00:00Z", "data")
+    assert set(prov) == {"all", "EO", "IR", "SAR"}
+    assert prov["EO"] == prov["all"] == {"source": "Events file x.json", "icod": "2026-10-28T12:00:00Z",
+                                          "icod_source": "data"}
+
+
+def test_provenance_overrides_per_phenomenology():
+    config = ep.load_config(ABSTRACTED)
+    prov = ep.build_provenance(config, "Feeds", "2026-10-28T12:00:00Z", "data",
+                               {"IR": {"source": "NASA FIRMS", "icod": "2026-10-28T09:00:00Z"}})
+    assert prov["IR"] == {"source": "NASA FIRMS", "icod": "2026-10-28T09:00:00Z", "icod_source": "data"}
+    assert prov["EO"]["source"] == "Feeds"
+
+
+def test_payload_carries_source_provenance_and_group_colours():
+    payload = ep.build_payload(ep.load_config(ABSTRACTED), day=date(2026, 10, 27), demo_count=2,
+                               icod="2026-10-27T12:00:00Z", locality={"name": "X", "point": "POINT(-100 40)"})
+    assert payload["source"].startswith("Demo data")
+    assert payload["provenance"]["SAR"]["icod_source"] == "demo"
+    assert {g["label"]: g["color"] for g in payload["groups"]} == {"EO": "#08519c", "IR": "#cb181d", "SAR": "#525252"}
+    assert payload["banners"] == []  # provenance replaces the legacy banners

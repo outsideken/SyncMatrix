@@ -116,3 +116,12 @@ def test_config_satellites_must_be_rows(tmp_path):
     path.write_text(json.dumps(config))
     with pytest.raises(ValueError, match="'Not-A-Row' is not a row"):
         ep.load_config(path)
+
+
+def test_live_partner_provenance():
+    payload = json.loads(next((REPO / "web" / "live" / "partner").glob("*/*.json")).read_text())
+    prov = payload["provenance"]
+    assert prov["COM"]["icod"] is None and "No data source" in prov["COM"]["source"]  # no COM feed
+    for group in ("EO", "IR", "SAR"):
+        assert prov[group]["icod"] == payload["icod"] and prov[group]["icod_source"] == "celestrak"
+        assert "predicted pass" in prov[group]["notes"]

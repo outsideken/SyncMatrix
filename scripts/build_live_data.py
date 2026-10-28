@@ -40,6 +40,26 @@ def latest_snapshot() -> Path:
     return snapshots[-1]
 
 
+def group_provenance(config: dict, events: list, row_group: dict, abstracted: dict) -> dict:
+    """Per-phenomenology notes: how many passes, from which satellites.
+
+    A group with no satellites in the Abstracted config (e.g. Partner's COM)
+    has no feed, so it gets no source or ICOD.
+    """
+    out = {}
+    for group in config["groups"]:
+        name = group["name"]
+        rows = [r for r, g in row_group.items() if g == name and r in abstracted.get("satellites", {})]
+        if not rows:
+            out[name] = {"source": "No data source for %s" % name, "icod": None, "icod_source": None}
+            continue
+        sats = sum(len(abstracted["satellites"][r]["norad"]) for r in rows)
+        passes = sum(1 for e in events if row_group[e["row"]] == name)
+        out[name] = {"notes": "%d predicted pass%s from %d satellite%s"
+                              % (passes, "" if passes == 1 else "es", sats, "" if sats == 1 else "s")}
+    return out
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--tle", help="TLE snapshot (default: newest in data/tle)")
@@ -69,8 +89,8 @@ def main() -> int:
 
             for matrix, config, matrix_events in (("abstracted", abstracted, events), ("partner", partner, rolled)):
                 payload = ep.build_payload(config, matrix_events, day, icod=snapshot["fetched"],
-                                           icod_source="celestrak", locality=locality)
-                payload["source"] = source
+                                           icod_source="celestrak", locality=locality, source=source,
+                                           provenance=group_provenance(config, events, row_group, abstracted))
                 path = out_dir / matrix / payload["locality"]["id"] / ("%s.json" % day.isoformat())
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(json.dumps(payload, indent=2))

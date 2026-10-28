@@ -463,9 +463,11 @@
     // Name events by what the Y-axis shows: the group (e.g. COM) in group-only
     // matrices, else the row. e.row stays the data's row id (e.g. CIRCUS).
     const rowById = new Map(rows.map((r) => [r.id, r]));
+    const phenomenologyOf = new Map(p.groups.flatMap((g) => g.rows.map((r) => [r.id, g])));
     const visibleEvents = p.events.filter((e) => rowY.has(e.row)).map((e) => {
       const r = rowById.get(e.row);
-      return { ...e, group: r.group.label, where: groupOnly ? r.group.label : r.label };
+      return { ...e, group: r.group.label, where: groupOnly ? r.group.label : r.label,
+               phenomenology: phenomenologyOf.get(e.row) };
     });
 
     const events = plot.append("g").selectAll("g").data(visibleEvents).join("g")
@@ -707,7 +709,17 @@
       `<span class="muted">${formatFull(e.start)} – ${formatTick(e.end)}</span>`,
     ];
     if (e.notes) parts.push(`<span class="muted">${escapeHtml(e.notes)}</span>`);
-    tooltip.html(parts.join("<br>")).attr("hidden", null);
+    let html = parts.join("<br>");
+    const g = e.phenomenology;
+    const prov = g && current && current.provenance && current.provenance[g.id];
+    if (prov) {
+      const lines = [`<strong>${escapeHtml(g.label)} provenance</strong>`, escapeHtml(prov.source || "Source not given"),
+                     prov.icod ? "ICOD " + formatIcod(parseTime(prov.icod)) + " (" + formatAge(parseTime(prov.icod)) + ")"
+                               : "ICOD not provided"];
+      if (prov.notes) lines.push(escapeHtml(prov.notes));
+      html += `<div class="sm-tooltip-provenance" style="border-left-color:${g.color || "#525252"}">${lines.join("<br>")}</div>`;
+    }
+    tooltip.html(html).attr("hidden", null);
     moveTooltip(ev);
   }
 
@@ -750,13 +762,28 @@
       (p.icod_source === "demo" ? " · DEMO DATA" : "");
   }
 
+  // Phenomenologies with their provenance, in the payload's group order.
+  function phenomenologyProvenance(p) {
+    return (p.groups || []).filter((g) => p.provenance && p.provenance[g.id])
+      .map((g) => ({ group: g, prov: p.provenance[g.id] }));
+  }
+
+  function oldestIcod(p) {
+    const icods = phenomenologyProvenance(p).map((x) => x.prov.icod).filter(Boolean).map(parseTime);
+    return icods.length ? d3.min(icods) : p.icod;
+  }
+
   function updateIcodBadge(p) {
+    const icod = oldestIcod(p);
+    const each = phenomenologyProvenance(p).map((x) => x.group.label + ": " +
+      (x.prov.icod ? formatIcodShort(parseTime(x.prov.icod)) : "none") + (x.prov.source ? " (" + x.prov.source + ")" : ""));
     d3.select("#sm-icod-badge")
-      .text(p.icod ? "ICOD " + formatIcodShort(p.icod) + " · " + formatAge(p.icod) +
-                     (p.icod_source === "demo" ? " · DEMO DATA" : "")
-                   : "ICOD not provided")
-      .classed("warn", !p.icod || p.icod_source === "demo")
-      .attr("title", ICOD_MEANING + (p.icod_source ? " Source: " + p.icod_source + "." : ""));
+      .text(icod ? "ICOD " + formatIcodShort(icod) + " · " + formatAge(icod) +
+                   (p.icod_source === "demo" ? " · DEMO DATA" : "")
+                 : "ICOD not provided")
+      .classed("warn", !icod || p.icod_source === "demo")
+      .attr("title", ICOD_MEANING + (each.length ? " Oldest shown. " + each.join("; ") + "." :
+                                     p.icod_source ? " Source: " + p.icod_source + "." : ""));
   }
 
   function readableInk(background) {
@@ -812,7 +839,8 @@
     const width = +live.getAttribute("width");
     const height = +live.getAttribute("height");
     const header = options.showTitle ? 0 : 44;
-    const footer = 44;
+    const phenomenologyLines = exportProvenanceLines(p);
+    const footer = 44 + phenomenologyLines.length * 15;
     const ink = getComputedStyle(document.body).color;
     const font = getComputedStyle(document.body).fontFamily;
 
@@ -851,7 +879,39 @@
         `font-size:11px;font-weight:${i === 0 ? 700 : 400}`)
       .text((d) => d);
 
+    // Per-phenomenology provenance (what the legacy banners carried), colour-keyed.
+    const top = height + header + 18 + provenance.length * 15;
+    const rows = out.selectAll("g.sm-export-phenomenology").data(phenomenologyLines).join("g")
+      .attr("class", "sm-export-phenomenology")
+      .attr("transform", (_, i) => `translate(8,${top + i * 15})`);
+    rows.selectAll("rect").data((d) => d.colors).join("rect")
+      .attr("x", (_, j) => j * 12).attr("y", -9).attr("width", 10).attr("height", 10).attr("rx", 2)
+      .attr("style", (c) => `fill:${c}`);
+    rows.append("text").attr("x", (d) => d.colors.length * 12 + 4)
+      .attr("style", `fill:${ink};font-size:11px`).text((d) => d.text);
+
     return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone);
+  }
+
+  function exportProvenanceLines(p) {
+    // Phenomenologies whose provenance is just the matrix's share one line.
+    const items = phenomenologyProvenance(p);
+    const all = p.provenance && p.provenance.all;
+    const same = (prov) => all && prov.source === all.source && prov.icod === all.icod && !prov.notes;
+    const lines = [];
+    const shared = items.filter((x) => same(x.prov));
+    if (shared.length) {
+      lines.push({ colors: shared.map((x) => x.group.color),
+                   text: shared.map((x) => x.group.label).join(", ") + ": source and ICOD as above" });
+    }
+    items.filter((x) => !same(x.prov)).forEach(({ group, prov }) => {
+      lines.push({ colors: [group.color],
+                   text: [group.label,
+                          prov.source && (!all || prov.source !== all.source) ? prov.source : null,
+                          prov.icod ? "ICOD " + formatIcod(parseTime(prov.icod)) : "ICOD not provided",
+                          prov.notes].filter(Boolean).join(" · ") });
+    });
+    return lines;
   }
 
   function download(blob, name) {

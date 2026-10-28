@@ -182,3 +182,35 @@ def test_predicted_pass_library(page, base_url, errors):
     assert any(re.search(r"\d+ (EO|IR|SAR) pass", l) for l in
                page.locator(".sm-event").evaluate_all("els => els.map(e => e.getAttribute('aria-label'))"))
     assert errors == []
+
+
+def test_popup_shows_the_phenomenology_provenance(page, base_url, errors):
+    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=abstracted&locality=mid-north-40-n&group=provider")
+    page.locator(".sm-event").first.hover()
+    tip = page.locator(".sm-tooltip")
+    expect(tip).to_contain_text("provenance")
+    expect(tip).to_contain_text("Celestrak")
+    expect(tip).to_contain_text("predicted pass")
+    assert errors == []
+
+
+def test_strips_use_phenomenology_colours(page, base_url, errors):
+    open_page(page, base_url + ABSTRACTED)
+    fills = page.locator("svg.sm-root rect[fill]").evaluate_all("els => els.map(e => e.getAttribute('fill'))")
+    for colour in ("#08519c", "#cb181d", "#525252"):
+        assert colour in fills
+    assert errors == []
+
+
+def test_export_lists_provenance_per_phenomenology(page, base_url, errors, tmp_path):
+    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=partner&locality=mid-north-40-n")
+    with page.expect_download() as info:
+        page.locator("#sm-export button[data-format=svg]").click()
+    path = tmp_path / "x.svg"
+    info.value.save_as(path)
+    svg = path.read_text()
+    assert "Source: Predicted passes from Celestrak orbits" in svg
+    for line in ("EO · ICOD", "IR · ICOD", "SAR · ICOD", "COM · No data source for COM · ICOD not provided"):
+        assert line in svg
+    assert "fill:#238b45" in svg and "fill:#08519c" in svg  # colour chips
+    assert errors == []
