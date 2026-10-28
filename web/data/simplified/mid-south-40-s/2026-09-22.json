@@ -1,0 +1,353 @@
+{
+  "version": 1,
+  "title": "Simplified Sync Matrix",
+  "subtitle": "Mid-south 40\u00b0S \u00b7 22 September 2026",
+  "icod": "2026-09-22T18:00:00Z",
+  "icod_source": "demo",
+  "source": "Demo data: generated sample events",
+  "provenance": {
+    "all": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-09-22T18:00:00Z",
+      "icod_source": "demo"
+    },
+    "COM": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-09-22T18:00:00Z",
+      "icod_source": "demo"
+    },
+    "IR": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-09-22T18:00:00Z",
+      "icod_source": "demo"
+    },
+    "SAR": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-09-22T18:00:00Z",
+      "icod_source": "demo"
+    },
+    "EO": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-09-22T18:00:00Z",
+      "icod_source": "demo"
+    }
+  },
+  "generated": "2026-10-28T22:05:44Z",
+  "locality": {
+    "id": "mid-south-40-s",
+    "name": "Mid-south 40\u00b0S",
+    "lon": -70.0,
+    "lat": -40.0,
+    "timezone": "America/Argentina/Salta"
+  },
+  "window": {
+    "start": "2026-09-22T00:00:00Z",
+    "end": "2026-09-23T00:00:00Z",
+    "tick_minutes": 30
+  },
+  "groups": [
+    {
+      "id": "COM",
+      "label": "COM",
+      "color": "#238b45",
+      "tint": "#c7e9c0",
+      "rows": [
+        {
+          "id": "CIRCUS",
+          "label": "CIRCUS"
+        }
+      ]
+    },
+    {
+      "id": "IR",
+      "label": "IR",
+      "color": "#cb181d",
+      "tint": "#fcbba1",
+      "rows": [
+        {
+          "id": "IR",
+          "label": "IR"
+        }
+      ]
+    },
+    {
+      "id": "SAR",
+      "label": "SAR",
+      "color": "#525252",
+      "tint": "#d9d9d9",
+      "rows": [
+        {
+          "id": "SAR",
+          "label": "SAR"
+        }
+      ]
+    },
+    {
+      "id": "EO",
+      "label": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
+      "rows": [
+        {
+          "id": "EO",
+          "label": "EO"
+        }
+      ]
+    }
+  ],
+  "grouping": "Phenomenology",
+  "alt_groupings": [],
+  "events": [
+    {
+      "id": "demo-00",
+      "row": "CIRCUS",
+      "start": "2026-09-22T11:30:00Z",
+      "end": "2026-09-22T12:00:00Z",
+      "status": "High",
+      "label": "Demo event 1",
+      "notes": "Generated sample (seed 699)."
+    },
+    {
+      "id": "demo-01",
+      "row": "CIRCUS",
+      "start": "2026-09-22T04:30:00Z",
+      "end": "2026-09-22T05:00:00Z",
+      "status": "No Concern",
+      "label": "Demo event 2",
+      "notes": "Generated sample (seed 699)."
+    },
+    {
+      "id": "demo-02",
+      "row": "EO",
+      "start": "2026-09-22T01:00:00Z",
+      "end": "2026-09-22T01:30:00Z",
+      "status": "Moderate",
+      "label": "Demo event 3",
+      "notes": "Generated sample (seed 699)."
+    },
+    {
+      "id": "demo-03",
+      "row": "CIRCUS",
+      "start": "2026-09-22T06:30:00Z",
+      "end": "2026-09-22T08:30:00Z",
+      "status": "High",
+      "label": "Demo event 4",
+      "notes": "Generated sample (seed 699)."
+    },
+    {
+      "id": "demo-04",
+      "row": "EO",
+      "start": "2026-09-22T02:30:00Z",
+      "end": "2026-09-22T04:30:00Z",
+      "status": "No Concern",
+      "label": "Demo event 5",
+      "notes": "Generated sample (seed 699)."
+    },
+    {
+      "id": "demo-05",
+      "row": "SAR",
+      "start": "2026-09-22T20:00:00Z",
+      "end": "2026-09-22T20:30:00Z",
+      "status": "No Concern",
+      "label": "Demo event 6",
+      "notes": "Generated sample (seed 699)."
+    },
+    {
+      "id": "demo-06",
+      "row": "SAR",
+      "start": "2026-09-22T11:30:00Z",
+      "end": "2026-09-22T12:00:00Z",
+      "status": "Low",
+      "label": "Demo event 7",
+      "notes": "Generated sample (seed 699)."
+    },
+    {
+      "id": "demo-07",
+      "row": "EO",
+      "start": "2026-09-22T08:00:00Z",
+      "end": "2026-09-22T09:30:00Z",
+      "status": "No Concern",
+      "label": "Demo event 8",
+      "notes": "Generated sample (seed 699)."
+    }
+  ],
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint"
+    },
+    "Collected": {
+      "fill": "tint"
+    },
+    "High": {
+      "fill": "tint"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "tint"
+    },
+    "No Concern": {
+      "fill": "tint"
+    }
+  },
+  "daylight": {
+    "step_minutes": 10,
+    "elevations": [
+      -16.7,
+      -18.6,
+      -20.4,
+      -22.2,
+      -24.0,
+      -25.8,
+      -27.6,
+      -29.3,
+      -31.0,
+      -32.6,
+      -34.2,
+      -35.8,
+      -37.3,
+      -38.7,
+      -40.1,
+      -41.5,
+      -42.8,
+      -43.9,
+      -45.1,
+      -46.1,
+      -47.0,
+      -47.8,
+      -48.5,
+      -49.1,
+      -49.6,
+      -50.0,
+      -50.2,
+      -50.3,
+      -50.3,
+      -50.1,
+      -49.8,
+      -49.4,
+      -48.9,
+      -48.2,
+      -47.4,
+      -46.6,
+      -45.6,
+      -44.5,
+      -43.4,
+      -42.2,
+      -40.9,
+      -39.5,
+      -38.1,
+      -36.6,
+      -35.0,
+      -33.4,
+      -31.8,
+      -30.2,
+      -28.5,
+      -26.7,
+      -25.0,
+      -23.2,
+      -21.4,
+      -19.6,
+      -17.7,
+      -15.8,
+      -14.0,
+      -12.1,
+      -10.2,
+      -8.3,
+      -6.4,
+      -4.4,
+      -2.5,
+      -0.2,
+      1.6,
+      3.4,
+      5.2,
+      7.1,
+      9.0,
+      10.9,
+      12.7,
+      14.6,
+      16.5,
+      18.3,
+      20.1,
+      21.9,
+      23.7,
+      25.5,
+      27.2,
+      28.9,
+      30.6,
+      32.3,
+      33.9,
+      35.4,
+      36.9,
+      38.4,
+      39.8,
+      41.1,
+      42.4,
+      43.5,
+      44.6,
+      45.7,
+      46.6,
+      47.4,
+      48.1,
+      48.7,
+      49.2,
+      49.6,
+      49.8,
+      49.9,
+      49.9,
+      49.7,
+      49.4,
+      49.0,
+      48.5,
+      47.8,
+      47.1,
+      46.2,
+      45.2,
+      44.2,
+      43.1,
+      41.8,
+      40.5,
+      39.2,
+      37.8,
+      36.3,
+      34.8,
+      33.2,
+      31.6,
+      29.9,
+      28.2,
+      26.5,
+      24.8,
+      23.0,
+      21.2,
+      19.4,
+      17.5,
+      15.7,
+      13.8,
+      12.0,
+      10.1,
+      8.2,
+      6.3,
+      4.5,
+      2.7,
+      0.9,
+      -1.2,
+      -3.3,
+      -5.2,
+      -7.1,
+      -9.0,
+      -10.9,
+      -12.8,
+      -14.7,
+      -16.6
+    ],
+    "sun": {
+      "dawn": "2026-09-22T10:01:53Z",
+      "sunrise": "2026-09-22T10:29:23Z",
+      "sunset": "2026-09-22T22:36:37Z",
+      "dusk": "2026-09-22T23:04:10Z"
+    }
+  },
+  "markers": [],
+  "banners": [],
+  "label": "Simplified Sync Matrix"
+}
