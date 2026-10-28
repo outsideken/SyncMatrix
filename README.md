@@ -130,10 +130,24 @@ or shared link reopens the same view.
 | `theme=dark` | Dark palette |
 | `origin` | Dashboard origin trusted for `postMessage` (default: same origin only) |
 
-Messages: the dashboard may send `{type: "sync-matrix:select", matrix, locality, date}`
-or `{type: "sync-matrix:data", payload}`; the page sends `sync-matrix:ready`,
-`sync-matrix:selection` (when the user changes matrix/locality/date) and
-`sync-matrix:event-click` (with the event).
+Messages: the dashboard may send `{type: "sync-matrix:select", matrix, locality, date}`,
+`{type: "sync-matrix:data", payload}` or `{type: "sync-matrix:export", format: "png"|"svg"}`;
+the page sends `sync-matrix:ready`, `sync-matrix:selection` (when the user
+changes matrix/locality/date) and `sync-matrix:event-click` (with the event).
+
+## Export
+
+The toolbar's **Export: PNG | SVG** buttons download the chart as shown
+(current matrix, locality, day, Y-axis grouping and day/night setting), e.g.
+`abstracted_mid-north-40-n_2026-10-28_provider.png`. PNG is rendered at 2x for
+slides; SVG scales cleanly. Every export carries its provenance under the
+chart: the ICOD line (red, with DEMO DATA, for demo payloads) and
+`Data: <file> · Y-axis: <grouping> · Exported <time>`. The title and subtitle
+are always included, even with `title=0`.
+
+When the toolbar is hidden (`controls=0`), the dashboard can trigger an export
+with the `sync-matrix:export` message. Inside an `<iframe sandbox>`, downloads
+need `allow-downloads`.
 
 ## Publishing through Git
 
@@ -149,8 +163,10 @@ URLs need a token: don't put one in the iframe URL.
 same checks locally before pushing:
 
 ```bash
-.venv/bin/pip install -r requirements.txt pytest
-.venv/bin/python -m pytest -q tests
+.venv/bin/pip install -r requirements.txt -r requirements-dev.txt
+.venv/bin/python -m playwright install chromium
+.venv/bin/python -m pytest -q tests --ignore=tests/browser
+.venv/bin/python -m pytest -q tests/browser
 .venv/bin/python scripts/check_data.py
 .venv/bin/python scripts/check_demo_data.py
 .venv/bin/python scripts/check_js_syntax.py
@@ -162,3 +178,4 @@ same checks locally before pushing:
 | `check_data.py` | A `web/data` file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
 | `check_demo_data.py` | `web/data` out of date with `config/` or the exporter (rebuilds it into a temp folder and compares, ignoring timestamps) |
 | `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |
+| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed demo data: default view, layout (groups, 29 rows, 24 hour labels), localities north to south, ICOD badge, Group by Provider (same events), Partner always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |
