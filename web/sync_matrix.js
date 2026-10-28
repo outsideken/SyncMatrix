@@ -313,7 +313,7 @@
     const rows = groups.flatMap((g) => g.rows.map((r) => ({ ...r, group: g })));
     const bannerLevels = p.banners.length ? d3.max(p.banners, (b) => b.level) + 1 : 0;
 
-    // Group-only matrices (e.g. Partner: one row per group) show just the group
+    // Group-only matrices (e.g. Simplified: one row per group) show just the group
     // bar with a horizontal label; sub-group matrices (Abstracted) show a narrow
     // rotated group strip plus a label per row.
     const groupOnly = groups.every((g) => g.rows.length === 1);
@@ -625,7 +625,7 @@
 
   function updateGroupingControl(p) {
     const choices = groupingOptions(p);
-    // Only worth showing when there is something to switch between (e.g. not on Partner).
+    // Only worth showing when there is something to switch between (e.g. not on Simplified).
     groupingPicker.attr("hidden", choices.length > 1 ? null : true);
     if (choices.length < 2) return;
 

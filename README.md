@@ -40,7 +40,7 @@ Two matrices, defined in [`config/`](config/README.md):
   -3 OLCI, -3 SLSTR); NASA FIRMS (MODIS and VIIRS); Vantor (GeoEye-1, Legion,
   WorldView). Each grouping has its own colours (see config/README.md); event
   boxes follow the grouping shown.
-- **Partner Sync Matrix** (`config/partner.json`): the phenomenology groups
+- **Simplified Sync Matrix** (`config/simplified.json`): the phenomenology groups
   only (COM, IR, SAR, EO), drawn as grey bars without row labels. Always
   phenomenology, so the Group by control is hidden. The COM row's id is
   `CIRCUS`, which is what events reference.
@@ -71,7 +71,7 @@ Open the page with `?manifest=live/index.json` to view them.
 - **Events** are status `Predicted` (blue). Hover shows the highest elevation,
   the sun's elevation, the threshold and the orbit's NORAD number, epoch and
   download time.
-- **Partner** is built from the same passes, rolled up into EO / IR / SAR;
+- **Simplified** is built from the same passes, rolled up into EO / IR / SAR;
   overlapping passes become one event ("2 EO passes": names in the notes).
 - **ICOD** is the snapshot's download time (`icod_source: "celestrak"`), so the
   badge shows how old the orbits are, without "DEMO DATA". Exports add a
@@ -83,11 +83,11 @@ Open the page with `?manifest=live/index.json` to view them.
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt -c constraints.txt
-.venv/bin/python python/export_payload.py --config config/partner.json \
+.venv/bin/python python/export_payload.py --config config/simplified.json \
     --date 2026-10-27 --events events.json --out-dir web/data
 ```
 
-`--out-dir` writes `web/data/partner/mid-north-40-n/2026-10-27.json` (the
+`--out-dir` writes `web/data/simplified/mid-north-40-n/2026-10-27.json` (the
 matrix id is the config file name) and rebuilds `web/data/index.json` from the
 files on disk, so the new day shows up in the page's Date dropdown. After
 deleting old days, run `export_payload.py --rebuild-manifest web/data`.
@@ -151,7 +151,7 @@ reflected in the matrix. It is provenance, so:
 ## Embed
 
 ```html
-<iframe src="https://<host>/index.html?matrix=partner&refresh=60&title=0&origin=https://dashboard.example"
+<iframe src="https://<host>/index.html?matrix=simplified&refresh=60&title=0&origin=https://dashboard.example"
         style="width:100%;height:600px;border:0"></iframe>
 ```
 
@@ -214,7 +214,7 @@ Actions**. A Pages site is **public**, even from a private repo (Pages on a
 private repo needs a paid plan; private Pages sites need Enterprise Cloud).
 
 To embed it, point the dashboard's iframe at the Pages URL with the usual
-parameters, e.g. `https://outsideken.github.io/SyncMatrix/?matrix=partner&title=0`.
+parameters, e.g. `https://outsideken.github.io/SyncMatrix/?matrix=simplified&title=0`.
 
 ## Publishing through Git
 
@@ -252,8 +252,8 @@ same checks locally before pushing:
 
 | Check | What it catches |
 |---|---|
-| `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the late-October High Arctic, Sentinel-1 stays in its swath, Partner roll-up merges overlaps), config checks (missing title, duplicate rows, a grouping with different rows, bad banner times), ICOD rules (missing or future ICOD fails, demo is labelled), locality required, the `<matrix>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
+| `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the late-October High Arctic, Sentinel-1 stays in its swath, Simplified roll-up merges overlaps), config checks (missing title, duplicate rows, a grouping with different rows, bad banner times), ICOD rules (missing or future ICOD fails, demo is labelled), locality required, the `<matrix>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
 | `check_data.py` | A `web/data` (or `--live`: `web/live`) file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
 | `check_demo_data.py` | `web/data` out of date with `config/` or the exporter; with `--live`, `web/live` out of date with the newest committed TLE snapshot or the pass prediction (rebuilds into a temp folder and compares, ignoring timestamps) |
 | `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |
-| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed demo data: default view, layout (groups, 29 rows, 24 hour labels), localities north to south, ICOD badge, Group by Provider (same events), Partner always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |
+| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed demo data: default view, layout (groups, 28 rows, 24 hour labels), localities north to south, ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |
