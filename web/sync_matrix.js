@@ -531,13 +531,18 @@
     //--------------------------------------------------------------------------
 
     const footerY = plotHeight + bannerLevels * LAYOUT.bannerHeight + 17;
-    // ICOD is provenance: always shown, and flagged when missing or demo.
-    const icodText = plot.append("text").attr("class", "sm-icod").attr("y", footerY)
-      .classed("warn", !p.icod || p.icod_source === "demo")
-      .text(icodLabel(p));
-    icodText.append("title").text(ICOD_MEANING);
-    const icodWidth = icodText.node().getComputedTextLength();
+    // ICOD is provenance: always shown, and flagged when missing or demo. It
+    // lives in the toolbar badge; the footer carries it only when the toolbar
+    // is hidden (controls=0 or single-file mode), so it is never lost.
     updateIcodBadge(p);
+    let icodWidth = 0;
+    if (toolbar.property("hidden")) {
+      const icodText = plot.append("text").attr("class", "sm-icod").attr("y", footerY)
+        .classed("warn", !p.icod || p.icod_source === "demo")
+        .text(icodLabel(p));
+      icodText.append("title").text(ICOD_MEANING);
+      icodWidth = icodText.node().getComputedTextLength();
+    }
 
     const usedStatuses = Array.from(new Set(p.events.map((e) => e.status))).filter(Boolean);
     const legendItems = usedStatuses.map((s) => ({ label: s, color: p.status_colors[s] || FALLBACK_EVENT_COLOR }));
@@ -679,7 +684,9 @@
 
   function updateIcodBadge(p) {
     d3.select("#sm-icod-badge")
-      .text(p.icod ? "ICOD " + formatIcodShort(p.icod) + " · " + formatAge(p.icod) : "ICOD not provided")
+      .text(p.icod ? "ICOD " + formatIcodShort(p.icod) + " · " + formatAge(p.icod) +
+                     (p.icod_source === "demo" ? " · DEMO DATA" : "")
+                   : "ICOD not provided")
       .classed("warn", !p.icod || p.icod_source === "demo")
       .attr("title", ICOD_MEANING + (p.icod_source ? " Source: " + p.icod_source + "." : ""));
   }
