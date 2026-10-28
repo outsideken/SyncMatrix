@@ -231,7 +231,7 @@ def test_boxes_take_their_phenomenology_colour(page, base_url, errors):
             if key in label:
                 assert stroke == colour, label
                 seen.add(colour)
-        assert dash == "4 3"            # Predicted = dashed
-        assert fill in ("#c6dbef", "#fcbba1", "#d9d9d9")  # Predicted = light tint
+        assert dash is None             # solid outline
+        assert fill in ("#c6dbef", "#fcbba1", "#d9d9d9")  # light phenomenology tint
     assert seen == {"#08519c", "#cb181d", "#525252"}
     assert errors == []
