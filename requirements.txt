@@ -1,4 +1,6 @@
-# Runtime dependencies of python/export_payload.py and python/predict_passes.py
-astral
-timezonefinder
-skyfield
+# Runtime dependencies of python/export_payload.py and python/predict_passes.py.
+# Pinned: pass predictions depend on the exact Skyfield/sgp4/NumPy versions, and
+# CI checks web/live against a fresh build. Transitive versions: constraints.txt.
+astral==3.2
+timezonefinder==9.2.0
+skyfield==1.55
