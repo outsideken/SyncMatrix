@@ -4,7 +4,7 @@
   "subtitle": "Mid-north 40\u00b0N \u00b7 28 October 2026",
   "icod": "2026-10-28T12:00:00Z",
   "icod_source": "demo",
-  "generated": "2026-10-28T18:28:50Z",
+  "generated": "2026-10-28T18:31:45Z",
   "locality": {
     "id": "mid-north-40-n",
     "name": "Mid-north 40\u00b0N",
@@ -24,16 +24,8 @@
       "color": "#525252",
       "rows": [
         {
-          "id": "WorldView-1",
-          "label": "WorldView-1"
-        },
-        {
-          "id": "WorldView-2",
-          "label": "WorldView-2"
-        },
-        {
-          "id": "WorldView-3",
-          "label": "WorldView-3"
+          "id": "GeoEye-1",
+          "label": "GeoEye-1"
         },
         {
           "id": "Legion-1",
@@ -60,16 +52,24 @@
           "label": "Legion-6"
         },
         {
-          "id": "GeoEye-1",
-          "label": "GeoEye-1"
-        },
-        {
           "id": "Sentinel-2",
           "label": "Sentinel-2"
         },
         {
           "id": "Sentinel-3 OLCI",
           "label": "Sentinel-3 OLCI"
+        },
+        {
+          "id": "WorldView-1",
+          "label": "WorldView-1"
+        },
+        {
+          "id": "WorldView-2",
+          "label": "WorldView-2"
+        },
+        {
+          "id": "WorldView-3",
+          "label": "WorldView-3"
         }
       ]
     },
@@ -79,16 +79,8 @@
       "color": "#525252",
       "rows": [
         {
-          "id": "Terra MODIS",
-          "label": "Terra MODIS"
-        },
-        {
           "id": "Aqua MODIS",
           "label": "Aqua MODIS"
-        },
-        {
-          "id": "S-NPP VIIRS",
-          "label": "S-NPP VIIRS"
         },
         {
           "id": "NOAA-20 VIIRS",
@@ -99,8 +91,16 @@
           "label": "NOAA-21 VIIRS"
         },
         {
+          "id": "S-NPP VIIRS",
+          "label": "S-NPP VIIRS"
+        },
+        {
           "id": "Sentinel-3 SLSTR",
           "label": "Sentinel-3 SLSTR"
+        },
+        {
+          "id": "Terra MODIS",
+          "label": "Terra MODIS"
         }
       ]
     },
@@ -109,10 +109,6 @@
       "label": "SAR",
       "color": "#525252",
       "rows": [
-        {
-          "id": "Sentinel-1",
-          "label": "Sentinel-1"
-        },
         {
           "id": "Capella-11",
           "label": "Capella-11"
@@ -152,6 +148,10 @@
         {
           "id": "Capella-20",
           "label": "Capella-20"
+        },
+        {
+          "id": "Sentinel-1",
+          "label": "Sentinel-1"
         }
       ]
     }
@@ -159,7 +159,7 @@
   "events": [
     {
       "id": "demo-00",
-      "row": "NOAA-20 VIIRS",
+      "row": "S-NPP VIIRS",
       "start": "2026-10-28T17:00:00Z",
       "end": "2026-10-28T18:30:00Z",
       "status": "High",
@@ -168,7 +168,7 @@
     },
     {
       "id": "demo-01",
-      "row": "Sentinel-3 OLCI",
+      "row": "WorldView-3",
       "start": "2026-10-28T03:00:00Z",
       "end": "2026-10-28T04:00:00Z",
       "status": "High",
@@ -177,7 +177,7 @@
     },
     {
       "id": "demo-02",
-      "row": "Sentinel-3 OLCI",
+      "row": "WorldView-3",
       "start": "2026-10-28T20:00:00Z",
       "end": "2026-10-28T22:00:00Z",
       "status": "No Concern",
@@ -186,7 +186,7 @@
     },
     {
       "id": "demo-03",
-      "row": "Capella-15",
+      "row": "Capella-16",
       "start": "2026-10-28T18:00:00Z",
       "end": "2026-10-28T20:00:00Z",
       "status": "Low",
@@ -195,7 +195,7 @@
     },
     {
       "id": "demo-04",
-      "row": "Capella-15",
+      "row": "Capella-16",
       "start": "2026-10-28T02:30:00Z",
       "end": "2026-10-28T04:30:00Z",
       "status": "No Concern",
@@ -204,7 +204,7 @@
     },
     {
       "id": "demo-05",
-      "row": "Sentinel-2",
+      "row": "WorldView-2",
       "start": "2026-10-28T11:30:00Z",
       "end": "2026-10-28T12:00:00Z",
       "status": "Moderate",
@@ -213,7 +213,7 @@
     },
     {
       "id": "demo-06",
-      "row": "Capella-16",
+      "row": "Capella-17",
       "start": "2026-10-28T05:00:00Z",
       "end": "2026-10-28T05:30:00Z",
       "status": "Moderate",
@@ -222,7 +222,7 @@
     },
     {
       "id": "demo-07",
-      "row": "Capella-12",
+      "row": "Capella-13",
       "start": "2026-10-28T00:30:00Z",
       "end": "2026-10-28T01:30:00Z",
       "status": "Low",
@@ -231,7 +231,7 @@
     },
     {
       "id": "demo-08",
-      "row": "Sentinel-3 SLSTR",
+      "row": "Terra MODIS",
       "start": "2026-10-28T06:30:00Z",
       "end": "2026-10-28T08:30:00Z",
       "status": "Low",
@@ -240,7 +240,7 @@
     },
     {
       "id": "demo-09",
-      "row": "Legion-4",
+      "row": "Legion-6",
       "start": "2026-10-28T09:30:00Z",
       "end": "2026-10-28T10:30:00Z",
       "status": "High",
@@ -249,7 +249,7 @@
     },
     {
       "id": "demo-10",
-      "row": "NOAA-21 VIIRS",
+      "row": "Sentinel-3 SLSTR",
       "start": "2026-10-28T20:30:00Z",
       "end": "2026-10-28T21:30:00Z",
       "status": "Low",
@@ -258,7 +258,7 @@
     },
     {
       "id": "demo-11",
-      "row": "Capella-19",
+      "row": "Capella-20",
       "start": "2026-10-28T02:30:00Z",
       "end": "2026-10-28T03:00:00Z",
       "status": "Low",
@@ -267,7 +267,7 @@
     },
     {
       "id": "demo-12",
-      "row": "Legion-1",
+      "row": "Legion-3",
       "start": "2026-10-28T11:30:00Z",
       "end": "2026-10-28T12:30:00Z",
       "status": "Low",
@@ -276,7 +276,7 @@
     },
     {
       "id": "demo-13",
-      "row": "GeoEye-1",
+      "row": "WorldView-1",
       "start": "2026-10-28T18:00:00Z",
       "end": "2026-10-28T18:30:00Z",
       "status": "No Concern",
@@ -285,7 +285,7 @@
     },
     {
       "id": "demo-14",
-      "row": "Legion-4",
+      "row": "Legion-6",
       "start": "2026-10-28T04:00:00Z",
       "end": "2026-10-28T05:30:00Z",
       "status": "High",
@@ -294,7 +294,7 @@
     },
     {
       "id": "demo-15",
-      "row": "Aqua MODIS",
+      "row": "NOAA-20 VIIRS",
       "start": "2026-10-28T02:30:00Z",
       "end": "2026-10-28T03:00:00Z",
       "status": "Moderate",
@@ -303,7 +303,7 @@
     },
     {
       "id": "demo-16",
-      "row": "Legion-1",
+      "row": "Legion-3",
       "start": "2026-10-28T19:30:00Z",
       "end": "2026-10-28T20:00:00Z",
       "status": "No Concern",
@@ -312,7 +312,7 @@
     },
     {
       "id": "demo-17",
-      "row": "Capella-20",
+      "row": "Sentinel-1",
       "start": "2026-10-28T15:00:00Z",
       "end": "2026-10-28T16:00:00Z",
       "status": "High",
@@ -321,7 +321,7 @@
     },
     {
       "id": "demo-18",
-      "row": "Sentinel-3 SLSTR",
+      "row": "Terra MODIS",
       "start": "2026-10-28T00:30:00Z",
       "end": "2026-10-28T02:00:00Z",
       "status": "No Concern",
@@ -330,7 +330,7 @@
     },
     {
       "id": "demo-19",
-      "row": "NOAA-20 VIIRS",
+      "row": "S-NPP VIIRS",
       "start": "2026-10-28T03:00:00Z",
       "end": "2026-10-28T04:30:00Z",
       "status": "No Concern",
