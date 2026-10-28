@@ -197,11 +197,16 @@ need `allow-downloads`.
 
 `.github/workflows/pages.yml` publishes `web/` to GitHub Pages on every push
 to `main` that touches `web/` (or by hand from the Actions tab). It first
-checks that every JSON file parses and that every file listed in
-`index.json` exists. Once enabled, the page is at:
+runs `scripts/check_data.py` on both libraries (`web/data` and `web/live`).
+Once enabled, the page is at:
 
-- `https://outsideken.github.io/SyncMatrix/`: the Sync Matrix
+- `https://outsideken.github.io/SyncMatrix/`: the Sync Matrix (demo library)
+- `https://outsideken.github.io/SyncMatrix/?manifest=live/index.json`: predicted passes
 - `https://outsideken.github.io/SyncMatrix/demo_dashboard.html`: the iframe test page
+
+Everything in `web/` is published: the page, the demo library (neutral sites,
+generated events) and the predicted-pass library (public Celestrak orbits over
+the same neutral sites).
 
 One-time setup: **Settings → Pages → Build and deployment → Source: GitHub
 Actions**. A Pages site is **public**, even from a private repo (Pages on a
