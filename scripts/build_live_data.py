@@ -17,6 +17,7 @@ a few days from the orbit epochs, which is why the days follow the snapshot.
 
 import argparse
 import json
+import shutil
 import sys
 from datetime import date, timedelta
 from pathlib import Path
@@ -81,6 +82,11 @@ def main() -> int:
     simplified_row = {g["name"]: ep.row_id(g["rows"][0]) for g in simplified["groups"]}
     source = SOURCE % tle_path.name
     first_day = date.fromisoformat(snapshot["fetched"][:10])
+
+    # The library is rebuilt whole from one snapshot: drop the previous days
+    # (they were predicted from older orbits) instead of keeping them around.
+    for old in (out_dir / "abstracted", out_dir / "simplified"):
+        shutil.rmtree(old, ignore_errors=True)
 
     for name, point in SITES:
         locality = {"name": name, "point": point}
