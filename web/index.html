@@ -15,11 +15,22 @@
       <label>Date <select id="sm-date"></select></label>
       <button type="button" id="sm-newer" aria-label="Next day">&#9654;</button>
     </span>
+    <span class="sm-grouping" id="sm-grouping" hidden>
+      <span id="sm-grouping-label">Group by</span>
+      <span class="sm-segmented" role="radiogroup" aria-labelledby="sm-grouping-label"></span>
+    </span>
     <label class="sm-switch">
       <input type="checkbox" id="sm-daylight-toggle" role="switch" checked>
       <span class="sm-switch-track" aria-hidden="true"></span>
       Day/night shading
     </label>
+    <span class="sm-grouping" id="sm-export">
+      <span id="sm-export-label">Export</span>
+      <span class="sm-segmented" role="group" aria-labelledby="sm-export-label">
+        <button type="button" data-format="png" title="Download as PNG (for slides)">PNG</button>
+        <button type="button" data-format="svg" title="Download as SVG (scalable)">SVG</button>
+      </span>
+    </span>
     <span class="sm-icod-badge" id="sm-icod-badge"></span>
   </form>
   <div id="sync-matrix" class="sync-matrix">

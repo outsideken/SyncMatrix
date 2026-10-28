@@ -17,6 +17,8 @@
  *   date=<Y-M-D>    Initial day (default: newest for that locality).
  *   controls=0      Hide the dropdowns (e.g. the dashboard drives selection itself).
  *   daylight=0      Start with day/night shading switched off (toolbar switch).
+ *   group=<id>      Y-axis grouping, e.g. group=provider, when the payload offers
+ *                   alternatives ("Group by" control; default: the payload's own).
  *   icodmark=1      Draw the ICOD line and hatch the period after it (off by
  *                   default; ICOD is always shown in the badge and footer).
  *   data=<url>      Single-file mode. Works with a relative path, GitHub Pages
@@ -31,6 +33,7 @@
  * postMessage protocol
  *   in : {type: "sync-matrix:data", payload: {...}}       replace the data
  *   in : {type: "sync-matrix:select", matrix, locality, date}  choose from the manifest
+ *   in : {type: "sync-matrix:export", format: "png"|"svg"}  download the chart
  *   out: {type: "sync-matrix:ready"}                       sent once on load
  *   out: {type: "sync-matrix:selection", matrix, locality, date}  selection changed
  *   out: {type: "sync-matrix:event-click", event: {...}}  user clicked an event
@@ -49,6 +52,7 @@
     manifestUrl: params.get("manifest") || "data/index.json",
     showControls: params.get("controls") !== "0",
     showDaylight: params.get("daylight") !== "0",
+    grouping: params.get("group"),
     showIcodMark: params.get("icodmark") === "1",
     refreshSeconds: Math.max(0, Number(params.get("refresh")) || 0),
     showTitle: params.get("title") !== "0",
@@ -66,9 +70,12 @@
     rowMax: 44,
     bannerHeight: 24,
     footerHeight: 26,
-    minLabelSpacing: 44,
+    hourLabelGap: 6,
   };
-  const FALLBACK_EVENT_COLOR = "#ff8c00";
+  // Event boxes: colour = the row's phenomenology (its group in the payload's
+  // own grouping); status = style (dash and fill), from the payload's
+  // status_styles. Neutral ColorBrewer Greys when a group has no colour.
+  const NEUTRAL = { color: "#525252", tint: "#d9d9d9" };
 
   const parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
   const formatTick = d3.utcFormat("%H%MZ");
@@ -96,6 +103,7 @@
   let manifest = null;    // library mode only
   let selection = { matrix: params.get("matrix"), locality: params.get("locality"), date: params.get("date") };
   let dataUrl = options.dataUrl;
+  let dataSource = options.dataUrl; // shown on exported images as provenance
 
   //============================================================================
   // DATA
@@ -121,7 +129,7 @@
       } : null,
       markers: (raw.markers || []).map((m) => ({ ...m, time: t(m.time) })),
       banners: (raw.banners || []).map((b) => ({ ...b, start: t(b.start), end: t(b.end) })),
-      status_colors: raw.status_colors || {},
+      status_styles: raw.status_styles || {},
     };
   }
 
@@ -175,15 +183,18 @@
 
   // Each file is one matrix, one locality, one day. Changing one choice keeps
   // the others where that combination exists, else falls back to the first
-  // locality / newest day.
+  // locality and to today (or the newest day if today has no file).
   function select(want, { notify = true } = {}) {
     const matrix = matrixById(want.matrix);
     const locality = localityById(matrix, want.locality);
-    const day = locality.dates.find((d) => d.date === want.date) || locality.dates[0];
+    const today = new Date().toISOString().slice(0, 10);
+    const day = locality.dates.find((d) => d.date === want.date) ||
+      locality.dates.find((d) => d.date === today) || locality.dates[0];
     selection = { matrix: matrix.id, locality: locality.id, date: day.date };
 
     // Manifest paths are relative to the manifest, not to this page.
     dataUrl = new URL(day.file, new URL(options.manifestUrl, window.location.href)).href;
+    dataSource = new URL(dataUrl).pathname;
 
     updateControls();
     rememberSelection();
@@ -295,26 +306,35 @@
     // Layout
     //--------------------------------------------------------------------------
 
-    const rows = p.groups.flatMap((g) => g.rows.map((r) => ({ ...r, group: g })));
+    // The Y-axis grouping chosen in the "Group by" control (same rows either way).
+    const groups = activeGroups(p);
+    const rows = groups.flatMap((g) => g.rows.map((r) => ({ ...r, group: g })));
     const bannerLevels = p.banners.length ? d3.max(p.banners, (b) => b.level) + 1 : 0;
 
     // Group-only matrices (e.g. Partner: one row per group) show just the group
     // bar with a horizontal label; sub-group matrices (Abstracted) show a narrow
     // rotated group strip plus a label per row.
-    const groupOnly = p.groups.every((g) => g.rows.length === 1);
+    const groupOnly = groups.every((g) => g.rows.length === 1);
     const stripWidth = groupOnly
-      ? measureLabelWidth(p.groups.map((g) => g.label), "sm-group-label") + 2 * LAYOUT.labelGap
+      ? measureLabelWidth(groups.map((g) => g.label), "sm-group-label") + 2 * LAYOUT.labelGap
       : LAYOUT.groupStripWidth;
 
-    const top = (options.showTitle ? LAYOUT.titleHeight : 6) + LAYOUT.axisHeight;
     const left = stripWidth + LAYOUT.labelGap +
       (groupOnly ? 0 : measureLabelWidth(rows.map((r) => r.label)) + LAYOUT.labelGap);
     const right = LAYOUT.marginRight;
     const bottom = bannerLevels * LAYOUT.bannerHeight + LAYOUT.footerHeight;
+    const plotWidth = Math.max(100, width - left - right);
 
+    // Every hour is labelled ("0000Z", "0100Z", ...). When the frame is too narrow
+    // for them side by side, the labels turn vertical instead of being dropped.
+    const hours = d3.utcHour.range(p.window.start, p.window.end);
+    const hourLabelWidth = measureLabelWidth(hours.map(formatTick), "sm-axis-label");
+    const rotateHours = plotWidth / Math.max(hours.length, 1) < hourLabelWidth + LAYOUT.hourLabelGap;
+    const axisHeight = rotateHours ? hourLabelWidth + 12 : LAYOUT.axisHeight;
+
+    const top = (options.showTitle ? LAYOUT.titleHeight : 6) + axisHeight;
     const rowHeight = Math.max(LAYOUT.rowMin,
       Math.min(LAYOUT.rowMax, (height - top - bottom) / Math.max(rows.length, 1)));
-    const plotWidth = Math.max(100, width - left - right);
     const plotHeight = rowHeight * rows.length;
     const svgHeight = top + plotHeight + bottom;
 
@@ -341,17 +361,20 @@
     const plot = svg.append("g").attr("transform", `translate(${left},${top})`);
 
     //--------------------------------------------------------------------------
-    // Time axis (labels thinned to fit the width)
+    // Time axis: a label on every hour; the grid below keeps the finer ticks
     //--------------------------------------------------------------------------
 
     const tickMinutes = p.window.tick_minutes || 30;
     const ticks = d3.utcMinute.every(tickMinutes).range(p.window.start, p.window.end);
-    const pxPerTick = plotWidth / ticks.length;
-    const labelEvery = Math.max(1, Math.ceil(LAYOUT.minLabelSpacing / pxPerTick));
-    const labelled = ticks.filter((_, i) => i % labelEvery === 0);
 
-    plot.append("g").attr("class", "sm-axis")
-      .call(d3.axisTop(x).tickValues(labelled).tickFormat(formatTick).tickSize(4).tickPadding(3));
+    const axis = plot.append("g").attr("class", "sm-axis")
+      .call(d3.axisTop(x).tickValues(hours).tickFormat(formatTick).tickSize(4).tickPadding(3));
+    if (rotateHours) {
+      axis.selectAll("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", 7).attr("y", 0).attr("dy", "0.35em")
+        .attr("text-anchor", "start");
+    }
 
     //--------------------------------------------------------------------------
     // Background: night/twilight shading, grid, group dividers
@@ -359,6 +382,7 @@
 
     plot.append("rect").attr("class", "sm-plot-bg").attr("width", plotWidth).attr("height", plotHeight);
     updateDaylightToggle(p);
+    updateGroupingControl(p);
     if (p.daylight && options.showDaylight) drawDaylight(svg, plot, p, x, plotWidth, plotHeight);
 
     // After ICOD the picture may be incomplete: hatch from the ICOD to the window end.
@@ -388,7 +412,7 @@
       .attr("y1", (i) => i * rowHeight).attr("y2", (i) => i * rowHeight);
 
     let offset = 0;
-    const groupSpans = p.groups.map((g) => {
+    const groupSpans = groups.map((g) => {
       const span = { group: g, y: offset * rowHeight, h: g.rows.length * rowHeight };
       offset += g.rows.length;
       return span;
@@ -438,13 +462,14 @@
     //--------------------------------------------------------------------------
 
     const pad = Math.min(4, rowHeight * 0.15);
-    const colorOf = (e) => p.status_colors[e.status] || FALLBACK_EVENT_COLOR;
     // Name events by what the Y-axis shows: the group (e.g. COM) in group-only
     // matrices, else the row. e.row stays the data's row id (e.g. CIRCUS).
     const rowById = new Map(rows.map((r) => [r.id, r]));
+    const phenomenologyOf = new Map(p.groups.flatMap((g) => g.rows.map((r) => [r.id, g])));
     const visibleEvents = p.events.filter((e) => rowY.has(e.row)).map((e) => {
       const r = rowById.get(e.row);
-      return { ...e, group: r.group.label, where: groupOnly ? r.group.label : r.label };
+      return { ...e, group: r.group.label, where: groupOnly ? r.group.label : r.label,
+               phenomenology: phenomenologyOf.get(e.row) };
     });
 
     const events = plot.append("g").selectAll("g").data(visibleEvents).join("g")
@@ -459,9 +484,9 @@
       .attr("width", (e) => Math.max(6, x(Math.min(e.end, p.window.end)) - x(Math.max(e.start, p.window.start)) - 3))
       .attr("height", rowHeight - pad * 2)
       .attr("rx", 2)
-      .attr("stroke", colorOf)
-      .attr("fill", colorOf)
-      .attr("fill-opacity", 0.14);
+      .each(function (e) {
+        styleBox(d3.select(this), e.phenomenology || NEUTRAL, p.status_styles[e.status]);
+      });
 
     events
       .on("mouseenter focus", (ev, e) => showTooltip(ev, e))
@@ -531,16 +556,22 @@
     //--------------------------------------------------------------------------
 
     const footerY = plotHeight + bannerLevels * LAYOUT.bannerHeight + 17;
-    // ICOD is provenance: always shown, and flagged when missing or demo.
-    const icodText = plot.append("text").attr("class", "sm-icod").attr("y", footerY)
-      .classed("warn", !p.icod || p.icod_source === "demo")
-      .text(icodLabel(p));
-    icodText.append("title").text(ICOD_MEANING);
-    const icodWidth = icodText.node().getComputedTextLength();
+    // ICOD is provenance: always shown, and flagged when missing or demo. It
+    // lives in the toolbar badge; the footer carries it only when the toolbar
+    // is hidden (controls=0 or single-file mode), so it is never lost.
     updateIcodBadge(p);
+    let icodWidth = 0;
+    if (toolbar.property("hidden")) {
+      const icodText = plot.append("text").attr("class", "sm-icod").attr("y", footerY)
+        .classed("warn", !p.icod || p.icod_source === "demo")
+        .text(icodLabel(p));
+      icodText.append("title").text(ICOD_MEANING);
+      icodWidth = icodText.node().getComputedTextLength();
+    }
 
     const usedStatuses = Array.from(new Set(p.events.map((e) => e.status))).filter(Boolean);
-    const legendItems = usedStatuses.map((s) => ({ label: s, color: p.status_colors[s] || FALLBACK_EVENT_COLOR }));
+    // Status legend in neutral grey: colour already means phenomenology (the strips).
+    const legendItems = usedStatuses.map((s) => ({ label: s, style: p.status_styles[s] }));
     if (afterIcod) legendItems.unshift({ label: "After ICOD", hatch: true });
 
     const legend = plot.append("g").attr("class", "sm-legend").attr("transform", `translate(${plotWidth},${footerY})`);
@@ -556,7 +587,8 @@
         swatch.attr("fill", "url(#sm-hatch)").attr("stroke", "var(--sm-icod)").attr("stroke-width", 1);
         item.append("title").text(ICOD_MEANING);
       } else {
-        swatch.attr("stroke", d.color).attr("stroke-width", 2).attr("fill", d.color).attr("fill-opacity", 0.14);
+        styleBox(swatch, NEUTRAL, d.style);
+        swatch.attr("stroke-width", 2);
       }
       lx -= 14;
     });
@@ -566,6 +598,53 @@
       legend.attr("transform", `translate(${plotWidth},${footerY + 18})`);
       svg.attr("height", svgHeight + 18);
     }
+  }
+
+  //============================================================================
+  // GROUP BY (Y-axis grouping)
+  //============================================================================
+
+  // A payload groups its rows one way ("groups", named by "grouping", e.g.
+  // Phenomenology) and may offer others ("alt_groupings", e.g. Provider) over
+  // the same rows. The choice is a URL parameter (group=provider), so it
+  // survives changes of matrix, locality and date.
+
+  const groupingPicker = d3.select("#sm-grouping");
+
+  function groupingOptions(p) {
+    const primary = { id: slug(p.grouping || "default"), label: p.grouping || "Default", groups: p.groups };
+    return [primary, ...(p.alt_groupings || [])];
+  }
+
+  function activeGroups(p) {
+    const chosen = (p.alt_groupings || []).find((g) => g.id === options.grouping);
+    return chosen ? chosen.groups : p.groups;
+  }
+
+  function updateGroupingControl(p) {
+    const choices = groupingOptions(p);
+    // Only worth showing when there is something to switch between (e.g. not on Partner).
+    groupingPicker.attr("hidden", choices.length > 1 ? null : true);
+    if (choices.length < 2) return;
+
+    const active = (choices.find((c) => c.id === options.grouping) || choices[0]).id;
+    groupingPicker.select(".sm-segmented").selectAll("button").data(choices, (c) => c.id).join("button")
+      .attr("type", "button")
+      .attr("role", "radio")
+      .attr("aria-checked", (c) => String(c.id === active))
+      .text((c) => c.label)
+      .on("click", (ev, c) => {
+        options.grouping = c.id === choices[0].id ? null : c.id;
+        const url = new URL(window.location.href);
+        if (options.grouping) url.searchParams.set("group", options.grouping);
+        else url.searchParams.delete("group");
+        window.history.replaceState(null, "", url);
+        render();
+      });
+  }
+
+  function slug(text) {
+    return String(text).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   }
 
   //============================================================================
@@ -634,7 +713,17 @@
       `<span class="muted">${formatFull(e.start)} – ${formatTick(e.end)}</span>`,
     ];
     if (e.notes) parts.push(`<span class="muted">${escapeHtml(e.notes)}</span>`);
-    tooltip.html(parts.join("<br>")).attr("hidden", null);
+    let html = parts.join("<br>");
+    const g = e.phenomenology;
+    const prov = g && current && current.provenance && current.provenance[g.id];
+    if (prov) {
+      const lines = [`<strong>${escapeHtml(g.label)} provenance</strong>`, escapeHtml(prov.source || "Source not given"),
+                     prov.icod ? "ICOD " + formatIcod(parseTime(prov.icod)) + " (" + formatAge(parseTime(prov.icod)) + ")"
+                               : "ICOD not provided"];
+      if (prov.notes) lines.push(escapeHtml(prov.notes));
+      html += `<div class="sm-tooltip-provenance" style="border-left-color:${g.color || "#525252"}">${lines.join("<br>")}</div>`;
+    }
+    tooltip.html(html).attr("hidden", null);
     moveTooltip(ev);
   }
 
@@ -671,17 +760,48 @@
     return Math.floor(hours / 24) + "d " + (hours % 24) + "h ago";
   }
 
+  // The oldest ICOD across phenomenologies, so the badge, the footer and the
+  // export's first line agree.
   function icodLabel(p) {
-    if (!p.icod) return "ICOD: not provided — data currency unknown";
-    return "ICOD: " + formatIcod(p.icod) + " (" + formatAge(p.icod) + ")" +
+    const icod = oldestIcod(p);
+    if (!icod) return "ICOD: not provided — data currency unknown";
+    return "ICOD: " + formatIcod(icod) + " (" + formatAge(icod) + ")" +
       (p.icod_source === "demo" ? " · DEMO DATA" : "");
   }
 
+  // Phenomenologies with their provenance, in the payload's group order.
+  function phenomenologyProvenance(p) {
+    return (p.groups || []).filter((g) => p.provenance && p.provenance[g.id])
+      .map((g) => ({ group: g, prov: p.provenance[g.id] }));
+  }
+
+  function oldestIcod(p) {
+    const icods = phenomenologyProvenance(p).map((x) => x.prov.icod).filter(Boolean).map(parseTime);
+    return icods.length ? d3.min(icods) : p.icod;
+  }
+
   function updateIcodBadge(p) {
+    const icod = oldestIcod(p);
+    const each = phenomenologyProvenance(p).map((x) => x.group.label + ": " +
+      (x.prov.icod ? formatIcodShort(parseTime(x.prov.icod)) : "none") + (x.prov.source ? " (" + x.prov.source + ")" : ""));
     d3.select("#sm-icod-badge")
-      .text(p.icod ? "ICOD " + formatIcodShort(p.icod) + " · " + formatAge(p.icod) : "ICOD not provided")
-      .classed("warn", !p.icod || p.icod_source === "demo")
-      .attr("title", ICOD_MEANING + (p.icod_source ? " Source: " + p.icod_source + "." : ""));
+      .text(icod ? "ICOD " + formatIcodShort(icod) + " · " + formatAge(icod) +
+                   (p.icod_source === "demo" ? " · DEMO DATA" : "")
+                 : "ICOD not provided")
+      .classed("warn", !icod || p.icod_source === "demo")
+      .attr("title", ICOD_MEANING + (each.length ? " Oldest shown. " + each.join("; ") + "." :
+                                     p.icod_source ? " Source: " + p.icod_source + "." : ""));
+  }
+
+  // Fill: "solid" (the colour), "tint" (the light ramp colour), "none".
+  function styleBox(sel, group, style) {
+    const st = style || { fill: "tint" };
+    sel.attr("stroke", group.color || NEUTRAL.color)
+      .attr("stroke-width", null)
+      .attr("stroke-dasharray", st.dash || null)
+      .attr("fill", st.fill === "solid" ? group.color || NEUTRAL.color
+                  : st.fill === "none" ? "none" : group.tint || NEUTRAL.tint)
+      .attr("fill-opacity", st.fill === "solid" ? 0.8 : st.fill === "none" ? null : 0.9);
   }
 
   function readableInk(background) {
@@ -692,6 +812,163 @@
   function escapeHtml(text) {
     return String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
+
+  //============================================================================
+  // EXPORT (PNG / SVG for briefings)
+  //============================================================================
+
+  // The exported image is the chart as drawn, plus its provenance: title and
+  // subtitle (even when title=0 hides them on the page), the ICOD, the data
+  // file, the Y-axis grouping and the export time. Styles are copied inline so
+  // the image looks the same outside the page (CSS classes and variables do not
+  // travel with an SVG file).
+
+  const EXPORT_STYLES = ["fill", "fill-opacity", "stroke", "stroke-width", "stroke-dasharray",
+    "stroke-opacity", "opacity", "font-family", "font-size", "font-weight", "letter-spacing",
+    "stop-color", "stop-opacity", "display"];
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const formatExportTime = d3.utcFormat("%d %b %Y @ %H%MZ");
+
+  function exportFileName(ext) {
+    const p = current;
+    const parts = manifest
+      ? [selection.matrix, selection.locality, selection.date]
+      : [slug(p.title || "sync-matrix"), p.locality && p.locality.id, d3.utcFormat("%Y-%m-%d")(p.window.start)];
+    const grouping = (groupingOptions(p).find((c) => c.id === options.grouping) || groupingOptions(p)[0]).id;
+    if ((p.alt_groupings || []).length) parts.push(grouping);
+    return parts.filter(Boolean).join("_") + "." + ext;
+  }
+
+  function exportSvgText() {
+    const live = container.select("svg.sm-root").node();
+    if (!live || !current) return null;
+    const p = current;
+    const clone = live.cloneNode(true);
+
+    // Inline the computed styles, element by element (clone and live match 1:1).
+    const liveEls = [live, ...live.querySelectorAll("*")];
+    const cloneEls = [clone, ...clone.querySelectorAll("*")];
+    liveEls.forEach((el, i) => {
+      const cs = getComputedStyle(el);
+      // Replace any style attribute (some use var(--…)) with resolved values.
+      cloneEls[i].setAttribute("style", EXPORT_STYLES.map((k) => k + ":" + cs.getPropertyValue(k)).join(";"));
+    });
+
+    const width = +live.getAttribute("width");
+    const height = +live.getAttribute("height");
+    const header = options.showTitle ? 0 : 44;
+    const phenomenologyLines = exportProvenanceLines(p);
+    const footer = 44 + phenomenologyLines.length * 15;
+    const ink = getComputedStyle(document.body).color;
+    const font = getComputedStyle(document.body).fontFamily;
+
+    const chart = document.createElementNS(SVG_NS, "g");
+    chart.setAttribute("transform", `translate(0,${header})`);
+    while (clone.firstChild) chart.appendChild(clone.firstChild);
+
+    const out = d3.select(clone)
+      .attr("xmlns", SVG_NS)
+      .attr("width", width).attr("height", height + header + footer)
+      .attr("viewBox", `0 0 ${width} ${height + header + footer}`)
+      .attr("style", `font-family:${font}`);
+    out.append("rect").attr("width", "100%").attr("height", "100%")
+      .attr("fill", getComputedStyle(document.body).backgroundColor);
+    out.node().appendChild(chart);
+
+    if (header) {
+      out.append("text").attr("x", width / 2).attr("y", 18).attr("text-anchor", "middle")
+        .attr("style", `fill:${ink};font-size:15px;font-weight:700`).text(p.title || "");
+      out.append("text").attr("x", width / 2).attr("y", 34).attr("text-anchor", "middle")
+        .attr("style", `fill:${ink};font-size:12px;font-weight:600;opacity:0.7`).text(p.subtitle || "");
+    }
+
+    const grouping = (groupingOptions(p).find((c) => c.id === options.grouping) || groupingOptions(p)[0]).label;
+    const provenance = [
+      icodLabel(p),
+      [p.source ? "Source: " + p.source : null,
+       dataSource ? "Data: " + dataSource : null,
+       (p.alt_groupings || []).length ? "Y-axis: " + grouping : null,
+       "Exported " + formatExportTime(new Date())].filter(Boolean).join(" · "),
+    ];
+    out.selectAll("text.sm-export-provenance").data(provenance).join("text")
+      .attr("class", "sm-export-provenance")
+      .attr("x", 8).attr("y", (_, i) => height + header + 18 + i * 15)
+      .attr("style", (_, i) => `fill:${i === 0 && (!p.icod || p.icod_source === "demo") ? "#cb181d" : ink};` +
+        `font-size:11px;font-weight:${i === 0 ? 700 : 400}`)
+      .text((d) => d);
+
+    // Per-phenomenology provenance (what the legacy banners carried), colour-keyed.
+    const top = height + header + 18 + provenance.length * 15;
+    const rows = out.selectAll("g.sm-export-phenomenology").data(phenomenologyLines).join("g")
+      .attr("class", "sm-export-phenomenology")
+      .attr("transform", (_, i) => `translate(8,${top + i * 15})`);
+    rows.selectAll("rect").data((d) => d.colors).join("rect")
+      .attr("x", (_, j) => j * 12).attr("y", -9).attr("width", 10).attr("height", 10).attr("rx", 2)
+      .attr("style", (c) => `fill:${c}`);
+    rows.append("text").attr("x", (d) => d.colors.length * 12 + 4)
+      .attr("style", `fill:${ink};font-size:11px`).text((d) => d.text);
+
+    return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone);
+  }
+
+  function exportProvenanceLines(p) {
+    // Phenomenologies whose provenance is just the matrix's share one line.
+    const items = phenomenologyProvenance(p);
+    const all = p.provenance && p.provenance.all;
+    const same = (prov) => all && prov.source === all.source && prov.icod === all.icod && !prov.notes;
+    const lines = [];
+    const shared = items.filter((x) => same(x.prov));
+    if (shared.length) {
+      lines.push({ colors: shared.map((x) => x.group.color),
+                   text: shared.map((x) => x.group.label).join(", ") + ": source and ICOD as above" });
+    }
+    items.filter((x) => !same(x.prov)).forEach(({ group, prov }) => {
+      lines.push({ colors: [group.color],
+                   text: [group.label,
+                          prov.source && (!all || prov.source !== all.source) ? prov.source : null,
+                          prov.icod ? "ICOD " + formatIcod(parseTime(prov.icod)) : "ICOD not provided",
+                          prov.notes].filter(Boolean).join(" · ") });
+    });
+    return lines;
+  }
+
+  function download(blob, name) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  }
+
+  async function exportImage(format) {
+    const svgText = exportSvgText();
+    if (!svgText) return;
+    const svgBlob = new Blob([svgText], { type: "image/svg+xml" });
+    if (format === "svg") return download(svgBlob, exportFileName("svg"));
+
+    // PNG: draw the SVG onto a canvas at 2x for crisp slides.
+    const img = new Image();
+    const url = URL.createObjectURL(svgBlob);
+    try {
+      img.src = url;
+      await img.decode();
+      const scale = 2;
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth * scale;
+      canvas.height = img.naturalHeight * scale;
+      const ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+      ctx.drawImage(img, 0, 0);
+      const png = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+      download(png, exportFileName("png"));
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  d3.selectAll("#sm-export button").on("click", (ev) => exportImage(ev.currentTarget.dataset.format));
 
   //============================================================================
   // DASHBOARD MESSAGING
@@ -714,7 +991,11 @@
   window.addEventListener("message", (ev) => {
     if (ev.origin !== options.trustedOrigin) return;
     if (!ev.data) return;
-    if (ev.data.type === "sync-matrix:data") setPayload(ev.data.payload);
+    if (ev.data.type === "sync-matrix:data") {
+      dataSource = "pushed by the dashboard (postMessage)";
+      setPayload(ev.data.payload);
+    }
+    if (ev.data.type === "sync-matrix:export") exportImage(ev.data.format === "svg" ? "svg" : "png");
     if (ev.data.type === "sync-matrix:select" && manifest) {
       const { matrix, locality, date } = ev.data;
       select({ matrix: matrix || selection.matrix, locality: locality || selection.locality,

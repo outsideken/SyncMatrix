@@ -1,0 +1,329 @@
+{
+  "title": "Abstracted Sync Matrix",
+  "label": "Abstracted Sync Matrix",
+  "tick_minutes": 30,
+  "show_daylight": true,
+  "show_end_of_local_day": false,
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint"
+    },
+    "Collected": {
+      "fill": "tint"
+    },
+    "High": {
+      "fill": "tint"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "tint"
+    },
+    "No Concern": {
+      "fill": "tint"
+    }
+  },
+  "grouping": "Phenomenology",
+  "groups": [
+    {
+      "name": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
+      "rows": [
+        "GeoEye-1",
+        "Legion-1",
+        "Legion-2",
+        "Legion-3",
+        "Legion-4",
+        "Legion-5",
+        "Legion-6",
+        "Sentinel-2",
+        "Sentinel-3 OLCI",
+        "WorldView-1",
+        "WorldView-2",
+        "WorldView-3"
+      ]
+    },
+    {
+      "name": "IR",
+      "color": "#cb181d",
+      "tint": "#fcbba1",
+      "rows": [
+        "Aqua MODIS",
+        "NOAA-20 VIIRS",
+        "NOAA-21 VIIRS",
+        "S-NPP VIIRS",
+        "Sentinel-3 SLSTR",
+        "Terra MODIS"
+      ]
+    },
+    {
+      "name": "SAR",
+      "color": "#525252",
+      "tint": "#d9d9d9",
+      "rows": [
+        "Capella-11",
+        "Capella-13",
+        "Capella-14",
+        "Capella-15",
+        "Capella-16",
+        "Capella-17",
+        "Capella-18",
+        "Capella-19",
+        "Capella-20",
+        "Sentinel-1"
+      ]
+    }
+  ],
+  "alt_groupings": {
+    "Provider": [
+      {
+        "name": "Capella",
+        "rows": [
+          "Capella-11",
+          "Capella-13",
+          "Capella-14",
+          "Capella-15",
+          "Capella-16",
+          "Capella-17",
+          "Capella-18",
+          "Capella-19",
+          "Capella-20"
+        ]
+      },
+      {
+        "name": "Copernicus",
+        "rows": [
+          "Sentinel-1",
+          "Sentinel-2",
+          "Sentinel-3 OLCI",
+          "Sentinel-3 SLSTR"
+        ]
+      },
+      {
+        "name": "NASA FIRMS",
+        "rows": [
+          "Aqua MODIS",
+          "NOAA-20 VIIRS",
+          "NOAA-21 VIIRS",
+          "S-NPP VIIRS",
+          "Terra MODIS"
+        ]
+      },
+      {
+        "name": "Vantor",
+        "rows": [
+          "GeoEye-1",
+          "Legion-1",
+          "Legion-2",
+          "Legion-3",
+          "Legion-4",
+          "Legion-5",
+          "Legion-6",
+          "WorldView-1",
+          "WorldView-2",
+          "WorldView-3"
+        ]
+      }
+    ]
+  },
+  "satellites": {
+    "GeoEye-1": {
+      "norad": [
+        33331
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-1": {
+      "norad": [
+        59625
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-2": {
+      "norad": [
+        59626
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-3": {
+      "norad": [
+        60452
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-4": {
+      "norad": [
+        60453
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-5": {
+      "norad": [
+        62900
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-6": {
+      "norad": [
+        62901
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Sentinel-2": {
+      "norad": [
+        40697,
+        42063,
+        60989
+      ],
+      "min_elevation": 78,
+      "needs_daylight": true
+    },
+    "Sentinel-3 OLCI": {
+      "norad": [
+        41335,
+        43437
+      ],
+      "min_elevation": 50,
+      "needs_daylight": true
+    },
+    "WorldView-1": {
+      "norad": [
+        32060
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "WorldView-2": {
+      "norad": [
+        35946
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "WorldView-3": {
+      "norad": [
+        40115
+      ],
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Aqua MODIS": {
+      "norad": [
+        27424
+      ],
+      "min_elevation": 25
+    },
+    "NOAA-20 VIIRS": {
+      "norad": [
+        43013
+      ],
+      "min_elevation": 20
+    },
+    "NOAA-21 VIIRS": {
+      "norad": [
+        54234
+      ],
+      "min_elevation": 20
+    },
+    "S-NPP VIIRS": {
+      "norad": [
+        37849
+      ],
+      "min_elevation": 20
+    },
+    "Sentinel-3 SLSTR": {
+      "norad": [
+        41335,
+        43437
+      ],
+      "min_elevation": 45
+    },
+    "Terra MODIS": {
+      "norad": [
+        25994
+      ],
+      "min_elevation": 25
+    },
+    "Capella-11": {
+      "norad": [
+        57693
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-13": {
+      "norad": [
+        60419
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-14": {
+      "norad": [
+        59444
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-15": {
+      "norad": [
+        60544
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-16": {
+      "norad": [
+        65318
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-17": {
+      "norad": [
+        64583
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-18": {
+      "norad": [
+        67385
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-19": {
+      "norad": [
+        67384
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-20": {
+      "norad": [
+        68485
+      ],
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Sentinel-1": {
+      "norad": [
+        39634,
+        62261,
+        66315
+      ],
+      "min_elevation": 44,
+      "max_elevation": 61
+    }
+  }
+}
