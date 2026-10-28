@@ -72,9 +72,11 @@
     footerHeight: 26,
     hourLabelGap: 6,
   };
-  // Event boxes: colour = the row's phenomenology (its group in the payload's
-  // own grouping); status = style (dash and fill), from the payload's
-  // status_styles. Neutral ColorBrewer Greys when a group has no colour.
+  // Event boxes: colour = the group the row is shown in (phenomenology, or e.g.
+  // provider under Group by Provider), so a strip and its boxes always match;
+  // status = style (dash and fill), from the payload's status_styles. Neutral
+  // ColorBrewer Greys when a group has no colour. Provenance stays per
+  // phenomenology (the popup uses the row's phenomenology).
   const NEUTRAL = { color: "#525252", tint: "#d9d9d9" };
 
   const parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
@@ -311,7 +313,7 @@
     const rows = groups.flatMap((g) => g.rows.map((r) => ({ ...r, group: g })));
     const bannerLevels = p.banners.length ? d3.max(p.banners, (b) => b.level) + 1 : 0;
 
-    // Group-only matrices (e.g. Partner: one row per group) show just the group
+    // Group-only matrices (e.g. Simplified: one row per group) show just the group
     // bar with a horizontal label; sub-group matrices (Abstracted) show a narrow
     // rotated group strip plus a label per row.
     const groupOnly = groups.every((g) => g.rows.length === 1);
@@ -469,7 +471,7 @@
     const visibleEvents = p.events.filter((e) => rowY.has(e.row)).map((e) => {
       const r = rowById.get(e.row);
       return { ...e, group: r.group.label, where: groupOnly ? r.group.label : r.label,
-               phenomenology: phenomenologyOf.get(e.row) };
+               shownIn: r.group, phenomenology: phenomenologyOf.get(e.row) };
     });
 
     const events = plot.append("g").selectAll("g").data(visibleEvents).join("g")
@@ -485,7 +487,7 @@
       .attr("height", rowHeight - pad * 2)
       .attr("rx", 2)
       .each(function (e) {
-        styleBox(d3.select(this), e.phenomenology || NEUTRAL, p.status_styles[e.status]);
+        styleBox(d3.select(this), e.shownIn || NEUTRAL, p.status_styles[e.status]);
       });
 
     events
@@ -623,7 +625,7 @@
 
   function updateGroupingControl(p) {
     const choices = groupingOptions(p);
-    // Only worth showing when there is something to switch between (e.g. not on Partner).
+    // Only worth showing when there is something to switch between (e.g. not on Simplified).
     groupingPicker.attr("hidden", choices.length > 1 ? null : true);
     if (choices.length < 2) return;
 

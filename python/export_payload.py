@@ -10,7 +10,7 @@ Usage
 -----
     # Add a day to the page's library: writes
     # <out-dir>/<matrix>/<locality>/<YYYY-MM-DD>.json and rebuilds <out-dir>/index.json.
-    python export_payload.py --config ../config/partner.json --date 2026-10-27 \
+    python export_payload.py --config ../config/simplified.json --date 2026-10-27 \
                              --events events.json --out-dir ../web/data
 
     # No events yet? Generate deterministic sample events for a demo
@@ -20,14 +20,14 @@ Usage
                              --icod 2026-10-27T12:00:00Z --out-dir ../web/data
 
     # Write a single payload file, without touching the manifest.
-    python export_payload.py --config ../config/partner.json \
-                             --events events.json --out partner-mid-north.json
+    python export_payload.py --config ../config/simplified.json \
+                             --events events.json --out simplified-mid-north.json
 
     # Rebuild only the manifest (e.g. after deleting old days).
     python export_payload.py --rebuild-manifest ../web/data
 
-The matrix id (--slug) defaults to the config file name (config/partner.json ->
-"partner"); the dropdown label comes from the config's "label". See
+The matrix id (--slug) defaults to the config file name (config/simplified.json ->
+"simplified"); the dropdown label comes from the config's "label". See
 config/README.md for the config format.
 
 Events file format (start/end/icod are ISO 8601 UTC)::
@@ -433,7 +433,7 @@ def rebuild_manifest(data_dir: str) -> dict:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--rebuild-manifest", metavar="DATA_DIR", help="Only rebuild DATA_DIR/index.json")
-    parser.add_argument("--config", help="Matrix config, e.g. config/partner.json (see config/README.md)")
+    parser.add_argument("--config", help="Matrix config, e.g. config/simplified.json (see config/README.md)")
     parser.add_argument("--events", help="Events JSON: {\"icod\": ..., \"events\": [...]}")
     parser.add_argument("--demo-events", type=int, default=0, help="Generate N sample events instead")
     parser.add_argument("--seed", type=int, default=7, help="Seed for --demo-events")
@@ -443,7 +443,7 @@ def main():
     parser.add_argument("--locality-name", help="Name for --locality, e.g. 'Mid-north 40°N'")
     parser.add_argument("--out", help="Payload JSON to write")
     parser.add_argument("--out-dir", help="Data folder: write <matrix>/<locality>/<date>.json and rebuild index.json")
-    parser.add_argument("--slug", help="Matrix id for --out-dir (default: the config file name, e.g. partner)")
+    parser.add_argument("--slug", help="Matrix id for --out-dir (default: the config file name, e.g. simplified)")
     parser.add_argument("--label", help="Name for the Matrix dropdown (default: the config's \"label\")")
     args = parser.parse_args()
 

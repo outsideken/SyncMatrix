@@ -22,7 +22,7 @@
     <section class="panel">
       <header>
         <span id="panel-title">Sync Matrix</span>
-        <button id="pick" type="button">Select PARTNER via postMessage</button>
+        <button id="pick" type="button">Select Simplified via postMessage</button>
         <button id="push" type="button">Push payload via postMessage</button>
       </header>
       <iframe id="matrix" title="Sync Matrix" style="height: 560px"></iframe>
@@ -47,8 +47,8 @@
 
     // The dashboard can also drive the selection itself (e.g. from its own filters).
     document.getElementById("pick").addEventListener("click", () => {
-      frame.contentWindow.postMessage({ type: "sync-matrix:select", matrix: "partner" }, origin);
-      write("sent select matrix=partner");
+      frame.contentWindow.postMessage({ type: "sync-matrix:select", matrix: "simplified" }, origin);
+      write("sent select matrix=simplified");
     });
 
     // Push mode: the dashboard already holds a payload and hands it over.

@@ -16,7 +16,7 @@ import export_payload as ep
 from conftest import REPO
 
 ABSTRACTED = REPO / "config" / "abstracted.json"
-PARTNER = REPO / "config" / "partner.json"
+SIMPLIFIED = REPO / "config" / "simplified.json"
 EXPORTER = REPO / "python" / "export_payload.py"
 
 
@@ -61,7 +61,7 @@ def test_exporter_cli_refuses_missing_icod(tmp_path):
     events = tmp_path / "events.json"
     events.write_text(json.dumps([{"row": "EO", "start": "2026-10-27T06:00:00Z",
                                    "end": "2026-10-27T07:00:00Z"}]))
-    result = run_exporter("--config", PARTNER, "--date", "2026-10-27", "--events", events,
+    result = run_exporter("--config", SIMPLIFIED, "--date", "2026-10-27", "--events", events,
                           "--locality", "POINT(-100 40)", "--locality-name", "Mid-north 40°N",
                           "--out", tmp_path / "out.json")
     assert result.returncode == 2
@@ -73,7 +73,7 @@ def test_exporter_cli_refuses_missing_icod(tmp_path):
 
 def test_out_dir_layout_and_default_label(tmp_path):
     data = tmp_path / "data"
-    for config, events in ((PARTNER, 3), (ABSTRACTED, 4)):
+    for config, events in ((SIMPLIFIED, 3), (ABSTRACTED, 4)):
         result = run_exporter("--config", config, "--date", "2026-10-27",
                               "--icod", "2026-10-27T12:00:00Z", "--demo-events", events,
                               "--locality", "POINT(-100 40)", "--locality-name", "Mid-north 40°N",
@@ -81,10 +81,10 @@ def test_out_dir_layout_and_default_label(tmp_path):
         assert result.returncode == 0, result.stderr
 
     # Matrix id = config file name; dropdown label = the config's "label".
-    assert (data / "partner" / "mid-north-40-n" / "2026-10-27.json").is_file()
+    assert (data / "simplified" / "mid-north-40-n" / "2026-10-27.json").is_file()
     manifest = json.loads((data / "index.json").read_text())
     labels = {m["id"]: m["label"] for m in manifest["matrices"]}
-    assert labels == {"abstracted": "Abstracted Sync Matrix", "partner": "Partner Sync Matrix"}
+    assert labels == {"abstracted": "Abstracted Sync Matrix", "simplified": "Simplified Sync Matrix"}
 
 
 def test_manifest_lists_localities_north_to_south(tmp_path):
@@ -107,12 +107,15 @@ def test_abstracted_offers_provider_grouping_over_the_same_rows():
     [provider] = ep.build_alt_groupings(config)
     assert (provider["id"], provider["label"]) == ("provider", "Provider")
     assert [g["label"] for g in provider["groups"]] == ["Capella", "Copernicus", "NASA FIRMS", "Vantor"]
+    assert {g["label"]: (g["color"], g["tint"]) for g in provider["groups"]} == {
+        "Capella": ("#525252", "#d9d9d9"), "Copernicus": ("#08519c", "#c6dbef"),
+        "NASA FIRMS": ("#cb181d", "#fcbba1"), "Vantor": ("#6a51a3", "#dadaeb")}
     row_ids = lambda gs: sorted(r["id"] for g in gs for r in g["rows"])
     assert row_ids(provider["groups"]) == row_ids(groups)
 
 
-def test_partner_has_no_alternate_grouping():
-    assert ep.build_alt_groupings(ep.load_config(PARTNER)) == []
+def test_simplified_has_no_alternate_grouping():
+    assert ep.build_alt_groupings(ep.load_config(SIMPLIFIED)) == []
 
 ################################################################################
 ## Config checks
@@ -127,7 +130,7 @@ def write_config(tmp_path, **changes):
 
 
 def test_committed_configs_load():
-    for path in (ABSTRACTED, PARTNER):
+    for path in (ABSTRACTED, SIMPLIFIED):
         assert ep.load_config(path)["groups"]
 
 
