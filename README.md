@@ -18,7 +18,6 @@ web/data/index.json        manifest: matrices -> localities -> days (generated)
 web/data/<matrix>/<locality>/<date>.json  one locality, one UTC day (demo events)
 web/live/...               same layout: predicted passes, the page's default library (refreshed daily)
 web/demo_dashboard.html    stand-in dashboard for testing iframe + postMessage
-legacy/                    the original matplotlib notebook, its configs and PNGs (reference only)
 ```
 
 ## Matrices
@@ -125,7 +124,7 @@ The background shows day and night at the payload's locality. The
 exporter samples the sun's elevation every 10 minutes (`daylight.elevations`)
 and the page draws one smooth gradient: clear in daylight, then progressively
 darker through civil (0 to -6 deg), nautical (to -12 deg) and astronomical
-(to -18 deg) twilight to full night. This replaces the notebook's three fixed
+(to -18 deg) twilight to full night. This replaces the original matplotlib version's three fixed
 15-minute layers. Hover the background for dawn, sunrise, sunset and dusk
 times. Polar day and night need no special handling.
 
@@ -136,7 +135,7 @@ reflected in the matrix. It is provenance, so:
 
 - It must come from the data source, as `"icod"` in the events file or `--icod`.
   The exporter refuses to run without one, or with one in the future, and never
-  substitutes the export time. (The original notebook used `datetime.now()`
+  substitutes the export time. (The original matplotlib version used `datetime.now()`
   because it ran on proxy data.)
 - Demo payloads (`--demo-events`) are marked `icod_source: "demo"` and the page
   labels them **DEMO DATA**.

@@ -197,7 +197,7 @@ def build_daylight(lon: float, lat: float, window_start: datetime, window_end: d
 
     The renderer turns these samples into a smooth day/night gradient, so the
     three twilight stages (civil 0 to -6 deg, nautical to -12, astronomical to
-    -18) shade progressively darker. This replaces the notebook's three fixed
+    -18) shade progressively darker. This replaces the original matplotlib version's three fixed
     15-minute layers. Sampling the elevation (rather than computing sunrise/
     sunset intervals) also copes with polar day and night.
     """
