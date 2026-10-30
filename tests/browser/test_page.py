@@ -423,6 +423,40 @@ def test_status_legend_only_when_statuses_differ(page, base_url, errors):
     assert errors == []
 
 
+def boxes_overlap(a, b):
+    return not (a["x"] + a["width"] <= b["x"] or b["x"] + b["width"] <= a["x"] or
+                a["y"] + a["height"] <= b["y"] or b["y"] + b["height"] <= a["y"])
+
+
+@pytest.mark.parametrize("now", ["2026-10-28T00:03:00Z", "2026-10-28T12:30:00Z", "2026-10-28T23:57:00Z"],
+                         ids=["start-of-day", "midday", "end-of-day"])
+@pytest.mark.parametrize("width", [1280, 375], ids=["desktop", "phone"])
+def test_now_tag_sits_above_the_hour_labels(page, base_url, errors, now, width):
+    # The NOW tag has its own slot between the title and the hour labels: it covers neither, and stays over the plot.
+    page.set_viewport_size({"width": width, "height": 800})
+    page.clock.set_fixed_time(now)
+    open_payload(page, base_url, dated_payload(), toolbar=True)
+    expect(page.locator(".sm-now-tag")).to_have_text("NOW " + now[11:13] + now[14:16] + "Z")
+    page.wait_for_timeout(300)  # let the resize redraw settle before measuring
+    expect(page.locator("rect.sm-now-tag-bg")).to_be_visible()
+    tag = page.locator("rect.sm-now-tag-bg").bounding_box()
+    for selector in (".sm-title", ".sm-subtitle", ".sm-axis .tick text"):
+        for i in range(page.locator(selector).count()):
+            assert not boxes_overlap(tag, page.locator(selector).nth(i).bounding_box()), (selector, i)
+    plot = page.locator(".sm-frame").bounding_box()
+    assert plot["x"] - 0.5 <= tag["x"] and tag["x"] + tag["width"] <= plot["x"] + plot["width"] + 0.5
+    assert tag["y"] + tag["height"] < min(page.locator(".sm-axis .tick text").nth(i).bounding_box()["y"]
+                                          for i in range(page.locator(".sm-axis .tick text").count()))
+    assert errors == []
+
+
+def test_no_now_tag_on_another_day(page, base_url, errors):
+    page.clock.set_fixed_time("2026-10-29T12:00:00Z")  # the chart is 28 Oct
+    open_payload(page, base_url, dated_payload(), toolbar=True)
+    assert page.locator(".sm-now-mark, .sm-now").count() == 0
+    assert errors == []
+
+
 def test_city_locality_quarter_hour_timezone(page, base_url, errors):
     # Kathmandu is UTC+5:45: its timezone shows in the Locality dropdown and its passes load.
     open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=abstracted&locality=kathmandu")
