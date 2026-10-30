@@ -41,6 +41,7 @@ One matrix draws every view. Shortened:
   "tick_minutes": 30,
   "show_daylight": true,
   "show_end_of_local_day": false,
+  "icod_ageing": {"ageing_after_hours": 30, "stale_after_hours": 54},
   "status_styles": {"Predicted": {"fill": "tint"}, "High": {"fill": "tint"}, "Low": {"fill": "tint"}},
   "grouping": "Phenomenology",
   "groups": [
@@ -70,6 +71,7 @@ One matrix draws every view. Shortened:
 | `tick_minutes` | | Grid spacing (default 30); hour labels are always shown |
 | `show_daylight` | | Day/night shading for the payload's locality |
 | `show_end_of_local_day` | | Dashed line at local midnight |
+| `icod_ageing` | | Colours the ICOD badge by the data's age (ColorBrewer RdYlGn): fresh (green) under `ageing_after_hours`, ageing (amber) from it, stale (red) from `stale_after_hours`. 30 and 54 h fit the daily refresh at 05:17 UTC: amber after one missed run, red after two. Demo data stays grey; without this key the badge is the plain ICOD colour |
 | `status_styles` | | How a window's `status` is drawn. Colour is always the row's group colour; the status sets the style: `fill` is `solid` (the colour), `tint` (the group's `tint`, the default) or `none` (outline only), and optional `dash` is an SVG dash pattern, e.g. `"4 3"`. The current matrix uses `{"fill": "tint"}` for every status; every window, live and demo, is `Predicted` today |
 | `banners` | | Optional bars under the plot; `start`/`end` are UTC times of day (`HH:MM`, up to `24:00`); `level` 0 is nearest the plot. Not used now: the legacy banners carried each phenomenology's provenance, which now comes from the data |
 

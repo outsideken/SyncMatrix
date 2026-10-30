@@ -86,6 +86,10 @@
   const formatFull = d3.utcFormat("%d %b %Y %H%MZ");
   const formatIcod = d3.utcFormat("%d %b %Y @ %H%MZ");
   const formatIcodShort = d3.utcFormat("%d %b %H%MZ");
+  // ICOD age on exports (text, so the readable end of each colour): RdYlGn
+  // green and red, Oranges for ageing (RdYlGn's amber is too light for text),
+  // red for a missing ICOD; demo and unrated payloads stay ink.
+  const EXPORT_ICOD_INK = { fresh: "#1a9850", ageing: "#d94801", stale: "#d73027", missing: "#cb181d" };
   const ICOD_MEANING = "ICOD (Information Cut-Off Date): when the data was grabbed. " +
     "Anything received after it is not reflected in this matrix.";
 
@@ -566,11 +570,14 @@
     updateIcodBadge(p);
     let icodWidth = 0;
     if (toolbar.property("hidden")) {
-      const icodText = plot.append("text").attr("class", "sm-icod").attr("y", footerY)
+      // A dot in the badge's colour, so an embedded chart shows the age too.
+      plot.append("circle").attr("class", "sm-icod-dot").attr("cx", 5).attr("cy", footerY - 4).attr("r", 5)
+        .attr("data-state", icodState(p, oldestIcod(p)));
+      const icodText = plot.append("text").attr("class", "sm-icod").attr("x", 14).attr("y", footerY)
         .classed("warn", !p.icod || p.icod_source === "demo")
         .text(icodLabel(p));
-      icodText.append("title").text(ICOD_MEANING);
-      icodWidth = icodText.node().getComputedTextLength();
+      icodText.append("title").text(ICOD_MEANING + " " + ageingRule(p));
+      icodWidth = 14 + icodText.node().getComputedTextLength();
     }
 
     const usedStatuses = Array.from(new Set(p.events.map((e) => e.status))).filter(Boolean);
@@ -764,12 +771,33 @@
     return Math.floor(hours / 24) + "d " + (hours % 24) + "h ago";
   }
 
+  // How old the data is, from the payload's icod_ageing thresholds (hours):
+  // fresh, ageing, stale. Demo data is grey and missing ICOD red, whatever the
+  // age; a payload without thresholds is "unrated" (the plain ICOD colour).
+  // The page redraws every minute, so the state moves on by itself.
+  function icodState(p, icod) {
+    if (!icod) return "missing";
+    if (p.icod_source === "demo") return "demo";
+    const ageing = p.icod_ageing;
+    if (!ageing) return "unrated";
+    const hours = (Date.now() - icod) / 3.6e6;
+    return hours >= ageing.stale_after_hours ? "stale" : hours >= ageing.ageing_after_hours ? "ageing" : "fresh";
+  }
+
+  function ageingRule(p) {
+    const a = p.icod_ageing;
+    return a ? `Fresh under ${a.ageing_after_hours} h, ageing from ${a.ageing_after_hours} h, ` +
+               `stale from ${a.stale_after_hours} h.` : "";
+  }
+
   // The oldest ICOD across phenomenologies, so the badge, the footer and the
   // export's first line agree.
   function icodLabel(p) {
     const icod = oldestIcod(p);
     if (!icod) return "ICOD: not provided — data currency unknown";
-    return "ICOD: " + formatIcod(icod) + " (" + formatAge(icod) + ")" +
+    const state = icodState(p, icod);
+    return "ICOD: " + formatIcod(icod) + " (" + formatAge(icod) +
+      (state === "fresh" || state === "ageing" || state === "stale" ? " · " + state : "") + ")" +
       (p.icod_source === "demo" ? " · DEMO DATA" : "");
   }
 
@@ -788,13 +816,17 @@
     const icod = oldestIcod(p);
     const each = phenomenologyProvenance(p).map((x) => x.group.label + ": " +
       (x.prov.icod ? formatIcodShort(parseTime(x.prov.icod)) : "none") + (x.prov.source ? " (" + x.prov.source + ")" : ""));
+    const state = icodState(p, icod);
+    // Colour carries the age; the word says it too for ageing and stale (fresh needs no word).
     d3.select("#sm-icod-badge")
       .text(icod ? "ICOD " + formatIcodShort(icod) + " · " + formatAge(icod) +
+                   (state === "ageing" || state === "stale" ? " · " + state.toUpperCase() : "") +
                    (p.icod_source === "demo" ? " · DEMO DATA" : "")
                  : "ICOD not provided")
-      .classed("warn", !icod || p.icod_source === "demo")
-      .attr("title", ICOD_MEANING + (each.length ? " Oldest shown. " + each.join("; ") + "." :
-                                     p.icod_source ? " Source: " + p.icod_source + "." : ""));
+      .attr("data-state", state)
+      .attr("title", ICOD_MEANING + " " + ageingRule(p) +
+                     (each.length ? " Oldest shown. " + each.join("; ") + "." :
+                      p.icod_source ? " Source: " + p.icod_source + "." : ""));
   }
 
   // Fill: "solid" (the colour), "tint" (the light ramp colour), "none".
@@ -897,7 +929,7 @@
     out.selectAll("text.sm-export-provenance").data(provenance).join("text")
       .attr("class", "sm-export-provenance")
       .attr("x", 8).attr("y", (_, i) => height + header + 18 + i * 15)
-      .attr("style", (_, i) => `fill:${i === 0 && (!p.icod || p.icod_source === "demo") ? "#cb181d" : ink};` +
+      .attr("style", (_, i) => `fill:${i === 0 ? (EXPORT_ICOD_INK[icodState(p, oldestIcod(p))] || ink) : ink};` +
         `font-size:11px;font-weight:${i === 0 ? 700 : 400}`)
       .text((d) => d);
 

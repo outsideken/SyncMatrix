@@ -137,6 +137,11 @@ def check_config(config: dict, where) -> dict:
     for banner in config.get("banners", []):
         if parse_hhmm(banner["end"]) <= parse_hhmm(banner["start"]):
             raise ValueError("%s: banner %r ends before it starts" % (where, banner.get("id")))
+    ageing = config.get("icod_ageing")
+    if ageing is not None:
+        hours = [ageing.get(k) for k in ("ageing_after_hours", "stale_after_hours")]
+        if not all(isinstance(h, (int, float)) and h > 0 for h in hours) or hours[0] >= hours[1]:
+            raise ValueError("%s: icod_ageing needs 0 < ageing_after_hours < stale_after_hours" % where)
     return config
 
 
@@ -548,6 +553,7 @@ def build_payload(config: dict, events: list = None, day: date = None,
             "alt_groupings": build_alt_groupings(config),
             "events": events,
             "status_styles": config.get("status_styles", {}),
+            "icod_ageing": config.get("icod_ageing"),
             "daylight": daylight,
             "markers": markers,
             "banners": build_banners(config, window_start),

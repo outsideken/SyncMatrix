@@ -137,8 +137,21 @@ body {
   font-variant-numeric: tabular-nums;
 }
 .sm-icod-badge:empty { display: none; }
-.sm-icod-badge.warn,
 .sm-icod.warn { color: var(--sm-eod); fill: var(--sm-eod); border-color: var(--sm-eod); }
+
+/* ICOD age (icod_ageing in config/matrix.json), ColorBrewer RdYlGn; demo is
+   Greys. The badge and the footer dot share the colours. */
+.sm-icod-badge[data-state="fresh"]  { background: #1a9850; border-color: #1a9850; color: #ffffff; }
+.sm-icod-badge[data-state="ageing"] { background: #fdae61; border-color: #f46d43; color: #252525; }
+.sm-icod-badge[data-state="stale"]  { background: #d73027; border-color: #d73027; color: #ffffff; }
+.sm-icod-badge[data-state="demo"]   { border-color: #969696; color: var(--sm-ink-muted); }
+.sm-icod-badge[data-state="missing"] { border-color: var(--sm-eod); color: var(--sm-eod); }
+.sm-icod-dot                        { fill: var(--sm-icod); }
+.sm-icod-dot[data-state="fresh"]    { fill: #1a9850; }
+.sm-icod-dot[data-state="ageing"]   { fill: #fdae61; stroke: #f46d43; }
+.sm-icod-dot[data-state="stale"]    { fill: #d73027; }
+.sm-icod-dot[data-state="demo"]     { fill: #969696; }
+.sm-icod-dot[data-state="missing"]  { fill: var(--sm-eod); }
 .sm-icod-line   { stroke: var(--sm-icod); stroke-width: 2.5; }
 .sm-icod-tag    { font-size: 10px; font-weight: 700; fill: var(--sm-icod); }
 .sm-icod-tag-bg { fill: var(--sm-bg); opacity: 0.85; }
