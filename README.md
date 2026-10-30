@@ -15,6 +15,7 @@ scripts/build_live_data.py predicts data/predicted from a snapshot, then draws w
 scripts/build_demo_data.py generates data/demo (the Demo locality), then draws web/live
 scripts/build_views.py     redraws web/ from the stored data files (after a matrix change)
 scripts/build_all.py       rebuilds and checks data/ and web/live: the one command after editing config/
+scripts/stamp_assets.py    stamps index.html's CSS/JS links with a content hash (?v=), so deploys never mix cached files
 data/tle/                  committed orbit snapshots (provenance + reproducible builds)
 data/<store>/<locality>/<date>.json  data files: one place, one UTC evaluation date, its access windows
 web/index.html             the renderer (embed this)
