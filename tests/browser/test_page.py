@@ -151,10 +151,21 @@ def stop_opacities(page):
         "els => els.map(e => e.getAttribute('stop-opacity'))")]
 
 
-def open_payload(page: Page, base_url: str, payload: dict):
-    """Single-file mode on a payload built here, so shading tests don't depend on the library's dates."""
+def open_payload(page: Page, base_url: str, payload: dict, toolbar: bool = False):
+    """A payload built here, so tests don't depend on the library's dates.
+
+    Single-file mode (no toolbar) by default; with toolbar=True a one-entry
+    manifest serves it, so the toolbar and its ICOD badge show.
+    """
     page.route(base_url + "/fixture.json", lambda route: route.fulfill(json=payload))
-    open_page(page, base_url + "/index.html?data=fixture.json")
+    if not toolbar:
+        open_page(page, base_url + "/index.html?data=fixture.json")
+        return
+    manifest = {"version": 1, "matrices": [{"id": "abstracted", "label": payload["title"], "title": payload["title"],
+                "localities": [{"id": "london", "name": "London", "lat": 51.5,
+                                "dates": [{"date": "2026-10-28", "file": "fixture.json", "events": 1}]}]}]}
+    page.route(base_url + "/fixture-index.json", lambda route: route.fulfill(json=manifest))
+    open_page(page, base_url + "/index.html?manifest=fixture-index.json")
 
 
 def high_arctic(day: str) -> dict:
@@ -172,6 +183,79 @@ def test_polar_night_is_shaded_all_day(page, base_url, errors):
 def test_midnight_sun_is_never_shaded(page, base_url, errors):
     open_payload(page, base_url, high_arctic("2026-06-21"))
     assert max(stop_opacities(page)) == 0
+    assert errors == []
+
+################################################################################
+## ICOD age
+################################################################################
+
+ICOD = "2026-10-28T06:00:00Z"
+
+
+def dated_payload(**changes) -> dict:
+    """A real-data (not demo) payload with ICOD 28 Oct 0600Z and the committed matrix's ageing thresholds."""
+    config = ep.load_config(WEB.parent / "config" / "matrix.json", "abstracted")
+    payload = ep.build_payload(config, [{"row": "Legion-3", "start": "2026-10-28T08:00:00Z",
+                                         "end": "2026-10-28T08:10:00Z", "status": "Predicted"}],
+                               day=date(2026, 10, 28), icod=ICOD, icod_source="celestrak",
+                               locality={"name": "London", "point": "POINT(-0.1278 51.5074)"})
+    payload.update(changes)
+    return payload
+
+
+@pytest.mark.parametrize("now, state, word", [
+    ("2026-10-28T16:00:00Z", "fresh", None),       # 10 h: under 30 h
+    ("2026-10-29T22:00:00Z", "ageing", "AGEING"),  # 40 h: from 30 h
+    ("2026-10-30T18:00:00Z", "stale", "STALE"),    # 60 h: from 54 h
+])
+def test_icod_badge_shows_the_age(page, base_url, errors, now, state, word):
+    page.clock.set_fixed_time(now)
+    open_payload(page, base_url, dated_payload(), toolbar=True)
+    badge = page.locator("#sm-icod-badge")
+    expect(badge).to_have_attribute("data-state", state)
+    for other in ("AGEING", "STALE"):
+        (expect(badge).to_contain_text if other == word else expect(badge).not_to_contain_text)(other)
+    expect(badge).to_have_attribute("title", re.compile("Fresh under 30 h, ageing from 30 h, stale from 54 h"))
+    assert errors == []
+
+
+def test_icod_age_without_thresholds_is_unrated(page, base_url, errors):
+    page.clock.set_fixed_time("2026-10-30T18:00:00Z")
+    open_payload(page, base_url, dated_payload(icod_ageing=None), toolbar=True)
+    expect(page.locator("#sm-icod-badge")).to_have_attribute("data-state", "unrated")
+    expect(page.locator("#sm-icod-badge")).not_to_contain_text("STALE")
+    assert errors == []
+
+
+def test_demo_badge_is_grey_whatever_its_age(page, base_url, errors):
+    open_page(page, base_url + ABSTRACTED)  # demo ICOD 28 Oct 1200Z, days old by now
+    expect(page.locator("#sm-icod-badge")).to_have_attribute("data-state", "demo")
+    expect(page.locator("#sm-icod-badge")).not_to_contain_text("STALE")
+    assert errors == []
+
+
+def test_embedded_demo_footer_is_not_red(page, base_url, errors):
+    # Demo is grey everywhere: the footer sentence is only red when the ICOD is missing.
+    open_page(page, base_url + "/index.html?data=live/abstracted/demo/%s.json" % DAY)
+    expect(page.locator(".sm-icod-dot")).to_have_attribute("data-state", "demo")
+    expect(page.locator(".sm-icod")).not_to_have_class(re.compile(r"\bwarn\b"))
+    expect(page.locator(".sm-icod")).to_contain_text("DEMO DATA")
+    assert errors == []
+
+
+def test_embedded_footer_without_icod_is_red(page, base_url, errors):
+    open_payload(page, base_url, dated_payload(icod=None, provenance={}))
+    expect(page.locator(".sm-icod")).to_have_class(re.compile(r"\bwarn\b"))
+    expect(page.locator(".sm-icod-dot")).to_have_attribute("data-state", "missing")
+    assert errors == []
+
+
+def test_embedded_footer_shows_the_age(page, base_url, errors):
+    # Toolbar hidden (single-file mode): the footer carries the ICOD, with a dot in the badge's colour.
+    page.clock.set_fixed_time("2026-10-29T22:00:00Z")
+    open_payload(page, base_url, dated_payload())
+    expect(page.locator(".sm-icod")).to_contain_text("(40h 0m ago · ageing)")
+    expect(page.locator(".sm-icod-dot")).to_have_attribute("data-state", "ageing")
     assert errors == []
 
 ################################################################################

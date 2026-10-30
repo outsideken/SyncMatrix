@@ -166,6 +166,17 @@ reflected in the matrix. It is provenance, so:
   its ICOD. When the toolbar is hidden (`controls=0` or single-file `data=`
   mode) the ICOD moves to the footer under the plot instead, so it is never
   lost. A payload without an ICOD is flagged in red as "ICOD not provided".
+- **The badge shows how old the data is** (ColorBrewer RdYlGn), from
+  `icod_ageing` in `config/matrix.json`:
+  - green, **fresh**: under 30 h, i.e. the daily refresh (05:17 UTC) ran;
+  - amber, **AGEING**: from 30 h, one refresh missed or late;
+  - red, **STALE**: from 54 h, two refreshes missed.
+
+  Ageing and stale also say so in words, so colour isn't the only signal. The
+  age is the oldest phenomenology's ICOD, and the colour updates each minute
+  without a reload. Demo data stays grey whatever its age. In the footer
+  (toolbar hidden) a dot carries the same colour and the label adds the state,
+  e.g. `(40h 0m ago · ageing)`; exports colour their ICOD line the same way.
 - **Each phenomenology has its own provenance** (`provenance` in the payload:
   `all` plus one entry per group, with `source`, `icod`, `icod_source` and
   `notes`), because each can come from a different feed with its own ICOD.

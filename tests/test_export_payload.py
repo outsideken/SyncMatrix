@@ -367,6 +367,16 @@ def test_status_styles_and_tints():
     assert {g["label"]: g["tint"] for g in payload["groups"]} == {"EO": "#c6dbef", "IR": "#fcbba1", "SAR": "#d9d9d9"}
 
 
+def test_icod_ageing_is_checked_and_reaches_the_payload(tmp_path):
+    for bad in ({"ageing_after_hours": 54, "stale_after_hours": 30}, {"ageing_after_hours": 0, "stale_after_hours": 30},
+                {"stale_after_hours": 30}):
+        with pytest.raises(ValueError, match="icod_ageing needs 0 < ageing_after_hours < stale_after_hours"):
+            ep.load_config(write_config(tmp_path, icod_ageing=bad))
+    payload = ep.build_payload(ep.load_config(MATRIX, "simplified"), day=date(2026, 10, 27), demo_count=1,
+                               icod="2026-10-27T12:00:00Z", locality={"name": "X", "point": "POINT(-100 40)"})
+    assert payload["icod_ageing"] == {"ageing_after_hours": 30, "stale_after_hours": 54}
+
+
 def test_status_style_fill_is_checked(tmp_path):
     with pytest.raises(ValueError, match="fill must be one of solid, tint, none"):
         ep.load_config(write_config(tmp_path, status_styles={"Predicted": {"fill": "stripes"}}))
