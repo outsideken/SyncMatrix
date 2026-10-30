@@ -84,7 +84,8 @@ sites show different phenomenology mixes (`evaluate` in
 
 | Mix | Sites |
 |---|---|
-| RF only (dark ships / IUU fishing) | Galápagos EEZ edge, Mile 201, Gulf of Guinea (open water) |
+| RF only (dark ships / IUU fishing) | Galápagos EEZ edge, Mile 201 (open water) |
+| HawkEye 360 only (`evaluate: ["HawkEye 360"]`) | Gulf of Guinea (open water) |
 | EO / SAR | London, Kiev |
 | EO / SAR / RF | Tokyo, Cairo |
 | IR only | Gao |

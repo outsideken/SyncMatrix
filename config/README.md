@@ -173,8 +173,10 @@ while its operational status is unclear.
   or `sea`) is optional and informational. The timezone, sunrise and sunset,
   and the predicted passes are all worked out from the point. The page lists
   them north to south. Optional **`evaluate`** lists the matrix groups
-  predicted there, e.g. `["EO", "SAR"]` (default: all). A chart draws what its
-  data file evaluated, so that place's charts show EO and SAR only.
+  predicted there (default: all rows). Phenomenology groups, e.g.
+  `["EO", "SAR"]`, or groups of another grouping, e.g. a provider:
+  `["HawkEye 360"]` evaluates only the HE360 rows. A chart draws what its
+  data file evaluated, so that place's charts show just those rows.
 - **`folder`** is the one library the page reads: every view of every data
   file in every store is drawn there.
 - **Each source of data files** in `libraries` has a `store` under `data/`.
