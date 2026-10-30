@@ -78,15 +78,13 @@
   ],
   "libraries": {
     "predicted": {
+      "store": "data/predicted",
       "folder": "web/live",
       "days": 3,
-      "keep_snapshots": 14,
-      "passes_from": "abstracted",
-      "roll_ups": [
-        "simplified"
-      ]
+      "keep_snapshots": 14
     },
     "demo": {
+      "store": "data/demo",
       "folder": "web/data",
       "days": [
         {
@@ -106,16 +104,7 @@
           "icod": "2026-10-28T12:00:00Z"
         }
       ],
-      "matrices": {
-        "abstracted": {
-          "events_per_day": 20,
-          "seed_offset": 0
-        },
-        "simplified": {
-          "events_per_day": 8,
-          "seed_offset": 7
-        }
-      }
+      "events_per_day": 20
     }
   }
 }

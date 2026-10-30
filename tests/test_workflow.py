@@ -1,4 +1,4 @@
-"""Tests for config/workflow.json, config/defaults.json and the matrix merge."""
+"""Tests for config/workflow.json, the data store and the views drawn from it."""
 
 import json
 import shutil
@@ -16,26 +16,37 @@ def test_committed_workflow_loads():
     assert set(workflow["libraries"]) == {"predicted", "demo"}
 
 
-def test_matrices_inherit_the_defaults():
-    defaults = json.loads((REPO / "config" / "defaults.json").read_text())
-    for matrix in ("abstracted", "simplified"):
-        own = json.loads(wf.matrix_path(matrix).read_text())
-        merged = wf.load_matrix(matrix)
-        for key, value in defaults.items():
-            if key not in own:
-                assert merged[key] == value, (matrix, key)
+def test_data_files_name_no_matrix():
+    # One data file draws every view: it carries the place, the date and the windows, not a matrix.
+    for library in wf.load_workflow()["libraries"].values():
+        path = wf.store_files(REPO / library["store"])[0]
+        data = ep.load_data(path)
+        assert not {"matrix", "view", "groups", "abstracted", "simplified"} & set(data)
+        assert path.parent.name == ep.slugify(data["locality"]["name"])
+        assert path.stem == data["evaluation_date"]
 
 
-def test_merge_is_deep_and_override_wins():
-    base = {"status_styles": {"Predicted": {"fill": "tint"}, "High": {"fill": "solid"}}, "tick_minutes": 30}
-    over = {"status_styles": {"High": {"fill": "none"}}, "tick_minutes": 15}
-    assert ep.merge(base, over) == {"status_styles": {"Predicted": {"fill": "tint"}, "High": {"fill": "none"}},
-                                    "tick_minutes": 15}
+def test_every_store_file_is_drawn_in_every_view():
+    matrix = wf.load_matrix()
+    for library in wf.load_workflow()["libraries"].values():
+        stored = {p.relative_to(REPO / library["store"]).as_posix() for p in wf.store_files(REPO / library["store"])}
+        for view in matrix["views"]:
+            drawn = {p.relative_to(REPO / library["folder"] / view).as_posix()
+                     for p in (REPO / library["folder"] / view).glob("*/*.json")}
+            assert drawn == stored, (library["folder"], view)
+
+
+def test_demo_data_is_reproducible():
+    workflow = wf.load_workflow()
+    fresh = wf.demo_data(workflow, wf.load_matrix())
+    store = REPO / workflow["libraries"]["demo"]["store"]
+    assert len(fresh) == len(wf.store_files(store))
+    assert fresh[0] == json.loads(wf.data_path(store, fresh[0]).read_text())
 
 
 @pytest.fixture
 def workflow_copy(tmp_path):
-    """A copy of config/ to break in tests (matrices are looked up next to it)."""
+    """A copy of config/ to break in tests (matrix.json and catalogue.json are looked up next to it)."""
     config = tmp_path / "config"
     shutil.copytree(REPO / "config", config)
     path = config / "workflow.json"
@@ -62,10 +73,20 @@ def test_latitude_first_point_is_caught(workflow_copy, monkeypatch):
         load(path, data, monkeypatch)
 
 
-def test_unknown_matrix_is_an_error(workflow_copy, monkeypatch):
+def test_catalogue_row_must_be_in_the_matrix(workflow_copy, monkeypatch):
     path, data = workflow_copy
-    data["libraries"]["predicted"]["roll_ups"] = ["partner"]
-    with pytest.raises(ValueError, match="config/matrices/partner.json doesn't exist"):
+    catalogue = path.parent / "catalogue.json"
+    entries = json.loads(catalogue.read_text())
+    entries["satellites"]["CIRCUS"] = {"norad": [1], "min_elevation": 10}
+    catalogue.write_text(json.dumps(entries))
+    with pytest.raises(ValueError, match="catalogue.json rows not in matrix.json: CIRCUS"):
+        load(path, data, monkeypatch)
+
+
+def test_library_needs_a_store(workflow_copy, monkeypatch):
+    path, data = workflow_copy
+    del data["libraries"]["demo"]["store"]
+    with pytest.raises(ValueError, match="libraries.demo needs a store"):
         load(path, data, monkeypatch)
 
 

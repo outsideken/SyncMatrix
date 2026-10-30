@@ -11,7 +11,7 @@
       "icod": "2026-10-28T12:00:00Z",
       "icod_source": "demo"
     },
-    "COM": {
+    "EO": {
       "source": "Demo data: generated sample events",
       "icod": "2026-10-28T12:00:00Z",
       "icod_source": "demo"
@@ -25,14 +25,9 @@
       "source": "Demo data: generated sample events",
       "icod": "2026-10-28T12:00:00Z",
       "icod_source": "demo"
-    },
-    "EO": {
-      "source": "Demo data: generated sample events",
-      "icod": "2026-10-28T12:00:00Z",
-      "icod_source": "demo"
     }
   },
-  "generated": "2026-10-28T22:23:42Z",
+  "generated": "2026-10-30T20:04:39Z",
   "locality": {
     "id": "tehran",
     "name": "Tehran",
@@ -47,14 +42,14 @@
   },
   "groups": [
     {
-      "id": "COM",
-      "label": "COM",
-      "color": "#238b45",
-      "tint": "#c7e9c0",
+      "id": "EO",
+      "label": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         {
-          "id": "CIRCUS",
-          "label": "CIRCUS"
+          "id": "EO",
+          "label": "EO"
         }
       ]
     },
@@ -81,94 +76,127 @@
           "label": "SAR"
         }
       ]
-    },
-    {
-      "id": "EO",
-      "label": "EO",
-      "color": "#08519c",
-      "tint": "#c6dbef",
-      "rows": [
-        {
-          "id": "EO",
-          "label": "EO"
-        }
-      ]
     }
   ],
   "grouping": "Phenomenology",
   "alt_groupings": [],
   "events": [
     {
-      "id": "demo-00",
+      "id": "EO-0030",
       "row": "EO",
-      "start": "2026-12-21T14:30:00Z",
-      "end": "2026-12-21T16:30:00Z",
-      "status": "Low",
-      "label": "Demo event 1",
-      "notes": "Generated sample (seed 1028)."
+      "start": "2026-12-21T00:30:00Z",
+      "end": "2026-12-21T01:00:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "Legion-4"
     },
     {
-      "id": "demo-01",
-      "row": "SAR",
-      "start": "2026-12-21T06:00:00Z",
-      "end": "2026-12-21T07:30:00Z",
-      "status": "No Concern",
-      "label": "Demo event 2",
-      "notes": "Generated sample (seed 1028)."
-    },
-    {
-      "id": "demo-02",
-      "row": "CIRCUS",
-      "start": "2026-12-21T06:00:00Z",
-      "end": "2026-12-21T06:30:00Z",
-      "status": "High",
-      "label": "Demo event 3",
-      "notes": "Generated sample (seed 1028)."
-    },
-    {
-      "id": "demo-03",
+      "id": "IR-0030",
       "row": "IR",
-      "start": "2026-12-21T21:30:00Z",
-      "end": "2026-12-21T22:00:00Z",
-      "status": "High",
-      "label": "Demo event 4",
-      "notes": "Generated sample (seed 1028)."
+      "start": "2026-12-21T00:30:00Z",
+      "end": "2026-12-21T02:00:00Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "NOAA-20 VIIRS"
     },
     {
-      "id": "demo-04",
+      "id": "SAR-0300",
       "row": "SAR",
-      "start": "2026-12-21T02:00:00Z",
-      "end": "2026-12-21T02:30:00Z",
-      "status": "High",
-      "label": "Demo event 5",
-      "notes": "Generated sample (seed 1028)."
+      "start": "2026-12-21T03:00:00Z",
+      "end": "2026-12-21T03:30:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-19"
     },
     {
-      "id": "demo-05",
-      "row": "EO",
-      "start": "2026-12-21T05:30:00Z",
+      "id": "IR-0500",
+      "row": "IR",
+      "start": "2026-12-21T05:00:00Z",
       "end": "2026-12-21T06:30:00Z",
-      "status": "Moderate",
-      "label": "Demo event 6",
-      "notes": "Generated sample (seed 1028)."
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "S-NPP VIIRS"
     },
     {
-      "id": "demo-06",
+      "id": "EO-1000",
+      "row": "EO",
+      "start": "2026-12-21T10:00:00Z",
+      "end": "2026-12-21T10:30:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "Sentinel-2"
+    },
+    {
+      "id": "SAR-1000",
       "row": "SAR",
-      "start": "2026-12-21T16:30:00Z",
-      "end": "2026-12-21T17:00:00Z",
-      "status": "High",
-      "label": "Demo event 7",
-      "notes": "Generated sample (seed 1028)."
+      "start": "2026-12-21T10:00:00Z",
+      "end": "2026-12-21T10:30:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-20"
     },
     {
-      "id": "demo-07",
-      "row": "CIRCUS",
-      "start": "2026-12-21T10:30:00Z",
+      "id": "IR-1100",
+      "row": "IR",
+      "start": "2026-12-21T11:00:00Z",
       "end": "2026-12-21T12:00:00Z",
-      "status": "Moderate",
-      "label": "Demo event 8",
-      "notes": "Generated sample (seed 1028)."
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "Aqua MODIS"
+    },
+    {
+      "id": "EO-1330",
+      "row": "EO",
+      "start": "2026-12-21T13:30:00Z",
+      "end": "2026-12-21T18:30:00Z",
+      "status": "Predicted",
+      "label": "7 EO passes",
+      "notes": "WorldView-2; GeoEye-1; Legion-5; Sentinel-2; Sentinel-3 OLCI; Legion-5; Sentinel-3 OLCI"
+    },
+    {
+      "id": "SAR-1400",
+      "row": "SAR",
+      "start": "2026-12-21T14:00:00Z",
+      "end": "2026-12-21T16:00:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-20"
+    },
+    {
+      "id": "IR-1430",
+      "row": "IR",
+      "start": "2026-12-21T14:30:00Z",
+      "end": "2026-12-21T16:00:00Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "Aqua MODIS"
+    },
+    {
+      "id": "IR-1700",
+      "row": "IR",
+      "start": "2026-12-21T17:00:00Z",
+      "end": "2026-12-21T17:30:00Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "Terra MODIS"
+    },
+    {
+      "id": "SAR-1700",
+      "row": "SAR",
+      "start": "2026-12-21T17:00:00Z",
+      "end": "2026-12-21T18:30:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-13"
+    },
+    {
+      "id": "EO-1900",
+      "row": "EO",
+      "start": "2026-12-21T19:00:00Z",
+      "end": "2026-12-21T20:30:00Z",
+      "status": "Predicted",
+      "label": "2 EO passes",
+      "notes": "WorldView-3; Legion-1"
     }
   ],
   "status_styles": {

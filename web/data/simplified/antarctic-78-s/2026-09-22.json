@@ -11,7 +11,7 @@
       "icod": "2026-09-22T18:00:00Z",
       "icod_source": "demo"
     },
-    "COM": {
+    "EO": {
       "source": "Demo data: generated sample events",
       "icod": "2026-09-22T18:00:00Z",
       "icod_source": "demo"
@@ -25,14 +25,9 @@
       "source": "Demo data: generated sample events",
       "icod": "2026-09-22T18:00:00Z",
       "icod_source": "demo"
-    },
-    "EO": {
-      "source": "Demo data: generated sample events",
-      "icod": "2026-09-22T18:00:00Z",
-      "icod_source": "demo"
     }
   },
-  "generated": "2026-10-28T22:17:42Z",
+  "generated": "2026-10-30T20:04:38Z",
   "locality": {
     "id": "antarctic-78-s",
     "name": "Antarctic 78\u00b0S",
@@ -47,14 +42,14 @@
   },
   "groups": [
     {
-      "id": "COM",
-      "label": "COM",
-      "color": "#238b45",
-      "tint": "#c7e9c0",
+      "id": "EO",
+      "label": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         {
-          "id": "CIRCUS",
-          "label": "CIRCUS"
+          "id": "EO",
+          "label": "EO"
         }
       ]
     },
@@ -81,94 +76,145 @@
           "label": "SAR"
         }
       ]
-    },
-    {
-      "id": "EO",
-      "label": "EO",
-      "color": "#08519c",
-      "tint": "#c6dbef",
-      "rows": [
-        {
-          "id": "EO",
-          "label": "EO"
-        }
-      ]
     }
   ],
   "grouping": "Phenomenology",
   "alt_groupings": [],
   "events": [
     {
-      "id": "demo-00",
-      "row": "EO",
-      "start": "2026-09-22T06:00:00Z",
-      "end": "2026-09-22T07:30:00Z",
-      "status": "High",
-      "label": "Demo event 1",
-      "notes": "Generated sample (seed 799)."
-    },
-    {
-      "id": "demo-01",
-      "row": "EO",
-      "start": "2026-09-22T21:00:00Z",
-      "end": "2026-09-22T21:30:00Z",
-      "status": "High",
-      "label": "Demo event 2",
-      "notes": "Generated sample (seed 799)."
-    },
-    {
-      "id": "demo-02",
-      "row": "CIRCUS",
-      "start": "2026-09-22T05:30:00Z",
-      "end": "2026-09-22T06:00:00Z",
-      "status": "Low",
-      "label": "Demo event 3",
-      "notes": "Generated sample (seed 799)."
-    },
-    {
-      "id": "demo-03",
+      "id": "IR-0300",
       "row": "IR",
+      "start": "2026-09-22T03:00:00Z",
+      "end": "2026-09-22T04:30:00Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "Sentinel-3 SLSTR"
+    },
+    {
+      "id": "SAR-0300",
+      "row": "SAR",
+      "start": "2026-09-22T03:00:00Z",
+      "end": "2026-09-22T03:30:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-11"
+    },
+    {
+      "id": "EO-0400",
+      "row": "EO",
+      "start": "2026-09-22T04:00:00Z",
+      "end": "2026-09-22T04:30:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "Legion-2"
+    },
+    {
+      "id": "IR-0630",
+      "row": "IR",
+      "start": "2026-09-22T06:30:00Z",
+      "end": "2026-09-22T07:30:00Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "S-NPP VIIRS"
+    },
+    {
+      "id": "SAR-0630",
+      "row": "SAR",
+      "start": "2026-09-22T06:30:00Z",
+      "end": "2026-09-22T08:00:00Z",
+      "status": "Predicted",
+      "label": "2 SAR passes",
+      "notes": "Capella-13; Capella-18"
+    },
+    {
+      "id": "EO-0900",
+      "row": "EO",
+      "start": "2026-09-22T09:00:00Z",
+      "end": "2026-09-22T11:00:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WorldView-3"
+    },
+    {
+      "id": "IR-0900",
+      "row": "IR",
+      "start": "2026-09-22T09:00:00Z",
+      "end": "2026-09-22T11:00:00Z",
+      "status": "Predicted",
+      "label": "2 IR passes",
+      "notes": "NOAA-21 VIIRS; S-NPP VIIRS"
+    },
+    {
+      "id": "SAR-1030",
+      "row": "SAR",
+      "start": "2026-09-22T10:30:00Z",
+      "end": "2026-09-22T11:00:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-17"
+    },
+    {
+      "id": "SAR-1230",
+      "row": "SAR",
+      "start": "2026-09-22T12:30:00Z",
+      "end": "2026-09-22T15:30:00Z",
+      "status": "Predicted",
+      "label": "2 SAR passes",
+      "notes": "Capella-17; Capella-16"
+    },
+    {
+      "id": "EO-1430",
+      "row": "EO",
       "start": "2026-09-22T14:30:00Z",
       "end": "2026-09-22T15:30:00Z",
-      "status": "No Concern",
-      "label": "Demo event 4",
-      "notes": "Generated sample (seed 799)."
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WorldView-2"
     },
     {
-      "id": "demo-04",
-      "row": "CIRCUS",
-      "start": "2026-09-22T21:30:00Z",
-      "end": "2026-09-22T23:30:00Z",
-      "status": "No Concern",
-      "label": "Demo event 5",
-      "notes": "Generated sample (seed 799)."
-    },
-    {
-      "id": "demo-05",
-      "row": "CIRCUS",
-      "start": "2026-09-22T17:00:00Z",
-      "end": "2026-09-22T17:30:00Z",
-      "status": "No Concern",
-      "label": "Demo event 6",
-      "notes": "Generated sample (seed 799)."
-    },
-    {
-      "id": "demo-06",
-      "row": "IR",
-      "start": "2026-09-22T01:00:00Z",
-      "end": "2026-09-22T01:30:00Z",
-      "status": "Low",
-      "label": "Demo event 7",
-      "notes": "Generated sample (seed 799)."
-    },
-    {
-      "id": "demo-07",
+      "id": "EO-1600",
       "row": "EO",
-      "start": "2026-09-22T11:00:00Z",
-      "end": "2026-09-22T12:00:00Z",
-      "status": "High",
-      "label": "Demo event 8",
-      "notes": "Generated sample (seed 799)."
+      "start": "2026-09-22T16:00:00Z",
+      "end": "2026-09-22T16:30:00Z",
+      "status": "Predicted",
+      "label": "2 EO passes",
+      "notes": "WorldView-1; GeoEye-1"
+    },
+    {
+      "id": "IR-1600",
+      "row": "IR",
+      "start": "2026-09-22T16:00:00Z",
+      "end": "2026-09-22T16:30:00Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "S-NPP VIIRS"
+    },
+    {
+      "id": "EO-1800",
+      "row": "EO",
+      "start": "2026-09-22T18:00:00Z",
+      "end": "2026-09-22T19:00:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "Legion-6"
+    },
+    {
+      "id": "SAR-1800",
+      "row": "SAR",
+      "start": "2026-09-22T18:00:00Z",
+      "end": "2026-09-22T20:00:00Z",
+      "status": "Predicted",
+      "label": "2 SAR passes",
+      "notes": "Capella-18; Capella-19"
+    },
+    {
+      "id": "EO-2130",
+      "row": "EO",
+      "start": "2026-09-22T21:30:00Z",
+      "end": "2026-09-22T23:00:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WorldView-1"
     }
   ],
   "status_styles": {

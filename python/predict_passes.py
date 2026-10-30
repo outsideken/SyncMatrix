@@ -1,8 +1,8 @@
 """Predict when each satellite row can image a locality, from public orbit data.
 
 Orbits come from a Celestrak snapshot (scripts/fetch_tles.py); passes are
-computed with Skyfield. A row's "satellites" entry in the config says which
-spacecraft it covers and when a pass counts:
+computed with Skyfield. The prediction catalogue (config/catalogue.json) says,
+per matrix row, which spacecraft it covers and when a pass counts:
 
     "Sentinel-2": {"norad": [40697, 42063, 60989], "min_elevation": 78, "needs_daylight": true}
     "Sentinel-1": {"norad": [39634, 62261, 66315], "min_elevation": 44, "max_elevation": 61}
@@ -17,7 +17,8 @@ spacecraft it covers and when a pass counts:
   the satellite is highest.
 
 These thresholds are approximations of each sensor's geometry, not tasking
-rules; they live in the config so they can be tuned.
+rules; they live in the catalogue so they can be tuned. The catalogue writes
+the data files (access windows); it is not part of the drawing.
 """
 
 import json
@@ -86,13 +87,22 @@ def passes(sat: EarthSatellite, lat: float, lon: float, start: datetime, end: da
     return result
 
 
-def predict_events(config: dict, snapshot: dict, lat: float, lon: float,
-                   start: datetime, end: datetime) -> list:
-    """Predicted-pass events for every row in the config's "satellites"."""
+def load_catalogue(path) -> dict:
+    """The prediction catalogue: {"satellites": {row: {"norad": [...], "min_elevation": ...}}}."""
+    catalogue = json.loads(Path(path).read_text())
+    for row, spec in catalogue.get("satellites", {}).items():
+        if not spec.get("norad") or "min_elevation" not in spec:
+            raise ValueError("%s: satellites[%r] needs \"norad\" and \"min_elevation\"" % (Path(path).name, row))
+    return catalogue
+
+
+def predict_windows(catalogue: dict, snapshot: dict, lat: float, lon: float,
+                    start: datetime, end: datetime) -> list:
+    """Access windows (one per pass) for every row in the catalogue."""
     observer = Observer(latitude=lat, longitude=lon)
     fetched = snapshot["fetched"]
     events = []
-    for row, spec in config.get("satellites", {}).items():
+    for row, spec in catalogue.get("satellites", {}).items():
         for norad in spec["norad"]:
             sat = satellite(snapshot, norad)
             record = snapshot["by_norad"][int(norad)]
@@ -105,7 +115,8 @@ def predict_events(config: dict, snapshot: dict, lat: float, lon: float,
                 name = record["OBJECT_NAME"]
                 events.append({
                     "id": "%s-%s-%s" % (row, norad, hhmm(peak)),
-                    "row": row,
+                    "satellite": row,
+                    "norad": int(norad),
                     "start": iso(rise),
                     "end": iso(set_),
                     "status": "Predicted",
@@ -117,37 +128,6 @@ def predict_events(config: dict, snapshot: dict, lat: float, lon: float,
                                 else "%s–%s" % (spec["min_elevation"], spec["max_elevation"]),
                                 norad, record["EPOCH"][:16].replace("T", " ") + "Z", fetched),
                 })
-    events.sort(key=lambda e: (e["start"], e["row"]))
+    events.sort(key=lambda e: (e["start"], e["satellite"]))
     return events
 
-
-def roll_up(events: list, row_group: dict) -> list:
-    """Summarise per-satellite events by group (e.g. EO, IR, SAR) for Simplified.
-
-    Overlapping passes in the same group become one event listing them.
-    """
-    by_group = {}
-    for event in events:
-        by_group.setdefault(row_group[event["row"]], []).append(event)
-
-    out = []
-    for group, items in by_group.items():
-        items.sort(key=lambda e: e["start"])
-        merged = []
-        for e in items:
-            if merged and e["start"] <= merged[-1]["end"]:
-                merged[-1]["end"] = max(merged[-1]["end"], e["end"])
-                merged[-1]["members"].append(e)
-            else:
-                merged.append({"start": e["start"], "end": e["end"], "members": [e]})
-        for m in merged:
-            names = [e["label"].replace(" pass", "") for e in m["members"]]
-            out.append({"id": "%s-%s" % (group, m["start"][11:16].replace(":", "")),
-                        "row": group,
-                        "start": m["start"],
-                        "end": m["end"],
-                        "status": "Predicted",
-                        "label": "%d %s pass%s" % (len(names), group, "" if len(names) == 1 else "es"),
-                        "notes": "; ".join(names)})
-    out.sort(key=lambda e: (e["start"], e["row"]))
-    return out

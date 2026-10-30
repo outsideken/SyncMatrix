@@ -111,7 +111,7 @@ def test_group_by_provider_regroups_the_same_events(page, base_url, errors):
 def test_simplified_is_always_phenomenology(page, base_url, errors):
     open_page(page, base_url + SIMPLIFIED + "&group=provider")
     expect(page.locator("#sm-grouping")).to_be_hidden()
-    assert texts(page, ".sm-group-label") == ["COM", "IR", "SAR", "EO"]
+    assert texts(page, ".sm-group-label") == ["EO", "IR", "SAR"]  # the matrix's groups, in its order
     assert page.locator(".sm-row-label").count() == 0  # group bars only
     assert errors == []
 
@@ -236,9 +236,10 @@ def test_export_lists_provenance_per_phenomenology(page, base_url, errors, tmp_p
     info.value.save_as(path)
     svg = path.read_text()
     assert "Source: Predicted passes from Celestrak orbits" in svg
-    for line in ("EO · ICOD", "IR · ICOD", "SAR · ICOD", "COM · No data source for COM · ICOD not provided"):
+    for line in ("EO · ICOD", "IR · ICOD", "SAR · ICOD"):
         assert line in svg
-    assert "fill:#238b45" in svg and "fill:#08519c" in svg  # colour chips
+    assert "COM" not in svg  # the dummy COM row is gone
+    assert "fill:#cb181d" in svg and "fill:#08519c" in svg  # colour chips
     assert errors == []
 
 

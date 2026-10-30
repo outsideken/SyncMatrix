@@ -1,119 +1,120 @@
 # Configuration
 
-Everything that defines the Sync Matrix lives here, in three kinds of file.
-The builders, checks, tests and the daily refresh read them; nothing else
-lists matrices or localities.
+Everything that defines the Sync Matrix lives here, in three files, each with
+one job. The builders, checks, tests and the daily refresh read them; nothing
+else lists views, satellites or localities.
 
 ```
 config/
-  defaults.json          settings every matrix shares
-  matrices/<id>.json     one per matrix: only what differs from the defaults
-  workflow.json          what gets built: the shared localities and the libraries
+  matrix.json       draws the chart: groups, rows, colours, groupings, and its views
+  catalogue.json    the prediction catalogue: which spacecraft each row covers, and when a pass counts
+  workflow.json     what gets built: the shared localities and the libraries
 ```
 
-**To add a locality or change the days**, edit `workflow.json`, then run
-`python scripts/build_all.py` and commit `config/` with the rebuilt `web/data`
-and `web/live`. **To change a matrix**, edit its file in `matrices/` (or a
-shared setting in `defaults.json`) and do the same.
+The data the chart shows is kept apart from all three, in **data files** under
+`data/` (one place on one UTC evaluation date; see below). The exporter joins
+the matrix and a data file and writes one payload per view; the page reads
+those payloads.
 
-## workflow.json
-
-```json
-{
-  "localities": [
-    {"name": "High Arctic 78°N", "point": "POINT(16 78)", "kind": "reference"},
-    {"name": "London", "point": "POINT(-0.1278 51.5074)", "kind": "city"}
-  ],
-  "libraries": {
-    "predicted": {"folder": "web/live", "days": 3, "keep_snapshots": 14,
-                  "passes_from": "abstracted", "roll_ups": ["simplified"]},
-    "demo": {"folder": "web/data",
-             "days": [{"date": "2026-10-28", "icod": "2026-10-28T12:00:00Z"}],
-             "matrices": {"abstracted": {"events_per_day": 20, "seed_offset": 0},
-                          "simplified": {"events_per_day": 8, "seed_offset": 7}}}
-  }
-}
+```
+config/catalogue.json + orbits ─┐
+                                ├─► data/<store>/<locality>/<date>.json ─┐
+config/workflow.json ───────────┘                                         ├─► web/<folder>/<view>/<locality>/<date>.json
+config/matrix.json ───────────────────────────────────────────────────────┘
 ```
 
-- **`localities`** are shared by every matrix and both libraries. `point` is
-  `POINT(longitude latitude)`, longitude first. `kind` (`reference` or `city`)
-  is optional and informational. The timezone, sunrise and sunset, and the
-  predicted passes are all worked out from the point. The page lists them
-  north to south. **Add new localities at the end**: the demo library seeds its
-  sample events from a locality's position, so appending leaves existing demo
-  data unchanged.
-- **`libraries.predicted`**: `days` from the orbit snapshot's date,
-  `keep_snapshots` kept in `data/tle`, `passes_from` (the matrix whose
-  `satellites` are predicted) and `roll_ups` (matrices built by rolling those
-  passes up into their groups).
-- **`libraries.demo`**: the demo `days` (each with its demo ICOD) and, per
-  matrix, `events_per_day` and `seed_offset`.
+| To change… | Edit | Then run | Commit |
+|---|---|---|---|
+| A colour, group, row order or view | `matrix.json` | `python scripts/build_views.py` (redraws; no prediction) | `config/`, `web/` |
+| A threshold or a spacecraft | `catalogue.json` | `python scripts/build_all.py` | `config/`, `data/`, `web/` |
+| A locality or the days | `workflow.json` | `python scripts/build_all.py` | `config/`, `data/`, `web/` |
 
-`load_workflow` (`python/workflow.py`) checks it first: unique names, a valid
-point on the globe, a timezone for every locality, and every named matrix
-exists. `POINT` takes longitude first. A latitude-first point is caught only
-when it lands off the globe (its longitude is above 90° either way, e.g.
-`POINT(51.5 -120)`); one that stays on the globe, like London as
-`POINT(51.5074 -0.1278)`, is accepted, so check the map after adding a place.
+A new satellite row goes in both `matrix.json` (where it is drawn) and
+`catalogue.json` (how it is predicted).
 
-## defaults.json and matrices/
+## matrix.json
 
-A matrix file holds only what differs; it is **merged over `defaults.json`**
-(dicts merge key by key, anything else in the matrix file replaces the
-default). The merge is declarative: a setting comes from the matrix file or
-from the defaults, never from another matrix, so the order of files doesn't
-matter. The file name is the matrix id (`matrices/simplified.json` →
-`simplified`, used in `web/data/simplified/…` and `?matrix=simplified`).
-
-`defaults.json`:
+One matrix draws every view. Shortened:
 
 ```json
 {
   "tick_minutes": 30,
   "show_daylight": true,
   "show_end_of_local_day": false,
-  "status_styles": {"Predicted": {"fill": "tint"}, "Collected": {"fill": "solid"}},
-  "grouping": "Phenomenology"
-}
-```
-
-A matrix, e.g. `matrices/abstracted.json` (shortened):
-
-```json
-{
-  "title": "Abstracted Sync Matrix",
-  "label": "Abstracted Sync Matrix",
+  "status_styles": {"Predicted": {"fill": "tint"}, "High": {"fill": "tint"}, "Low": {"fill": "tint"}},
+  "grouping": "Phenomenology",
   "groups": [
-    {"name": "EO", "rows": ["GeoEye-1", "Legion-1", "WorldView-1"]},
-    {"name": "SAR", "color": "#525252", "tint": "#d9d9d9", "rows": ["Capella-11", "Sentinel-1"]}
+    {"name": "EO", "color": "#08519c", "tint": "#c6dbef", "rows": ["GeoEye-1", "Legion-1", "Sentinel-2", "WorldView-1"]},
+    {"name": "SAR", "rows": ["Capella-11", "Sentinel-1"]}
   ],
   "alt_groupings": {
     "Provider": [
       {"name": "Capella", "rows": ["Capella-11"]},
       {"name": "Vantor", "rows": ["GeoEye-1", "Legion-1", "WorldView-1"]},
-      {"name": "Copernicus", "rows": ["Sentinel-1"]}
+      {"name": "Copernicus", "rows": ["Sentinel-1", "Sentinel-2"]}
     ]
+  },
+  "views": {
+    "abstracted": {"title": "Abstracted Sync Matrix", "rows": "satellites"},
+    "simplified": {"title": "Simplified Sync Matrix", "rows": "groups"}
   }
 }
 ```
 
-Every key, in either file:
-
 | Key | Required | Meaning |
 |---|---|---|
-| `title` | yes | Chart heading |
-| `label` | | Name in the page's Matrix dropdown (default: `title`) |
+| `views` | yes | The matrices on the page. The key is the view id (`web/live/simplified/…`, `?matrix=simplified`). `title` is the chart heading, `label` the name in the Matrix dropdown (default: `title`). `rows` is `satellites` (every row; Abstracted) or `groups` (one row per group, named after it, no other groupings; Simplified). A groups view rolls the same windows up: overlapping windows in a group become one bar ("2 EO passes", names in the notes); overlapping windows with different statuses are refused |
+| `groups` | yes | Y-axis groups and rows, **top to bottom as drawn**. A row is a name, or `{"id", "label"}` when the label shown differs from the id the data uses. `color` (default grey `#525252`) keys the group everywhere: its strip or bar, its event boxes, its provenance in popups and its chip on exports; `tint` (default `#d9d9d9`) is the light fill of its event boxes |
+| `alt_groupings` | | Other ways to group **the same rows** (e.g. Provider), offered by the page's Group by control in `satellites` views |
+| `grouping` | | Name of `groups`' grouping, shown in the Group by control |
 | `tick_minutes` | | Grid spacing (default 30); hour labels are always shown |
 | `show_daylight` | | Day/night shading for the payload's locality |
 | `show_end_of_local_day` | | Dashed line at local midnight |
-| `status_styles` | | How an event's `status` is drawn. Colour is always the row's phenomenology (its group's `color`); the status sets the style: `fill` is `solid` (the colour), `tint` (the group's `tint`, the default) or `none` (outline only), and optional `dash` is an SVG dash pattern, e.g. `"4 3"`. The current configs use `{"fill": "tint"}` for every status |
-| `grouping` | | Name of `groups`' grouping, shown in the Group by control |
-| `groups` | yes | Y-axis groups and rows, **top to bottom as drawn**. A row is a name, or `{"id", "label"}` when the label shown differs from the id events use. `color` (default grey `#525252`) keys the group everywhere: its strip or bar, its event boxes, its provenance in popups and its chip on exports; `tint` (default `#d9d9d9`) is the light fill of its event boxes |
-| `alt_groupings` | | Other ways to group **the same rows** (e.g. Provider), offered by the page's Group by control |
-| `banners` | | Optional bars under the plot; `start`/`end` are UTC times of day (`HH:MM`, up to `24:00`); `level` 0 is nearest the plot. Not used by the current matrices: the legacy banners carried each phenomenology's provenance, which now comes from the data (see below) |
-| `satellites` | | For predicted passes: per row, `norad` (list of NORAD catalogue numbers; a mission row like Sentinel-2 lists each spacecraft), `min_elevation` (degrees above the locality's horizon for a pass to count), optional `max_elevation` (side-looking SAR: the highest point must stay at or below this so the locality is in the swath) and `needs_daylight` (optical rows: sun up at the locality) |
+| `status_styles` | | How a window's `status` is drawn. Colour is always the row's group colour; the status sets the style: `fill` is `solid` (the colour), `tint` (the group's `tint`, the default) or `none` (outline only), and optional `dash` is an SVG dash pattern, e.g. `"4 3"`. The current matrix uses `{"fill": "tint"}` for every status; every window, live and demo, is `Predicted` today |
+| `banners` | | Optional bars under the plot; `start`/`end` are UTC times of day (`HH:MM`, up to `24:00`); `level` 0 is nearest the plot. Not used now: the legacy banners carried each phenomenology's provenance, which now comes from the data |
 
-### Pass thresholds (Abstracted)
+The exporter refuses a matrix with missing `groups`, a view without a title,
+a duplicate group or row, an alternative grouping whose rows differ from
+`groups` (windows must land on the same row in every grouping), an unknown
+status fill, or a banner that ends before it starts.
+
+### Colours
+
+ColorBrewer2, the dark end of the 9-class sequential ramps, the same in every
+view: **EO `#08519c`** (Blues), **IR `#cb181d`** (Reds), **SAR `#525252`**
+(Greys). Lighter tints come from the same ramps.
+
+Provider groups (`alt_groupings.Provider`) reuse that palette, plus purple
+for Vantor: **Capella `#525252`**, **Copernicus `#08519c`**, **NASA FIRMS
+`#cb181d`**, **Vantor `#6a51a3`** (Purples, tint `#dadaeb`). Event boxes take
+the colour of the group they are shown in, so under Group by Provider they
+turn provider colours; the provenance in popups and exports stays per
+phenomenology.
+
+## catalogue.json
+
+The prediction catalogue: per matrix row, the spacecraft and the rules for a
+pass to count. It writes the predicted data files; it is not part of the
+drawing.
+
+```json
+{
+  "satellites": {
+    "Sentinel-2": {"norad": [40697, 42063, 60989], "min_elevation": 78, "needs_daylight": true},
+    "Sentinel-1": {"norad": [39634, 62261, 66315], "min_elevation": 44, "max_elevation": 61}
+  }
+}
+```
+
+`norad` lists NORAD catalogue numbers (a mission row like Sentinel-2 lists
+each spacecraft); `min_elevation` is degrees above the locality's horizon for
+a pass to count; optional `max_elevation` is for side-looking SAR (the highest
+point must stay at or below it, so the locality is in the swath);
+`needs_daylight` is for optical rows (sun up at the locality). Every row here
+must be a row of `matrix.json`. `scripts/fetch_tles.py` downloads orbits for
+every NORAD number listed.
+
+### Pass thresholds
 
 Elevation = 90° − incidence angle, so a threshold stands in for each sensor's
 field of regard. They are approximations from published sensor geometry, not
@@ -134,25 +135,75 @@ Capella-12 is not in Celestrak's catalogue, so it has no row. Sentinel-1B is
 in orbit but out of service since 2021; Sentinel-3C is left out until it is
 in routine operations.
 
-The exporter refuses a config with a missing `title`/`groups`, a duplicate
-group or row, an alternative grouping whose rows differ from `groups` (events
-must land on the same row in every grouping), or a banner that ends before it
-starts. There is no default locality: each payload's locality comes from its
-events file or `--locality`.
+## workflow.json
 
-After editing a config, rebuild the demo data with
-`python scripts/build_demo_data.py`.
+```json
+{
+  "localities": [
+    {"name": "High Arctic 78°N", "point": "POINT(16 78)", "kind": "reference"},
+    {"name": "London", "point": "POINT(-0.1278 51.5074)", "kind": "city"}
+  ],
+  "libraries": {
+    "predicted": {"store": "data/predicted", "folder": "web/live", "days": 3, "keep_snapshots": 14},
+    "demo": {"store": "data/demo", "folder": "web/data",
+             "days": [{"date": "2026-10-28", "icod": "2026-10-28T12:00:00Z"}],
+             "events_per_day": 20}
+  }
+}
+```
 
-### Phenomenology colours
+- **`localities`** are shared by every view and both libraries. `point` is
+  `POINT(longitude latitude)`, longitude first. `kind` (`reference` or `city`)
+  is optional and informational. The timezone, sunrise and sunset, and the
+  predicted passes are all worked out from the point. The page lists them
+  north to south. **Add new localities at the end**: the demo library seeds its
+  sample windows from a locality's position, so appending leaves existing demo
+  data unchanged.
+- **Each library** has a `store` (its data files) and a `folder` (the
+  payloads the page reads).
+- **`libraries.predicted`**: `days` from the orbit snapshot's date and
+  `keep_snapshots` kept in `data/tle`. The daily refresh overwrites this
+  library only.
+- **`libraries.demo`**: the demo `days` (each with its demo ICOD) and
+  `events_per_day` sample windows on the matrix's satellite rows, all
+  `Predicted` like the live data.
 
-ColorBrewer2, the dark end of the 9-class sequential ramps, the same in both
-matrices: **EO `#08519c`** (Blues), **IR `#cb181d`** (Reds), **SAR `#525252`**
-(Greys), **COM `#238b45`** (Greens). Lighter tints, if needed, come from the
-same ramps.
+`load_workflow` (`python/workflow.py`) checks it first: unique names, a valid
+point on the globe, a timezone for every locality, a store and folder for each
+library, and every catalogue row in the matrix. `POINT` takes longitude
+first. A latitude-first point is caught only when it lands off the globe (its
+longitude is above 90° either way, e.g. `POINT(51.5 -120)`); one that stays
+on the globe, like London as `POINT(51.5074 -0.1278)`, is accepted, so check
+the map after adding a place.
 
-Provider groups (Abstracted's `alt_groupings.Provider`) reuse that palette,
-plus purple for Vantor: **Capella `#525252`**, **Copernicus `#08519c`**,
-**NASA FIRMS `#cb181d`**, **Vantor `#6a51a3`** (Purples, tint `#dadaeb`).
-Event boxes take the colour of the group they are shown in, so under Group by
-Provider they turn provider colours; the provenance in popups and exports
-stays per phenomenology.
+## Data files
+
+One place on one UTC evaluation date, at
+`data/<store>/<locality>/<YYYY-MM-DD>.json`. A data file names no matrix or
+view: every view is drawn from it.
+
+```json
+{
+  "locality": {"name": "London", "point": "POINT(-0.1278 51.5074)"},
+  "evaluation_date": "2026-10-30",
+  "icod": "2026-10-30T11:23:26Z",
+  "icod_source": "celestrak",
+  "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T1123Z.json), computed with Skyfield",
+  "evaluated": {"Sentinel-1": [39634, 62261, 66315]},
+  "windows": [
+    {"id": "Sentinel-1-39634-0612Z", "satellite": "Sentinel-1", "norad": 39634,
+     "start": "2026-10-30T06:10:41Z", "end": "2026-10-30T06:13:02Z", "status": "Predicted",
+     "label": "SENTINEL-1A pass", "notes": "Highest 52° at 0612Z (sun -9°)."}
+  ]
+}
+```
+
+| Key | Required | Meaning |
+|---|---|---|
+| `locality` | yes | `name` and `POINT(lon lat)` |
+| `evaluation_date` | yes | The UTC day the windows cover |
+| `icod` | yes | Information Cut-Off Date: when the data was grabbed; anything newer is not reflected. Never the export time |
+| `icod_source` | | Where the ICOD came from (`celestrak`; `demo` marks demo data) |
+| `source` | | One line on where the windows came from, shown on exports |
+| `evaluated` | | Per row, the spacecraft checked, so "no passes" is told apart from "not checked". Gives each group's provenance notes; a group with no evaluated rows has no feed |
+| `windows` | yes | Access windows: `satellite` (a matrix row), `start`, `end` (ISO 8601 UTC), `status` (a `status_styles` key), plus `norad` when the window comes from the catalogue, and optional `id`, `label`, `notes` shown in popups |
