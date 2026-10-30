@@ -135,7 +135,7 @@ tasking rules; tune them here.
 | NOAA-20 / NOAA-21 / S-NPP VIIRS | ≥ 20° | ±56° scan, 3040 km swath |
 | Capella-11, -13…-20 | 35°–75° | incidence ~15–55° |
 | Sentinel-1 (1A, 1C, 1D) | 44°–61° | IW mode, incidence ~29–46° |
-| HE360 Cluster 1…16 (HawkEye 360), BRO-5…32 (Unseenlabs) | ≥ 20°, day and night | Commercial RF: wide field of regard, no imaging footprint |
+| HE360 Cluster 1–3, 5–16 (HawkEye 360); BRO-5, -6, -8, -11…-23, -31, -32 (Unseenlabs) | ≥ 20°, day and night | Commercial RF: wide field of regard, no imaging footprint |
 
 Capella-12 is not in Celestrak's catalogue, so it has no row. Sentinel-1B is
 in orbit but out of service since 2021; Sentinel-3C is left out until it is
@@ -146,7 +146,8 @@ row is one cluster and uses its lead satellite (HAWK-A, HAWK-2A…), so a
 cluster pass is one window rather than three drawn on top of each other.
 Cluster 1 is the original HAWK-A/B/C trio; there is no cluster 4 in
 Celestrak. SEAHAWK-1 is an ocean-colour cubesat, not RF. Unseenlabs rows are
-its BRO satellites, one each. Kleos Space (KSM1) is in Celestrak but left out
+the BRO satellites Celestrak lists by that name, one each: BRO-5, -6, -8,
+-11 to -23, -31 and -32 (there are no BRO-7, -9, -10 or -24 to -30 there). Kleos Space (KSM1) is in Celestrak but left out
 while its operational status is unclear.
 
 ## workflow.json

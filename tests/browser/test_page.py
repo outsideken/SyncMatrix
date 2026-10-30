@@ -234,6 +234,22 @@ def test_demo_badge_is_grey_whatever_its_age(page, base_url, errors):
     assert errors == []
 
 
+def test_embedded_demo_footer_is_not_red(page, base_url, errors):
+    # Demo is grey everywhere: the footer sentence is only red when the ICOD is missing.
+    open_page(page, base_url + "/index.html?data=live/abstracted/demo/%s.json" % DAY)
+    expect(page.locator(".sm-icod-dot")).to_have_attribute("data-state", "demo")
+    expect(page.locator(".sm-icod")).not_to_have_class(re.compile(r"\bwarn\b"))
+    expect(page.locator(".sm-icod")).to_contain_text("DEMO DATA")
+    assert errors == []
+
+
+def test_embedded_footer_without_icod_is_red(page, base_url, errors):
+    open_payload(page, base_url, dated_payload(icod=None, provenance={}))
+    expect(page.locator(".sm-icod")).to_have_class(re.compile(r"\bwarn\b"))
+    expect(page.locator(".sm-icod-dot")).to_have_attribute("data-state", "missing")
+    assert errors == []
+
+
 def test_embedded_footer_shows_the_age(page, base_url, errors):
     # Toolbar hidden (single-file mode): the footer carries the ICOD, with a dot in the badge's colour.
     page.clock.set_fixed_time("2026-10-29T22:00:00Z")
