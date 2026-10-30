@@ -403,7 +403,11 @@ def test_each_place_shows_only_what_it_evaluates(page, base_url, errors):
     assert texts(page, ".sm-group-label") == ["RF"]                     # dark-ships example: RF only
     page.get_by_role("radio", name="Provider").click()
     assert texts(page, ".sm-group-label") == ["HawkEye 360", "Unseenlabs"]
+    page.locator("#sm-locality").select_option("gulf-of-guinea")      # HE360 only: one provider
+    expect(page.locator(".sm-group-label")).to_have_text(["HawkEye 360"])
     page.get_by_role("radio", name="Phenomenology").click()
+    expect(page.locator(".sm-group-label")).to_have_text(["RF"])
+    assert page.locator(".sm-row-label").count() == 15
     for locality, groups in (("london", ["EO", "SAR"]), ("tokyo", ["EO", "SAR", "RF"]), ("gao", ["IR"]),
                              ("tehran", ["EO", "IR", "SAR", "RF"])):
         page.locator("#sm-locality").select_option(locality)

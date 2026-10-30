@@ -20,9 +20,10 @@ workflow.json, checked by load_workflow():
 - localities: a name and a POINT(lon lat) each (optional "kind", e.g.
   "reference", "city" or "sea"); names and their ids are unique, points are
   on the globe, and a timezone is found for each. Every view shares them.
-  Optional "evaluate" lists the matrix groups predicted there (e.g.
-  ["EO", "SAR"]); without it, every group in the catalogue. A chart draws
-  only what its data file evaluated.
+  Optional "evaluate" lists the matrix groups predicted there: phenomenology
+  groups (e.g. ["EO", "SAR"]) or groups of another grouping such as a
+  provider (["HawkEye 360"]); without it, every row in the catalogue. A
+  chart draws only what its data file evaluated.
 - folder: the library the page reads (web/live).
 - libraries.predicted: store, days (from the orbit snapshot's date),
   keep_snapshots.
@@ -48,6 +49,23 @@ DEMO_SOURCE = "Demo data: generated sample events"
 
 def load_matrix() -> dict:
     return ep.load_config(CONFIG / "matrix.json")
+
+
+def named_groups(matrix: dict) -> dict:
+    """Group name -> its row ids, across every grouping (phenomenology and e.g. Provider)."""
+    out = {}
+    for groups in [matrix["groups"], *matrix.get("alt_groupings", {}).values()]:
+        for g in groups:
+            out.setdefault(g["name"], set()).update(ep.row_id(r) for r in g["rows"])
+    return out
+
+
+def evaluated_rows(matrix: dict, loc: dict) -> set:
+    """The rows a place evaluates: the union of the groups in its "evaluate" (all rows by default)."""
+    named = named_groups(matrix)
+    if "evaluate" not in loc:
+        return set(ep.row_groups(matrix))
+    return set().union(*(named[name] for name in loc["evaluate"]))
 
 
 def sites(workflow: dict) -> list:
@@ -85,9 +103,9 @@ def load_workflow(path=CONFIG / "workflow.json") -> dict:
         if finder.timezone_at(lat=lat, lng=lon) is None:
             fail("%s: no timezone found for %s" % (name, point))
 
-    groups = {g["name"] for g in load_matrix()["groups"]}
+    groups = named_groups(load_matrix())
     for loc in localities:
-        unknown = sorted(set(loc.get("evaluate", groups)) - groups)
+        unknown = sorted(set(loc.get("evaluate", groups)) - set(groups))
         if unknown or loc.get("evaluate") == []:
             fail("%s: evaluate must list matrix groups (%s); got %s"
                  % (loc["name"], ", ".join(sorted(groups)), ", ".join(unknown) or "none"))
@@ -151,14 +169,14 @@ def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
     catalogue = pp.load_catalogue(CONFIG / "catalogue.json")
     predicted = workflow["libraries"]["predicted"]
     first_day = date.fromisoformat(snapshot["fetched"][:10])
-    group_of = ep.row_groups(load_matrix())
+    matrix = load_matrix()
     out = []
     for loc in workflow["localities"]:
         name, point = loc["name"], loc["point"]
         lon, lat = ep.parse_wkt_point(point)
-        # Only the groups this place evaluates (all by default): its data file covers those, and the chart shows them.
-        wanted = set(loc.get("evaluate", group_of.values()))
-        here = {"satellites": {row: spec for row, spec in catalogue["satellites"].items() if group_of[row] in wanted}}
+        # Only the rows this place evaluates (all by default): its data file covers those, and the chart shows them.
+        wanted = evaluated_rows(matrix, loc)
+        here = {"satellites": {row: spec for row, spec in catalogue["satellites"].items() if row in wanted}}
         evaluated = {row: spec["norad"] for row, spec in here["satellites"].items()}
         for offset in range(int(predicted["days"])):
             day = first_day + timedelta(days=offset)

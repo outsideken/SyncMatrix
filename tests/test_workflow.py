@@ -49,16 +49,35 @@ def test_demo_is_one_locality_listed_last():
 
 
 def test_each_place_shows_the_groups_it_evaluates():
-    # The examples: RF only at sea, EO/SAR, EO/SAR/RF, IR only, and everything elsewhere.
-    workflow = wf.load_workflow()
-    every = [g["name"] for g in wf.load_matrix()["groups"]]
+    # The examples: RF only at sea (one of them HE360 only), EO/SAR, EO/SAR/RF, IR only, and everything elsewhere.
+    workflow, matrix = wf.load_workflow(), wf.load_matrix()
+    group_of = ep.row_groups(matrix)
+    every = [g["name"] for g in matrix["groups"]]
     for loc in workflow["localities"]:
-        wanted = [g for g in every if g in loc.get("evaluate", every)]
+        rows = wf.evaluated_rows(matrix, loc)
+        wanted = [g for g in every if g in {group_of[r] for r in rows}]
         for view in ("abstracted", "simplified"):
             for path in (REPO / workflow["folder"] / view / ep.slugify(loc["name"])).glob("*.json"):
-                assert [g["id"] for g in json.loads(path.read_text())["groups"]] == wanted, (view, path.parent.name)
+                payload = json.loads(path.read_text())
+                assert [g["id"] for g in payload["groups"]] == wanted, (view, path.parent.name)
+                if view == "abstracted":
+                    assert {r["id"] for g in payload["groups"] for r in g["rows"]} == rows, path.parent.name
     mixes = {tuple(l.get("evaluate", every)) for l in workflow["localities"]}
-    assert {("RF",), ("EO", "SAR"), ("EO", "SAR", "RF"), ("IR",), tuple(every)} <= mixes
+    assert {("RF",), ("HawkEye 360",), ("EO", "SAR"), ("EO", "SAR", "RF"), ("IR",), tuple(every)} <= mixes
+
+
+def test_evaluate_can_name_a_provider():
+    # "HawkEye 360" (a Provider group) evaluates just its rows: the RF group with HE360 clusters only.
+    workflow, matrix = wf.load_workflow(), wf.load_matrix()
+    guinea = next(l for l in workflow["localities"] if l["name"] == "Gulf of Guinea")
+    rows = wf.evaluated_rows(matrix, guinea)
+    assert rows and all(r.startswith("HE360 Cluster") for r in rows)
+    path = next((REPO / workflow["folder"] / "abstracted" / "gulf-of-guinea").glob("*.json"))
+    payload = json.loads(path.read_text())
+    assert [g["id"] for g in payload["groups"]] == ["RF"]
+    assert [g["id"] for alt in payload["alt_groupings"] for g in alt["groups"]] == ["HawkEye 360"]
+    data = json.loads(next((REPO / "data" / "predicted" / "gulf-of-guinea").glob("*.json")).read_text())
+    assert set(data["evaluated"]) == rows and all(w["satellite"] in rows for w in data["windows"])
 
 
 def test_evaluate_must_name_matrix_groups(workflow_copy, monkeypatch):
