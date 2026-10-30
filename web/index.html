@@ -8,13 +8,6 @@
 </head>
 <body>
   <form class="sm-toolbar" hidden onsubmit="return false">
-    <span class="sm-grouping" id="sm-source" hidden>
-      <span id="sm-source-label">Data</span>
-      <span class="sm-segmented" role="radiogroup" aria-labelledby="sm-source-label">
-        <button type="button" role="radio" data-source="predicted" title="Predicted satellite passes from Celestrak orbits">Predicted</button>
-        <button type="button" role="radio" data-source="demo" title="Generated sample events (DEMO DATA)">Demo</button>
-      </span>
-    </span>
     <label>Matrix <select id="sm-matrix"></select></label>
     <label id="sm-locality-picker" hidden>Locality <select id="sm-locality"></select></label>
     <span class="sm-date-picker">

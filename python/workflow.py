@@ -9,23 +9,23 @@ Three configuration files, each with one job:
 - config/workflow.json (this module) lists the shared localities and how each
   library is built.
 
-A library is built in two steps. Data files (one place on one UTC evaluation
-date: locality, ICOD, access windows) are written to its "store" under data/;
-then every view of the matrix is drawn from those files into its "folder"
-under web/. A colour or group change only redraws (scripts/build_views.py);
-it never re-runs Skyfield.
+The page reads one library. It is built in two steps. Each data source
+writes data files (one place on one UTC evaluation date: locality, ICOD,
+access windows) to its "store" under data/; then every view of the matrix is
+drawn from all the stores into one "folder" under web/. A colour or group
+change only redraws (scripts/build_views.py); it never re-runs Skyfield.
 
 workflow.json, checked by load_workflow():
 
 - localities: a name and a POINT(lon lat) each (optional "kind", e.g.
   "reference" or "city"); names and their ids are unique, points are on the
-  globe, and a timezone is found for each. Every library and view shares
-  them. The demo library seeds its sample windows from a locality's position
-  in the list, so add new localities at the end to leave existing demo data
-  as it is.
-- libraries.predicted: store, folder, days (from the orbit snapshot's date),
+  globe, and a timezone is found for each. Every view shares them.
+- folder: the library the page reads (web/live).
+- libraries.predicted: store, days (from the orbit snapshot's date),
   keep_snapshots.
-- libraries.demo: store, folder, days ({date, icod}), events_per_day.
+- libraries.demo: store, locality (the one "Demo" entry in the page's
+  Locality list, and the point its daylight is drawn for), days
+  ({date, icod}), events_per_day.
 """
 
 import json
@@ -59,13 +59,16 @@ def load_workflow(path=CONFIG / "workflow.json") -> dict:
     def fail(message):
         raise ValueError("%s: %s" % (path.name, message))
 
+    libraries = workflow.get("libraries", {})
     localities = workflow.get("localities") or fail("no localities")
+    demo = libraries.get("demo")
     names, ids = set(), set()
     finder = TimezoneFinder()
-    for i, loc in enumerate(localities):
+    for i, loc in enumerate(localities + ([demo.get("locality") or {}] if demo else [])):
         name, point = loc.get("name"), loc.get("point")
         if not name or not point:
-            fail("locality %d needs a name and a point" % (i + 1))
+            fail("locality %d needs a name and a point" % (i + 1) if i < len(localities)
+                 else "libraries.demo needs a locality with a name and a point")
         if name in names or ep.slugify(name) in ids:
             fail("locality %r is listed twice" % name)
         names.add(name)
@@ -79,10 +82,11 @@ def load_workflow(path=CONFIG / "workflow.json") -> dict:
         if finder.timezone_at(lat=lat, lng=lon) is None:
             fail("%s: no timezone found for %s" % (name, point))
 
-    libraries = workflow.get("libraries", {})
+    if not workflow.get("folder"):
+        fail("needs a folder (the library the page reads)")
     for library_id, library in libraries.items():
-        if not library.get("store") or not library.get("folder"):
-            fail("libraries.%s needs a store (data files) and a folder (payloads)" % library_id)
+        if not library.get("store"):
+            fail("libraries.%s needs a store (its data files)" % library_id)
 
     predicted = libraries.get("predicted")
     if predicted:
@@ -94,7 +98,6 @@ def load_workflow(path=CONFIG / "workflow.json") -> dict:
         if unknown:
             fail("catalogue.json rows not in matrix.json: %s" % ", ".join(unknown))
 
-    demo = libraries.get("demo")
     if demo:
         for day in demo.get("days") or fail("libraries.demo needs days"):
             datetime.strptime(day["date"], "%Y-%m-%d")
@@ -122,8 +125,8 @@ def write_store(store, data_files: list) -> None:
         path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
 
 
-def store_files(store) -> list:
-    return sorted(p for p in Path(store).glob("*/*.json"))
+def store_files(*stores) -> list:
+    return sorted(p for store in stores for p in Path(store).glob("*/*.json"))
 
 
 def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
@@ -156,43 +159,45 @@ def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
     return out
 
 
-def seed_for(site_index: int, day: str) -> int:
-    return site_index * 100 + int(day[5:7]) * 10 + int(day[-1])
+def seed_for(day: str) -> int:
+    return 100 + int(day[5:7]) * 10 + int(day[-1])
 
 
 def demo_data(workflow: dict, matrix: dict) -> list:
-    """Deterministic sample windows on the matrix's rows, one file per locality per demo day.
+    """Deterministic sample windows on the matrix's rows at the demo locality, one file per demo day.
 
-    Seeds use the locality's position in workflow.json, so re-running
-    reproduces the committed files.
+    Fixed seeds, so re-running reproduces the committed files.
     """
     demo = workflow["libraries"]["demo"]
     groups = ep.build_groups(matrix["groups"])
     tick = int(matrix.get("tick_minutes", 30))
     out = []
-    for i, (name, point) in enumerate(sites(workflow), start=1):
-        for day in demo["days"]:
-            start = ep.parse_iso("%sT00:00:00Z" % day["date"])
-            events = ep.demo_events(groups, start, tick, int(demo["events_per_day"]), seed_for(i, day["date"]))
-            out.append({"locality": {"name": name, "point": point},
-                        "evaluation_date": day["date"],
-                        "icod": day["icod"],
-                        "icod_source": "demo",
-                        "source": DEMO_SOURCE,
-                        "windows": [{"id": e["id"], "satellite": e["row"], "start": e["start"], "end": e["end"],
-                                     "status": e["status"], "label": e["label"], "notes": e["notes"]}
-                                    for e in events]})
+    for day in demo["days"]:
+        start = ep.parse_iso("%sT00:00:00Z" % day["date"])
+        events = ep.demo_events(groups, start, tick, int(demo["events_per_day"]), seed_for(day["date"]))
+        out.append({"locality": dict(demo["locality"]),
+                    "evaluation_date": day["date"],
+                    "icod": day["icod"],
+                    "icod_source": "demo",
+                    "source": DEMO_SOURCE,
+                    "windows": [{"id": e["id"], "satellite": e["row"], "start": e["start"], "end": e["end"],
+                                 "status": e["status"], "label": e["label"], "notes": e["notes"]}
+                                for e in events]})
     return out
 
 
-def draw_library(matrix: dict, store, folder) -> int:
-    """Redraw every view of every data file in a store into a library folder.
+def stores(workflow: dict) -> list:
+    return [REPO / library["store"] for library in workflow["libraries"].values()]
 
-    The folder's view folders are replaced whole, so a day dropped from the
+
+def draw_library(matrix: dict, store_dirs: list, folder) -> int:
+    """Redraw every view of every data file in the stores into the library folder.
+
+    The folder's view folders are replaced whole, so a day dropped from a
     store (or a view dropped from the matrix) leaves the page too.
     """
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
     for old in (p for p in folder.iterdir() if p.is_dir() and not p.name.startswith(".")):
         shutil.rmtree(old)
-    return ep.write_views(matrix, store_files(store), folder)
+    return ep.write_views(matrix, store_files(*store_dirs), folder)

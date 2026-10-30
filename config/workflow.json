@@ -76,16 +76,19 @@
       "kind": "city"
     }
   ],
+  "folder": "web/live",
   "libraries": {
     "predicted": {
       "store": "data/predicted",
-      "folder": "web/live",
       "days": 3,
       "keep_snapshots": 14
     },
     "demo": {
       "store": "data/demo",
-      "folder": "web/data",
+      "locality": {
+        "name": "Demo",
+        "point": "POINT(-100 40)"
+      },
       "days": [
         {
           "date": "2026-06-21",

@@ -1,11 +1,9 @@
-"""Check the published data in web/data before it ships.
+"""Check the page's library (web/live) before it ships.
 
 - every JSON file parses;
 - every file listed in index.json exists, and every payload is listed;
 - each payload has the fields the page needs, an ICOD, and events that
   point at rows that exist.
-
-Checks web/data by default; --live checks web/live (predicted passes).
 
 Exit code 1 with a list of problems if anything is wrong.
 """
@@ -15,15 +13,16 @@ import json
 import sys
 from pathlib import Path
 
-WEB = Path(__file__).resolve().parents[1] / "web"
+REPO = Path(__file__).resolve().parents[1]
 REQUIRED = ("version", "title", "icod", "icod_source", "source", "provenance", "locality", "window",
             "groups", "events")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--live", action="store_true", help="Check web/live instead of web/data")
-    DATA = WEB / ("live" if parser.parse_args().live else "data")
+    parser.parse_args()
+    # The page's library (web/live); read without importing anything, so Pages can run this bare.
+    DATA = REPO / json.loads((REPO / "config" / "workflow.json").read_text())["folder"]
     problems = []
 
     payloads = {}

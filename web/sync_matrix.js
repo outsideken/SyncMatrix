@@ -4,17 +4,16 @@
  * iframe: fills its frame, redraws on resize, and takes data two ways.
  *
  * Two ways to choose what to draw:
- *   - Library mode (default): read a manifest (data/index.json) listing every
- *     matrix and day, and show Matrix/Date dropdowns.
+ *   - Library mode (default): read a manifest (live/index.json) listing every
+ *     matrix, locality and day, and show Matrix/Locality/Date dropdowns. The
+ *     last locality is Demo (generated sample windows, labelled DEMO DATA).
  *   - Single-file mode: data=<url> draws exactly that payload, no dropdowns.
  *
  * URL parameters
- *   source=demo     Start on the demo library (generated events). Default:
- *                   the predicted-pass library. The toolbar's Data switch
- *                   changes it.
- *   manifest=<url>  Read this manifest instead (hides the Data switch).
+ *   manifest=<url>  Read this manifest instead of live/index.json.
  *   matrix=<id>     Initial matrix (default: first in the manifest).
- *   locality=<id>   Initial locality (default: first for that matrix). Each
+ *   locality=<id>   Initial locality (default: first for that matrix; demo for
+ *                   the demo data). Each
  *                   file is one locality and one day; the Locality dropdown
  *                   only appears when a matrix has more than one.
  *   date=<Y-M-D>    Initial day (default: newest for that locality).
@@ -50,13 +49,9 @@
   //============================================================================
 
   const params = new URLSearchParams(window.location.search);
-  // The two libraries: real predicted passes (default) and generated demo events.
-  const SOURCES = { predicted: "live/index.json", demo: "data/index.json" };
   const options = {
     dataUrl: params.get("data"),
-    source: params.get("source") === "demo" ? "demo" : "predicted",
-    manifestUrl: params.get("manifest") || (params.get("source") === "demo" ? SOURCES.demo : SOURCES.predicted),
-    sourceSwitch: !params.get("manifest"),
+    manifestUrl: params.get("manifest") || "live/index.json",
     showControls: params.get("controls") !== "0",
     showDaylight: params.get("daylight") !== "0",
     grouping: params.get("group"),
@@ -227,7 +222,7 @@
 
     localitySelect.selectAll("option").data(matrix.localities, (l) => l.id).join("option")
       .attr("value", (l) => l.id)
-      .text((l) => l.name + (l.timezone ? " (" + l.timezone + ")" : ""));
+      .text((l) => l.name + (l.demo ? " (generated sample)" : l.timezone ? " (" + l.timezone + ")" : ""));
     localitySelect.property("value", selection.locality);
     // Only worth a dropdown when this matrix has more than one locality.
     localityPicker.attr("hidden", matrix.localities.length > 1 ? null : true);
@@ -264,38 +259,6 @@
   dateSelect.on("change", (ev) => select({ ...selection, date: ev.target.value }));
   olderButton.on("click", () => stepDate(1));
   newerButton.on("click", () => stepDate(-1));
-
-  //============================================================================
-  // DATA SOURCE (Predicted | Demo)
-  //============================================================================
-
-  const sourcePicker = d3.select("#sm-source");
-
-  function updateSourceControl() {
-    sourcePicker.selectAll("button").attr("aria-checked", function () {
-      return String(this.dataset.source === options.source);
-    });
-  }
-
-  sourcePicker.selectAll("button").on("click", async (ev) => {
-    const source = ev.currentTarget.dataset.source;
-    if (source === options.source) return;
-    options.source = source;
-    options.manifestUrl = SOURCES[source];
-    updateSourceControl();
-    const url = new URL(window.location.href);
-    if (source === "demo") url.searchParams.set("source", "demo");
-    else url.searchParams.delete("source");
-    window.history.replaceState(null, "", url);
-    try {
-      await loadManifest();
-      // Keep matrix and locality; the date falls back to today or the newest
-      // day when the other library doesn't have it.
-      select(selection, { notify: false });
-    } catch (err) {
-      showError("Could not load " + options.manifestUrl + " (" + err.message + ")");
-    }
-  });
 
   async function refresh() {
     if (manifest) {
@@ -1064,8 +1027,6 @@
       try {
         await loadManifest();
         toolbar.attr("hidden", options.showControls ? null : true);
-        sourcePicker.attr("hidden", options.sourceSwitch ? null : true);
-        updateSourceControl();
         select(selection, { notify: false });
       } catch (err) {
         showError("Could not load " + options.manifestUrl + " (" + err.message + ")");

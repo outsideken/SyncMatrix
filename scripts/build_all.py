@@ -1,12 +1,10 @@
-"""Rebuild both libraries from config/ and check them: the one command after an edit.
+"""Rebuild the data files and the page's library from config/ and check them: the one command after an edit.
 
-    python scripts/build_all.py           # demo + predicted (from the newest TLE snapshot)
-    python scripts/build_all.py --demo    # only the demo library
-    python scripts/build_all.py --live    # only the predicted library
+    python scripts/build_all.py    # demo + predicted (from the newest TLE snapshot), then web/live
 
 Edit config/workflow.json (localities, days), config/catalogue.json
 (satellites, thresholds) or config/matrix.json (groups, colours, views), run
-this, then commit config/ and the rebuilt data/ and web/. A matrix-only change
+this, then commit config/ and the rebuilt data/ and web/live. A matrix-only change
 can use scripts/build_views.py instead (redraws without re-predicting). This
 does not fetch new orbits; scripts/refresh_live_data.py (or the daily job)
 does that.
@@ -27,20 +25,12 @@ def run(*args) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--demo", action="store_true", help="Only the demo library")
-    parser.add_argument("--live", action="store_true", help="Only the predicted library")
-    args = parser.parse_args()
-    both = not (args.demo or args.live)
+    argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter).parse_args()
     try:
-        if both or args.demo:
-            run(SCRIPTS / "build_demo_data.py")
-            run(SCRIPTS / "check_data.py")
-            run(SCRIPTS / "check_demo_data.py")
-        if both or args.live:
-            run(SCRIPTS / "build_live_data.py")
-            run(SCRIPTS / "check_data.py", "--live")
-            run(SCRIPTS / "check_demo_data.py", "--live")
+        run(SCRIPTS / "build_demo_data.py")
+        run(SCRIPTS / "build_live_data.py")
+        run(SCRIPTS / "check_data.py")
+        run(SCRIPTS / "check_build.py")
     except subprocess.CalledProcessError as err:
         print("FAILED:", err, file=sys.stderr)
         return 1

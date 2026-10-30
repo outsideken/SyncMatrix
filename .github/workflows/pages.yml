@@ -1,5 +1,5 @@
-# Publish web/ (the d3 Sync Matrix page, vendored d3, the demo library in
-# web/data and the predicted-pass library in web/live) to
+# Publish web/ (the d3 Sync Matrix page, vendored d3, and its library in
+# web/live: predicted passes plus the Demo locality) to
 # GitHub Pages whenever main changes. Every path in web/ is relative, so the
 # site works under https://<owner>.github.io/SyncMatrix/ as-is.
 #
@@ -41,7 +41,6 @@ jobs:
       - name: Check data files
         run: |
           python3 scripts/check_data.py
-          python3 scripts/check_data.py --live
 
       - uses: actions/configure-pages@v6
 
