@@ -17,7 +17,7 @@ from conftest import REPO
 from astral import Observer
 from astral.sun import elevation as sun_elevation
 
-CONFIG = ep.load_config(REPO / "config" / "abstracted.json")
+CONFIG = ep.load_config(REPO / "config" / "matrices" / "abstracted.json")
 SNAPSHOT_PATH = sorted((REPO / "data" / "tle").glob("celestrak-*.json"))[-1]
 SNAPSHOT = pp.load_snapshot(SNAPSHOT_PATH)
 DAY = datetime.fromisoformat(SNAPSHOT["fetched"][:10]).replace(tzinfo=timezone.utc) + timedelta(days=1)
@@ -115,7 +115,7 @@ def test_roll_up_merges_overlapping_passes():
 
 
 def test_config_satellites_must_be_rows(tmp_path):
-    config = json.loads((REPO / "config" / "abstracted.json").read_text())
+    config = json.loads((REPO / "config" / "matrices" / "abstracted.json").read_text())
     config["satellites"]["Not-A-Row"] = {"norad": [1], "min_elevation": 10}
     path = tmp_path / "abstracted.json"
     path.write_text(json.dumps(config))

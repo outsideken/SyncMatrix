@@ -1,19 +1,88 @@
-# Matrix configs
+# Configuration
 
-One JSON file per matrix. The file name is the matrix id (`simplified.json` →
-`simplified`, used in `web/data/simplified/…` and `?matrix=simplified`). The exporter
-checks a config before building anything (`load_config` in
-`python/export_payload.py`).
+Everything that defines the Sync Matrix lives here, in three kinds of file.
+The builders, checks, tests and the daily refresh read them; nothing else
+lists matrices or localities.
+
+```
+config/
+  defaults.json          settings every matrix shares
+  matrices/<id>.json     one per matrix: only what differs from the defaults
+  workflow.json          what gets built: the shared localities and the libraries
+```
+
+**To add a locality or change the days**, edit `workflow.json`, then run
+`python scripts/build_all.py` and commit `config/` with the rebuilt `web/data`
+and `web/live`. **To change a matrix**, edit its file in `matrices/` (or a
+shared setting in `defaults.json`) and do the same.
+
+## workflow.json
+
+```json
+{
+  "localities": [
+    {"name": "High Arctic 78°N", "point": "POINT(16 78)", "kind": "reference"},
+    {"name": "London", "point": "POINT(-0.1278 51.5074)", "kind": "city"}
+  ],
+  "libraries": {
+    "predicted": {"folder": "web/live", "days": 3, "keep_snapshots": 14,
+                  "passes_from": "abstracted", "roll_ups": ["simplified"]},
+    "demo": {"folder": "web/data",
+             "days": [{"date": "2026-10-28", "icod": "2026-10-28T12:00:00Z"}],
+             "matrices": {"abstracted": {"events_per_day": 20, "seed_offset": 0},
+                          "simplified": {"events_per_day": 8, "seed_offset": 7}}}
+  }
+}
+```
+
+- **`localities`** are shared by every matrix and both libraries. `point` is
+  `POINT(longitude latitude)`, longitude first. `kind` (`reference` or `city`)
+  is optional and informational. The timezone, sunrise and sunset, and the
+  predicted passes are all worked out from the point. The page lists them
+  north to south. **Add new localities at the end**: the demo library seeds its
+  sample events from a locality's position, so appending leaves existing demo
+  data unchanged.
+- **`libraries.predicted`**: `days` from the orbit snapshot's date,
+  `keep_snapshots` kept in `data/tle`, `passes_from` (the matrix whose
+  `satellites` are predicted) and `roll_ups` (matrices built by rolling those
+  passes up into their groups).
+- **`libraries.demo`**: the demo `days` (each with its demo ICOD) and, per
+  matrix, `events_per_day` and `seed_offset`.
+
+`load_workflow` (`python/workflow.py`) checks it first: unique names, a valid
+point on the globe, a timezone for every locality, and every named matrix
+exists. `POINT` takes longitude first. A latitude-first point is caught only
+when it lands off the globe (its longitude is above 90° either way, e.g.
+`POINT(51.5 -120)`); one that stays on the globe, like London as
+`POINT(51.5074 -0.1278)`, is accepted, so check the map after adding a place.
+
+## defaults.json and matrices/
+
+A matrix file holds only what differs; it is **merged over `defaults.json`**
+(dicts merge key by key, anything else in the matrix file replaces the
+default). The merge is declarative: a setting comes from the matrix file or
+from the defaults, never from another matrix, so the order of files doesn't
+matter. The file name is the matrix id (`matrices/simplified.json` →
+`simplified`, used in `web/data/simplified/…` and `?matrix=simplified`).
+
+`defaults.json`:
+
+```json
+{
+  "tick_minutes": 30,
+  "show_daylight": true,
+  "show_end_of_local_day": false,
+  "status_styles": {"Predicted": {"fill": "tint"}, "Collected": {"fill": "solid"}},
+  "grouping": "Phenomenology"
+}
+```
+
+A matrix, e.g. `matrices/abstracted.json` (shortened):
 
 ```json
 {
   "title": "Abstracted Sync Matrix",
   "label": "Abstracted Sync Matrix",
-  "tick_minutes": 30,
-  "show_daylight": true,
-  "show_end_of_local_day": false,
-  "status_styles": {"Predicted": {"fill": "tint"}, "Collected": {"fill": "solid"}},
-  "grouping": "Phenomenology",
   "groups": [
     {"name": "EO", "rows": ["GeoEye-1", "Legion-1", "WorldView-1"]},
     {"name": "SAR", "color": "#525252", "tint": "#d9d9d9", "rows": ["Capella-11", "Sentinel-1"]}
@@ -24,13 +93,11 @@ checks a config before building anything (`load_config` in
       {"name": "Vantor", "rows": ["GeoEye-1", "Legion-1", "WorldView-1"]},
       {"name": "Copernicus", "rows": ["Sentinel-1"]}
     ]
-  },
-  "banners": [
-    {"id": "Banner #1", "text": "BANNER #1", "start": "00:00", "end": "24:00",
-     "level": 0, "fill": "#252525", "text_color": "yellow"}
-  ]
+  }
 }
 ```
+
+Every key, in either file:
 
 | Key | Required | Meaning |
 |---|---|---|

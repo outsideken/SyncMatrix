@@ -4,7 +4,7 @@ The daily GitHub Action (.github/workflows/refresh-live.yml) runs this; it
 works the same locally:
 
     python scripts/refresh_live_data.py            # fetch, prune, build, check
-    python scripts/refresh_live_data.py --keep 14  # snapshots to keep in data/tle
+    python scripts/refresh_live_data.py --keep 14  # override keep_snapshots from workflow.json
 
 Steps, stopping at the first failure:
 1. scripts/fetch_tles.py: a new Celestrak snapshot in data/tle/ (its download
@@ -24,6 +24,9 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 SCRIPTS = REPO / "scripts"
+sys.path.insert(0, str(REPO / "python"))
+
+import workflow as wf  # noqa: E402
 
 
 def run(*args) -> None:
@@ -33,8 +36,10 @@ def run(*args) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--keep", type=int, default=14, help="Snapshots to keep in data/tle (default 14)")
+    parser.add_argument("--keep", type=int, help="Snapshots to keep in data/tle (default: keep_snapshots in workflow.json)")
     args = parser.parse_args()
+    if args.keep is None:
+        args.keep = int(wf.load_workflow()["libraries"]["predicted"]["keep_snapshots"])
 
     try:
         run(SCRIPTS / "fetch_tles.py")

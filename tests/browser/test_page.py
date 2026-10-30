@@ -4,10 +4,13 @@ Runs the real page in headless Chromium against the committed demo data.
 Dates are passed explicitly, so results don't depend on today's date.
 """
 
+import json
 import re
 from urllib.parse import parse_qs, urlparse
 
 from playwright.sync_api import Page, expect
+
+from conftest import WEB
 
 DAY = "2026-10-28"
 ABSTRACTED = "/index.html?source=demo&matrix=abstracted&locality=mid-north-40-n&date=%s" % DAY
@@ -73,9 +76,10 @@ def test_abstracted_layout(page, base_url, errors):
 def test_localities_run_north_to_south(page, base_url, errors):
     open_page(page, base_url + ABSTRACTED)
     names = [re.sub(r" \(.*\)$", "", t) for t in texts(page, "#sm-locality option")]
-    assert names == ["High Arctic 78°N", "Arctic 70°N", "Subarctic 65°N", "London", "Kiev", "Assisi",
-                     "Mid-north 40°N", "Tokyo", "Tehran", "Cairo", "Kathmandu", "Gao",
-                     "Equator 0°", "Mid-south 40°S", "Antarctic 78°S"]
+    # Every locality in config/workflow.json, sorted north to south.
+    workflow = json.loads((WEB.parent / "config" / "workflow.json").read_text())
+    by_lat = sorted(workflow["localities"], key=lambda l: -float(l["point"].split()[-1].rstrip(")")))
+    assert names == [l["name"] for l in by_lat]
     assert errors == []
 
 

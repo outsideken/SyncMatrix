@@ -1,0 +1,121 @@
+{
+  "localities": [
+    {
+      "name": "High Arctic 78°N",
+      "point": "POINT(16 78)",
+      "kind": "reference"
+    },
+    {
+      "name": "Arctic 70°N",
+      "point": "POINT(25 70)",
+      "kind": "reference"
+    },
+    {
+      "name": "Subarctic 65°N",
+      "point": "POINT(25 65)",
+      "kind": "reference"
+    },
+    {
+      "name": "Mid-north 40°N",
+      "point": "POINT(-100 40)",
+      "kind": "reference"
+    },
+    {
+      "name": "Equator 0°",
+      "point": "POINT(25 0)",
+      "kind": "reference"
+    },
+    {
+      "name": "Mid-south 40°S",
+      "point": "POINT(-70 -40)",
+      "kind": "reference"
+    },
+    {
+      "name": "Antarctic 78°S",
+      "point": "POINT(166 -78)",
+      "kind": "reference"
+    },
+    {
+      "name": "London",
+      "point": "POINT(-0.1278 51.5074)",
+      "kind": "city"
+    },
+    {
+      "name": "Tehran",
+      "point": "POINT(51.389722 35.688889)",
+      "kind": "city"
+    },
+    {
+      "name": "Kiev",
+      "point": "POINT(30.5234 50.4501)",
+      "kind": "city"
+    },
+    {
+      "name": "Tokyo",
+      "point": "POINT(139.6917 35.6895)",
+      "kind": "city"
+    },
+    {
+      "name": "Kathmandu",
+      "point": "POINT(85.3240 27.7172)",
+      "kind": "city"
+    },
+    {
+      "name": "Cairo",
+      "point": "POINT(31.2357 30.0444)",
+      "kind": "city"
+    },
+    {
+      "name": "Gao",
+      "point": "POINT(-0.0444 16.2717)",
+      "kind": "city"
+    },
+    {
+      "name": "Assisi",
+      "point": "POINT(12.6176 43.0707)",
+      "kind": "city"
+    }
+  ],
+  "libraries": {
+    "predicted": {
+      "folder": "web/live",
+      "days": 3,
+      "keep_snapshots": 14,
+      "passes_from": "abstracted",
+      "roll_ups": [
+        "simplified"
+      ]
+    },
+    "demo": {
+      "folder": "web/data",
+      "days": [
+        {
+          "date": "2026-06-21",
+          "icod": "2026-06-21T18:00:00Z"
+        },
+        {
+          "date": "2026-09-22",
+          "icod": "2026-09-22T18:00:00Z"
+        },
+        {
+          "date": "2026-10-28",
+          "icod": "2026-10-28T12:00:00Z"
+        },
+        {
+          "date": "2026-12-21",
+          "icod": "2026-10-28T12:00:00Z"
+        }
+      ],
+      "matrices": {
+        "abstracted": {
+          "events_per_day": 20,
+          "seed_offset": 0
+        },
+        "simplified": {
+          "events_per_day": 8,
+          "seed_offset": 7
+        }
+      }
+    }
+  }
+}

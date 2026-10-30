@@ -1,10 +1,13 @@
-"""Build the predicted-pass library in web/live from a Celestrak TLE snapshot.
+"""Build the predicted-pass library from a Celestrak TLE snapshot.
 
-For each demo site and for the snapshot's day plus the next two days:
+What gets built comes from config/workflow.json (libraries.predicted and the
+shared localities). For each locality and for the snapshot's day plus the
+following days:
 
-- Abstracted: one event per satellite pass that can image the site
-  (python/predict_passes.py, thresholds in config/abstracted.json "satellites").
-- Simplified: the same passes rolled up into its EO / IR / SAR rows.
+- the "passes_from" matrix (Abstracted): one event per satellite pass that can
+  image the locality (python/predict_passes.py, thresholds in its "satellites");
+- each "roll_ups" matrix (Simplified): the same passes rolled up into its
+  groups (EO / IR / SAR).
 
 The ICOD of every payload is the snapshot's "fetched" time (when the orbits
 were downloaded), with icod_source "celestrak". Predictions are only good for
@@ -28,9 +31,8 @@ sys.path.insert(0, str(REPO / "scripts"))
 
 import export_payload as ep  # noqa: E402
 import predict_passes as pp  # noqa: E402
-from build_demo_data import SITES  # noqa: E402
+import workflow as wf  # noqa: E402
 
-DAYS = 3
 SOURCE = "Predicted passes from Celestrak orbits (%s), computed with Skyfield"
 
 
@@ -69,39 +71,46 @@ def group_provenance(config: dict, events: list, row_group: dict, abstracted: di
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--tle", help="TLE snapshot (default: newest in data/tle)")
-    parser.add_argument("--out", default=str(REPO / "web" / "live"), help="Library folder to write")
+    parser.add_argument("--out", help="Library folder to write (default: the folder in workflow.json)")
     args = parser.parse_args()
 
+    workflow = wf.load_workflow()
+    predicted = workflow["libraries"]["predicted"]
     tle_path = Path(args.tle) if args.tle else latest_snapshot()
     snapshot = pp.load_snapshot(tle_path)
-    out_dir = Path(args.out)
-    abstracted = ep.load_config(REPO / "config" / "abstracted.json")
-    simplified = ep.load_config(REPO / "config" / "simplified.json")
+    out_dir = Path(args.out or REPO / predicted["folder"])
+    source_id = predicted["passes_from"]
+    source_matrix = wf.load_matrix(source_id)
+    roll_ups = {m: wf.load_matrix(m) for m in predicted.get("roll_ups", [])}
 
-    row_group = {ep.row_id(r): g["name"] for g in abstracted["groups"] for r in g["rows"]}
-    simplified_row = {g["name"]: ep.row_id(g["rows"][0]) for g in simplified["groups"]}
+    row_group = {ep.row_id(r): g["name"] for g in source_matrix["groups"] for r in g["rows"]}
+    # A roll-up matrix shows each group as one row: map group name -> that row's id.
+    group_row = {m: {g["name"]: ep.row_id(g["rows"][0]) for g in c["groups"]} for m, c in roll_ups.items()}
     source = SOURCE % tle_path.name
     first_day = date.fromisoformat(snapshot["fetched"][:10])
 
     # The library is rebuilt whole from one snapshot: drop the previous days
     # (they were predicted from older orbits) instead of keeping them around.
-    for old in (out_dir / "abstracted", out_dir / "simplified"):
-        shutil.rmtree(old, ignore_errors=True)
+    for matrix in [source_id, *roll_ups]:
+        shutil.rmtree(out_dir / matrix, ignore_errors=True)
 
-    for name, point in SITES:
+    for name, point in wf.sites(workflow):
         locality = {"name": name, "point": point}
         lon, lat = ep.parse_wkt_point(point)
-        for offset in range(DAYS):
+        for offset in range(int(predicted["days"])):
             day = first_day + timedelta(days=offset)
-            window = ep.build_window(abstracted, day)
+            window = ep.build_window(source_matrix, day)
             start, end = ep.parse_iso(window["start"]), ep.parse_iso(window["end"])
-            events = pp.predict_events(abstracted, snapshot, lat, lon, start, end)
-            rolled = [dict(e, row=simplified_row[e["row"]]) for e in pp.roll_up(events, row_group)]
+            events = pp.predict_events(source_matrix, snapshot, lat, lon, start, end)
+            builds = [(source_id, source_matrix, events)]
+            for matrix, config in roll_ups.items():
+                rolled = [dict(e, row=group_row[matrix][e["row"]]) for e in pp.roll_up(events, row_group)]
+                builds.append((matrix, config, rolled))
 
-            for matrix, config, matrix_events in (("abstracted", abstracted, events), ("simplified", simplified, rolled)):
+            for matrix, config, matrix_events in builds:
                 payload = ep.build_payload(config, matrix_events, day, icod=snapshot["fetched"],
                                            icod_source="celestrak", locality=locality, source=source,
-                                           provenance=group_provenance(config, events, row_group, abstracted))
+                                           provenance=group_provenance(config, events, row_group, source_matrix))
                 path = out_dir / matrix / payload["locality"]["id"] / ("%s.json" % day.isoformat())
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(json.dumps(payload, indent=2))

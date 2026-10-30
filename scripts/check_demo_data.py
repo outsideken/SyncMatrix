@@ -20,8 +20,13 @@ import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-LIBRARIES = {"demo": ("build_demo_data.py", REPO / "web" / "data"),
-             "live": ("build_live_data.py", REPO / "web" / "live")}
+sys.path.insert(0, str(REPO / "python"))
+
+import workflow as wf  # noqa: E402
+
+LIBRARY_FOLDERS = wf.load_workflow()["libraries"]
+LIBRARIES = {"demo": ("build_demo_data.py", REPO / LIBRARY_FOLDERS["demo"]["folder"]),
+             "live": ("build_live_data.py", REPO / LIBRARY_FOLDERS["predicted"]["folder"])}
 
 
 def load(path: Path) -> dict:
