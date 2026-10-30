@@ -582,7 +582,9 @@
 
     const usedStatuses = Array.from(new Set(p.events.map((e) => e.status))).filter(Boolean);
     // Status legend in neutral grey: colour already means phenomenology (the strips).
-    const legendItems = usedStatuses.map((s) => ({ label: s, style: p.status_styles[s] }));
+    // Only worth showing when statuses differ; with one (e.g. all Predicted) it says nothing.
+    const legendItems = usedStatuses.length > 1
+      ? usedStatuses.map((s) => ({ label: s, style: p.status_styles[s] })) : [];
     if (afterIcod) legendItems.unshift({ label: "After ICOD", hatch: true });
 
     const legend = plot.append("g").attr("class", "sm-legend").attr("transform", `translate(${plotWidth},${footerY})`);
