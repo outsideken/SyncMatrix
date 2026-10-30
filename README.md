@@ -4,30 +4,34 @@ Python builds a JSON payload; a d3 page draws it. The page is made to be
 embedded in a dashboard with an `<iframe>`.
 
 ```
-config/workflow.json       the shared localities and how each library is built (see config/README.md)
-config/defaults.json       settings every matrix shares
-config/matrices/<id>.json  one per matrix: groups, rows, groupings, satellites (only what differs)
-python/export_payload.py   config + events -> payload JSON
+config/matrix.json         draws the chart: groups, rows, colours, groupings, views (see config/README.md)
+config/catalogue.json      prediction catalogue: NORAD ids and pass thresholds per row
+config/workflow.json       the shared localities and how each library is built
+python/export_payload.py   matrix + data file -> one payload per view
 python/predict_passes.py   predicted satellite passes over a locality (Skyfield)
+python/workflow.py         loads workflow.json; writes data files; draws libraries
 scripts/fetch_tles.py      snapshots current orbits from Celestrak into data/tle/
-scripts/build_live_data.py builds the predicted-pass library in web/live from a snapshot
-scripts/build_demo_data.py rebuilds the demo library in web/data from config/
+scripts/build_live_data.py predicts data/predicted from a snapshot, then draws web/live
+scripts/build_demo_data.py generates data/demo, then draws web/data
+scripts/build_views.py     redraws web/ from the stored data files (after a matrix change)
 scripts/build_all.py       rebuilds and checks both libraries: the one command after editing config/
 data/tle/                  committed orbit snapshots (provenance + reproducible builds)
+data/<store>/<locality>/<date>.json  data files: one place, one UTC evaluation date, its access windows
 web/index.html             the renderer (embed this)
 web/sync_matrix.js|css     renderer code and theme
 web/vendor/d3.v7.9.0.min.js  vendored d3, so no CDN access is needed
 web/data/index.json        manifest: matrices -> localities -> days (generated)
-web/data/<matrix>/<locality>/<date>.json  one locality, one UTC day (demo events)
+web/data/<view>/<locality>/<date>.json  one view, one locality, one UTC day (demo windows)
 web/live/...               same layout: predicted passes, the page's default library (refreshed daily)
 web/demo_dashboard.html    stand-in dashboard for testing iframe + postMessage
 ```
 
 ## Matrices
 
-Two matrices, defined in [`config/`](config/README.md):
+One matrix, [`config/matrix.json`](config/README.md), draws two views of the
+same data:
 
-- **Abstracted Sync Matrix** (`config/matrices/abstracted.json`): one row per satellite
+- **Abstracted Sync Matrix** (view `abstracted`): one row per satellite
   (or instrument), grouped by **phenomenology**, rows alphabetical (numbers in
   numeric order):
   - **EO**: GeoEye-1, Legion-1 to -6, WorldView-1 to -3 (Vantor); Sentinel-2;
@@ -42,19 +46,24 @@ Two matrices, defined in [`config/`](config/README.md):
   -3 OLCI, -3 SLSTR); NASA FIRMS (MODIS and VIIRS); Vantor (GeoEye-1, Legion,
   WorldView). Each grouping has its own colours (see config/README.md); event
   boxes follow the grouping shown.
-- **Simplified Sync Matrix** (`config/matrices/simplified.json`): the phenomenology groups
-  only (COM, IR, SAR, EO), drawn as grey bars without row labels. Always
-  phenomenology, so the Group by control is hidden. The COM row's id is
-  `CIRCUS`, which is what events reference.
+- **Simplified Sync Matrix** (view `simplified`): the same groups (EO, IR,
+  SAR) without the satellite rows, drawn as bars without row labels. Its
+  windows are Abstracted's rolled up: overlapping windows in a group become
+  one bar ("2 EO passes", names in the notes). Always phenomenology, so the
+  Group by control is hidden.
 
-To change a matrix, edit its file in `config/matrices/` (or `config/defaults.json`)
-and run `python scripts/build_all.py` (CI fails if the committed libraries
-don't match the configs).
+The data is kept apart from the drawing: a **data file** is one place on one
+UTC evaluation date (locality, ICOD, access windows) and names no view. To
+change colours, groups or views, edit `config/matrix.json` and run
+`python scripts/build_views.py`: it redraws `web/` from the stored data files
+without re-predicting. To change thresholds or spacecraft, edit
+`config/catalogue.json` and run `python scripts/build_all.py`. CI fails if the
+committed data files or libraries don't match the configs.
 
 **To add a locality**, add it to the end of `localities` in
 `config/workflow.json` (`{"name": "Nairobi", "point": "POINT(36.8219 -1.2921)"}`,
-longitude first), run `python scripts/build_all.py`, and commit `config/`, `web/data`
-and `web/live` in a PR. Both libraries, the page, the checks and the browser
+longitude first), run `python scripts/build_all.py`, and commit `config/`, `data/`
+and `web/` in a PR. Both libraries, the page, the checks and the browser
 tests pick it up from there; nothing else lists localities.
 
 ## Predicted passes (live data)
@@ -70,8 +79,8 @@ keeping the matrix and locality; `?source=demo` opens on the demo.
 
 **Refreshed daily** by `.github/workflows/refresh-live.yml` (05:17 UTC, or
 *Run workflow* by hand): it fetches new orbits, prunes `data/tle` to the 14
-newest snapshots, rebuilds `web/live` (three days from the new snapshot,
-replacing the old days), runs the checks and unit tests, commits to `main` as
+newest snapshots, rebuilds `data/predicted` and `web/live` (three days from
+the new snapshot, replacing the old days; it never touches the demo library), runs the checks and unit tests, commits to `main` as
 github-actions[bot], and starts the Pages deploy. The same steps locally:
 
 ```bash
@@ -84,13 +93,14 @@ github-actions[bot], and starts the Pages deploy. The same steps locally:
 - **A pass counts** when the satellite is above the row's elevation threshold
   over the site; optical (EO) rows also need the sun up; side-looking SAR rows
   (Sentinel-1, Capella) need the site in the swath. Thresholds and NORAD
-  numbers are in `config/matrices/abstracted.json` under `satellites` (table in
-  [config/README.md](config/README.md#pass-thresholds-abstracted)).
+  numbers are in the prediction catalogue, `config/catalogue.json` (table in
+  [config/README.md](config/README.md#pass-thresholds)). Each pass is stored as
+  a window in `data/predicted/<locality>/<date>.json`.
 - **Events** are status `Predicted`. Hover shows the highest elevation,
   the sun's elevation, the threshold and the orbit's NORAD number, epoch and
   download time.
-- **Simplified** is built from the same passes, rolled up into EO / IR / SAR;
-  overlapping passes become one event ("2 EO passes": names in the notes).
+- **Simplified** is drawn from the same data files, rolled up into EO / IR /
+  SAR; overlapping passes become one event ("2 EO passes": names in the notes).
 - **ICOD** is the snapshot's download time (`icod_source: "celestrak"`), so the
   badge shows how old the orbits are, without "DEMO DATA". Exports add a
   `Source:` line.
@@ -101,32 +111,31 @@ github-actions[bot], and starts the Pages deploy. The same steps locally:
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt -c constraints.txt
-.venv/bin/python python/export_payload.py --config config/matrices/simplified.json \
-    --date 2026-10-27 --events events.json --out-dir web/data
+.venv/bin/python python/export_payload.py --data london-2026-10-27.json --out-dir web/data
 ```
 
-`--out-dir` writes `web/data/simplified/mid-north-40-n/2026-10-27.json` (the
-matrix id is the config file name) and rebuilds `web/data/index.json` from the
-files on disk, so the new day shows up in the page's Date dropdown. After
-deleting old days, run `export_payload.py --rebuild-manifest web/data`.
-`--out FILE` writes a single payload without touching the manifest.
+`--out-dir` draws every view of the data file, e.g.
+`web/data/simplified/london/2026-10-27.json`, and rebuilds `web/data/index.json`
+from the files on disk, so the new day shows up in the page's Date dropdown.
+`--view simplified` draws one view; `--view simplified --out FILE` writes a
+single payload without touching the manifest. After deleting old days, run
+`export_payload.py --rebuild-manifest web/data`. `--matrix` picks another
+matrix file (default `config/matrix.json`).
 
-Use `--demo-events N` instead of `--events` for sample data; `--date` defaults
-to today (UTC). The events file is
+The data file (format in [config/README.md](config/README.md#data-files)) is
 
 ```json
-{"icod": "2026-10-27T19:28:00Z",
- "locality": {"name": "Mid-north 40°N", "point": "POINT(-100 40)"},
- "events": [{"row": "EO", "start": "...", "end": "...", "status": "High", "label": "...", "notes": "..."}]}
+{"locality": {"name": "London", "point": "POINT(-0.1278 51.5074)"},
+ "evaluation_date": "2026-10-27",
+ "icod": "2026-10-27T19:28:00Z",
+ "windows": [{"satellite": "Legion-3", "start": "...", "end": "...", "status": "High", "label": "...", "notes": "..."}]}
 ```
 
-with ISO 8601 UTC times; unknown rows or end-before-start fail loudly. Each
-file is **one locality, one day**. The locality is required: in the events
-file, or with `--locality "POINT(lon lat)" --locality-name "Mid-north 40°N"`.
-Its timezone is looked up and stored in the payload.
-
-`--label` overrides the name in the Matrix dropdown (default: the config's
-`"label"`); the chart heading is the config's `"title"`.
+with ISO 8601 UTC times; a satellite that isn't a matrix row or an
+end-before-start fails loudly. Each file is **one locality, one day**. The
+locality's timezone is looked up and stored in the payload. The chart heading
+and the Matrix dropdown name come from the view's `title` (and optional
+`label`).
 
 ## Daylight shading
 
@@ -143,11 +152,11 @@ times. Polar day and night need no special handling.
 ICOD is when the data was grabbed: anything received after it is **not**
 reflected in the matrix. It is provenance, so:
 
-- It must come from the data source, as `"icod"` in the events file or `--icod`.
+- It must come from the data source, as `"icod"` in the data file.
   The exporter refuses to run without one, or with one in the future, and never
   substitutes the export time. (The original matplotlib version used `datetime.now()`
   because it ran on proxy data.)
-- Demo payloads (`--demo-events`) are marked `icod_source: "demo"` and the page
+- Demo data files are marked `icod_source: "demo"` and the page
   labels them **DEMO DATA**.
 - The page always shows the ICOD and its age in the badge at the top right of
   the toolbar (with "DEMO DATA" for demo payloads), and each Date option lists
@@ -271,8 +280,8 @@ same checks locally before pushing:
 
 | Check | What it catches |
 |---|---|
-| `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the High Arctic when the sun never rises, Sentinel-1 stays in its swath, Simplified roll-up merges overlaps), config checks (missing title, duplicate rows, a grouping with different rows, bad banner times), ICOD rules (missing or future ICOD fails, demo is labelled), locality required, the `<matrix>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
+| `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the High Arctic when the sun never rises, Sentinel-1 stays in its swath, Simplified roll-up merges overlaps), config checks (a view without a title, duplicate rows, a grouping with different rows, bad banner times, a catalogue row not in the matrix, a library without a store), data files (required fields, unknown satellites, both views drawn from one file, no matrix named in it, demo data reproducible), ICOD rules (missing or future ICOD fails, demo is labelled), the `<view>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
 | `check_data.py` | A `web/data` (or `--live`: `web/live`) file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
-| `check_demo_data.py` | `web/data` out of date with `config/` or the exporter; with `--live`, `web/live` out of date with the newest committed TLE snapshot or the pass prediction (rebuilds into a temp folder and compares, ignoring timestamps) |
+| `check_demo_data.py` | `data/demo` or `web/data` out of date with `config/` or the exporter; with `--live`, `data/predicted` or `web/live` out of date with the newest committed TLE snapshot or the pass prediction (rebuilds into a temp folder and compares, ignoring timestamps) |
 | `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |
 | `tests/browser/` | The real page in headless Chromium (Playwright), against the committed libraries: default view (predicted), the Data switch (Predicted ↔ Demo, keeps matrix/locality), `manifest=` hides the switch, layout (groups, 28 rows, 24 hour labels), localities north to south, ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |

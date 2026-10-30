@@ -4,9 +4,12 @@
     python scripts/build_all.py --demo    # only the demo library
     python scripts/build_all.py --live    # only the predicted library
 
-Edit config/workflow.json (localities, days) or config/matrices/*.json, run
-this, then commit config/ and the rebuilt web/data and web/live. It does not
-fetch new orbits; scripts/refresh_live_data.py (or the daily job) does that.
+Edit config/workflow.json (localities, days), config/catalogue.json
+(satellites, thresholds) or config/matrix.json (groups, colours, views), run
+this, then commit config/ and the rebuilt data/ and web/. A matrix-only change
+can use scripts/build_views.py instead (redraws without re-predicting). This
+does not fetch new orbits; scripts/refresh_live_data.py (or the daily job)
+does that.
 """
 
 import argparse

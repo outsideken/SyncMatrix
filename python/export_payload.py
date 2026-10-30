@@ -1,46 +1,36 @@
-r"""Build a Sync Matrix JSON payload for the d3 renderer (web/index.html).
+r"""Build Sync Matrix JSON payloads for the d3 renderer (web/index.html).
 
 Python owns the data and the computation (sunrise/sunset, end of local day,
 ICOD, validation); the browser only draws. The payload is plain JSON so it can
 be committed to Git, served from any static host, or pushed into an iframe.
 
-Each payload is one matrix, one locality and one UTC day.
+Two inputs, joined here:
+
+- the matrix configuration (config/matrix.json): groups, rows, colours, other
+  groupings, and the views drawn from it (Abstracted: every satellite row;
+  Simplified: one row per group);
+- a data file: one place on one UTC evaluation date, with its ICOD and the
+  access windows (load_data() has the format). It names no matrix.
+
+Each payload is one view, one locality and one UTC day.
 
 Usage
 -----
-    # Add a day to the page's library: writes
-    # <out-dir>/<matrix>/<locality>/<YYYY-MM-DD>.json and rebuilds <out-dir>/index.json.
-    python export_payload.py --config ../config/matrices/simplified.json --date 2026-10-27 \
-                             --events events.json --out-dir ../web/data
+    # Draw every view of a data file into the page's library: writes
+    # <out-dir>/<view>/<locality>/<YYYY-MM-DD>.json and rebuilds <out-dir>/index.json.
+    python export_payload.py --data ../data/predicted/london/2026-10-30.json --out-dir ../web/live
 
-    # No events yet? Generate deterministic sample events for a demo
-    # (the locality can come from the events file or --locality/--locality-name).
-    python export_payload.py --config ../config/matrices/abstracted.json --demo-events 14 \
-                             --locality "POINT(-100 40)" --locality-name "Mid-north 40°N" \
-                             --icod 2026-10-27T12:00:00Z --out-dir ../web/data
-
-    # Write a single payload file, without touching the manifest.
-    python export_payload.py --config ../config/matrices/simplified.json \
-                             --events events.json --out simplified-mid-north.json
+    # One view, one payload file, without touching the manifest.
+    python export_payload.py --data london.json --view simplified --out simplified-london.json
 
     # Rebuild only the manifest (e.g. after deleting old days).
     python export_payload.py --rebuild-manifest ../web/data
 
-The matrix id (--slug) defaults to the config file name (config/matrices/simplified.json ->
-"simplified"); the dropdown label comes from the config's "label". See
-config/README.md for the config format.
-
-Events file format (start/end/icod are ISO 8601 UTC)::
-
-    {"icod": "2026-10-27T19:28:00Z",
-     "locality": {"name": "Mid-north 40°N", "point": "POINT(-100 40)"},
-     "events": [{"row": "EO", "start": "2026-10-27T06:30:00Z", "end": "2026-10-27T07:00:00Z",
-                 "status": "High", "label": "Collection window", "notes": "optional"}]}
+See config/README.md for the matrix and data formats.
 
 ICOD (Information Cut-Off Date) is when the data was grabbed; anything received
-after it is not in the plot. It is required (in the file, or with --icod) and is
-never defaulted to the export time. A bare list of events is accepted only with
---icod.
+after it is not in the plot. It is required and is never defaulted to the
+export time; demo data says so with "icod_source": "demo".
 """
 
 import argparse
@@ -59,6 +49,7 @@ PAYLOAD_VERSION = 1
 DEFAULT_GROUP_COLOR = "#525252"   # ColorBrewer Greys, dark end
 DEFAULT_GROUP_TINT = "#d9d9d9"    # ColorBrewer Greys, light end
 STATUS_FILLS = ("solid", "tint", "none")
+MATRIX = Path(__file__).resolve().parents[1] / "config" / "matrix.json"
 
 ################################################################################
 ## HELPERS
@@ -102,45 +93,35 @@ def row_id(row) -> str:
     return row if isinstance(row, str) else row["id"]
 
 
-def merge(base: dict, override: dict) -> dict:
-    """Deep merge: dicts merge key by key, anything else in override replaces base."""
-    out = dict(base)
-    for key, value in override.items():
-        out[key] = merge(out[key], value) if isinstance(value, dict) and isinstance(out.get(key), dict) else value
-    return out
+VIEW_ROWS = ("satellites", "groups")
 
 
-def load_config(path) -> dict:
-    """Read a matrix config and check it before anything is built.
+def check_config(config: dict, where) -> dict:
+    """Check a matrix (or one view of it) before anything is built.
 
-    A matrix in config/matrices/<id>.json holds only what differs; it is merged
-    over config/defaults.json (the settings every matrix shares). The merge is
-    declarative: a setting comes from the matrix file or from the defaults,
-    never from another matrix.
-
-    Fails with a clear message on: missing title/groups, a duplicate group or
-    row, an alternative grouping whose rows differ from "groups" (events must
-    land on the same row in every grouping), or a banner time that isn't
-    HH:MM.
+    Fails with a clear message on: missing groups, a duplicate group or row,
+    an alternative grouping whose rows differ from "groups" (events must land
+    on the same row in every grouping), an unknown status fill, a banner time
+    that isn't HH:MM, or a view without a title.
     """
-    path = Path(path)
-    with open(path, "r") as f:
-        config = json.load(f)
-    defaults = path.parent.parent / "defaults.json"
-    if path.parent.name == "matrices" and defaults.exists():
-        config = merge(json.loads(defaults.read_text()), config)
-    for key in ("title", "groups"):
-        if key not in config:
-            raise ValueError("%s: missing %r" % (path, key))
+    if "groups" not in config:
+        raise ValueError("%s: missing 'groups'" % where)
+    if "title" not in config and not config.get("views"):
+        raise ValueError("%s: missing 'title' (or 'views', each with a title)" % where)
+    for view_id, view in config.get("views", {}).items():
+        if "title" not in view:
+            raise ValueError("%s: view %r has no title" % (where, view_id))
+        if view.get("rows", "satellites") not in VIEW_ROWS:
+            raise ValueError("%s: view %r rows must be one of %s" % (where, view_id, ", ".join(VIEW_ROWS)))
 
-    def rows_of(groups, where):
+    def rows_of(groups, label):
         names = [g["name"] for g in groups]
         if len(set(names)) != len(names):
-            raise ValueError("%s: duplicate group name in %s" % (path, where))
+            raise ValueError("%s: duplicate group name in %s" % (where, label))
         rows = [row_id(r) for g in groups for r in g["rows"]]
         dupes = sorted({r for r in rows if rows.count(r) > 1})
         if dupes:
-            raise ValueError("%s: rows listed twice in %s: %s" % (path, where, dupes))
+            raise ValueError("%s: rows listed twice in %s: %s" % (where, label, dupes))
         return set(rows)
 
     rows = rows_of(config["groups"], "groups")
@@ -149,19 +130,195 @@ def load_config(path) -> dict:
         if alt != rows:
             raise ValueError("%s: grouping %r does not have the same rows as \"groups\" "
                              "(missing: %s; extra: %s)"
-                             % (path, label, sorted(rows - alt) or "none", sorted(alt - rows) or "none"))
+                             % (where, label, sorted(rows - alt) or "none", sorted(alt - rows) or "none"))
     for status, style in config.get("status_styles", {}).items():
         if style.get("fill", "tint") not in STATUS_FILLS:
-            raise ValueError("%s: status_styles[%r] fill must be one of %s" % (path, status, ", ".join(STATUS_FILLS)))
-    for row, spec in config.get("satellites", {}).items():
-        if row not in rows:
-            raise ValueError("%s: satellites entry %r is not a row" % (path, row))
-        if not spec.get("norad") or "min_elevation" not in spec:
-            raise ValueError("%s: satellites[%r] needs \"norad\" and \"min_elevation\"" % (path, row))
+            raise ValueError("%s: status_styles[%r] fill must be one of %s" % (where, status, ", ".join(STATUS_FILLS)))
     for banner in config.get("banners", []):
         if parse_hhmm(banner["end"]) <= parse_hhmm(banner["start"]):
-            raise ValueError("%s: banner %r ends before it starts" % (path, banner.get("id")))
+            raise ValueError("%s: banner %r ends before it starts" % (where, banner.get("id")))
     return config
+
+
+def load_config(path, view: str = None) -> dict:
+    """Read and check the matrix configuration (config/matrix.json).
+
+    One matrix draws the chart: groups, rows, colours, other groupings. Its
+    "views" are the matrices on the page (Abstracted, Simplified); with
+    `view`, return that view as the config build_payload() draws.
+    """
+    with open(path, "r") as f:
+        matrix = check_config(json.load(f), path)
+    return view_config(matrix, view) if view else matrix
+
+
+def view_config(matrix: dict, view_id: str) -> dict:
+    """One view of the matrix, in the shape build_payload() draws.
+
+    rows "satellites" (Abstracted) draws every row; rows "groups"
+    (Simplified) draws each group as one row named after it, with no other
+    groupings, and its events are the group's windows rolled up (roll_up()).
+    """
+    view = matrix.get("views", {}).get(view_id)
+    if view is None:
+        raise ValueError("The matrix has no view %r (views: %s)" % (view_id, ", ".join(matrix.get("views", {}))))
+    config = {k: v for k, v in matrix.items() if k != "views"}
+    config.update(title=view["title"], label=view.get("label", view["title"]))
+    if view.get("rows", "satellites") == "groups":
+        config["groups"] = [dict(g, rows=[g["name"]]) for g in matrix["groups"]]
+        config.pop("alt_groupings", None)
+    return check_config(config, "view %r" % view_id)
+
+
+def row_groups(matrix: dict) -> dict:
+    """Row id -> its group's name (e.g. "Legion-3" -> "EO")."""
+    return {row_id(r): g["name"] for g in matrix["groups"] for r in g["rows"]}
+
+################################################################################
+## DATA
+################################################################################
+
+def load_data(path) -> dict:
+    """Read and check one data file: one place on one UTC evaluation date.
+
+    {"locality": {"name": "London", "point": "POINT(-0.1278 51.5074)"},
+     "evaluation_date": "2026-10-30",
+     "icod": "2026-10-30T05:17:42Z", "icod_source": "celestrak",
+     "source": "one line on where the windows came from",
+     "evaluated": {"Sentinel-2": [40697, 42063, 60989]},     (optional)
+     "windows": [{"satellite": "Sentinel-2", "start": ..., "end": ...,
+                  "status": "Predicted", "norad": 40697,      (norad: from the catalogue)
+                  "id": ..., "label": ..., "notes": ...}]}   (optional)
+
+    It names no matrix: build_view() draws it in every view. "evaluated"
+    lists the catalogue's spacecraft per row, so a row that was checked and
+    had no passes is told apart from one that was not checked.
+    """
+    with open(path, "r") as f:
+        data = json.load(f)
+    where = Path(path).name
+    for key in ("locality", "evaluation_date", "icod", "windows"):
+        if key not in data:
+            raise ValueError("%s: missing %r" % (where, key))
+    date.fromisoformat(data["evaluation_date"])
+    for i, window in enumerate(data["windows"]):
+        missing = [k for k in ("satellite", "start", "end", "status") if k not in window]
+        if missing:
+            raise ValueError("%s: window %d is missing %s" % (where, i, ", ".join(missing)))
+    return data
+
+
+def window_events(matrix: dict, data: dict) -> list:
+    """The data's windows as events on the matrix's satellite rows."""
+    rows = row_groups(matrix)
+    events = []
+    for i, w in enumerate(data["windows"]):
+        if w["satellite"] not in rows:
+            raise ValueError("Window %d: %r is not a row of the matrix" % (i, w["satellite"]))
+        event = {"row": w["satellite"], "start": w["start"], "end": w["end"], "status": w["status"]}
+        event.update({k: w[k] for k in ("id", "label", "notes") if k in w})
+        events.append(event)
+    return events
+
+
+def roll_up(events: list, row_group: dict, status_order=()) -> list:
+    """Summarise per-satellite events by group (e.g. EO, IR, SAR) for a groups view.
+
+    Overlapping windows in the same group become one event listing them. Its
+    status is the members' first in status_order (the matrix's status_styles,
+    e.g. High before Low).
+    """
+    order = list(status_order)
+    rank = lambda s: order.index(s) if s in order else len(order)  # noqa: E731
+    by_group = {}
+    for event in events:
+        by_group.setdefault(row_group[event["row"]], []).append(event)
+
+    out = []
+    for group, items in by_group.items():
+        items.sort(key=lambda e: e["start"])
+        merged = []
+        for e in items:
+            if merged and e["start"] <= merged[-1]["end"]:
+                merged[-1]["end"] = max(merged[-1]["end"], e["end"])
+                merged[-1]["members"].append(e)
+            else:
+                merged.append({"start": e["start"], "end": e["end"], "members": [e]})
+        for m in merged:
+            names = [e["label"][:-5] if e.get("label", "").endswith(" pass") else e["row"] for e in m["members"]]
+            statuses = [e["status"] for e in m["members"]]
+            word = "pass" if set(statuses) == {"Predicted"} else "window"
+            out.append({"id": "%s-%s" % (group, m["start"][11:16].replace(":", "")),
+                        "row": group,
+                        "start": m["start"],
+                        "end": m["end"],
+                        "status": min(statuses, key=rank),
+                        "label": "%d %s %s%s" % (len(names), group, word,
+                                                 "" if len(names) == 1 else ("es" if word == "pass" else "s")),
+                        "notes": "; ".join(names)})
+    out.sort(key=lambda e: (e["start"], e["row"]))
+    return out
+
+
+def group_notes(matrix: dict, data: dict, events: list) -> dict:
+    """Per-phenomenology provenance notes from the data's "evaluated" rows.
+
+    Pass counts per group, from how many of the evaluated spacecraft. A group
+    with no evaluated rows had no feed, so it gets no source or ICOD. Data
+    without "evaluated" (demo) shares the file's provenance.
+    """
+    evaluated = data.get("evaluated")
+    if evaluated is None:
+        return {}
+    rows = row_groups(matrix)
+    out = {}
+    for group in matrix["groups"]:
+        name = group["name"]
+        group_rows = [r for r, g in rows.items() if g == name and r in evaluated]
+        if not group_rows:
+            out[name] = {"source": "No data source for %s" % name, "icod": None, "icod_source": None}
+            continue
+        configured = sum(len(evaluated[r]) for r in group_rows)
+        group_events = [e for e in events if rows[e["row"]] == name]
+        passing = len({e.get("label") for e in group_events})  # one label per spacecraft ("LEGION 3 pass")
+        if group_events:
+            notes = "%d predicted pass%s from %d of %d configured satellites" % (
+                len(group_events), "" if len(group_events) == 1 else "es", passing, configured)
+        else:
+            notes = "No predicted passes from the %d configured satellites" % configured
+        out[name] = {"notes": notes}
+    return out
+
+
+def build_view(matrix: dict, view_id: str, data: dict) -> dict:
+    """One view's payload for one data file (one place, one evaluation date).
+
+    A colour or group change only re-runs this over the stored data files;
+    the windows are not recomputed.
+    """
+    config = view_config(matrix, view_id)
+    events = window_events(matrix, data)
+    notes = group_notes(matrix, data, events)
+    if matrix["views"][view_id].get("rows", "satellites") == "groups":
+        events = roll_up(events, row_groups(matrix), config.get("status_styles", {}))
+    return build_payload(config, events, date.fromisoformat(data["evaluation_date"]),
+                         icod=data["icod"], icod_source=data.get("icod_source", "data"),
+                         locality=data["locality"], source=data.get("source", "Data file"), provenance=notes)
+
+
+def write_views(matrix: dict, data_files, out_dir) -> int:
+    """Draw every view of every data file into <out_dir>/<view>/<locality>/<date>.json."""
+    out_dir, count = Path(out_dir), 0
+    for path in data_files:
+        data = load_data(path)
+        for view_id in matrix["views"]:
+            payload = build_view(matrix, view_id, data)
+            out = out_dir / view_id / payload["locality"]["id"] / ("%s.json" % data["evaluation_date"])
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(json.dumps(payload, indent=2))
+            count += 1
+    rebuild_manifest(out_dir)
+    return count
 
 ################################################################################
 ## PAYLOAD SECTIONS
@@ -240,12 +397,11 @@ def resolve_locality(locality: dict = None) -> dict:
     """The one locality this payload covers.
 
     Each payload is one locality and one day. The locality comes from the
-    events file ({"name": ..., "point": "POINT(lon lat)"} or name/lon/lat) or
-    from --locality/--locality-name; there is no default.
+    data file ({"name": ..., "point": "POINT(lon lat)"} or name/lon/lat);
+    there is no default.
     """
     if not locality:
-        raise ValueError("No locality: give it as \"locality\" in the events file or with "
-                         "--locality and --locality-name.")
+        raise ValueError("No locality: give it as \"locality\" in the data file.")
     name = locality["name"]
     if "point" in locality:
         lon, lat = parse_wkt_point(locality["point"])
@@ -323,10 +479,10 @@ def resolve_icod(icod: str, icod_source: str, demo: bool, now: datetime):
     never from the export time, so a missing ICOD is an error. Demo payloads
     are the one exception and are labelled as such.
     """
-    if demo:
+    if demo or icod_source == "demo":
         return (parse_iso(icod) if icod else now), "demo"
     if not icod:
-        raise ValueError("No ICOD: give it as \"icod\" in the events file or with --icod. "
+        raise ValueError("No ICOD: give it as \"icod\" in the data file. "
                          "ICOD is when the data was grabbed, not when this payload is built.")
     icod_dt = parse_iso(icod)
     if icod_dt > now + timedelta(minutes=5):
@@ -450,70 +606,34 @@ def rebuild_manifest(data_dir: str) -> dict:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--rebuild-manifest", metavar="DATA_DIR", help="Only rebuild DATA_DIR/index.json")
-    parser.add_argument("--config", help="Matrix config, e.g. config/matrices/simplified.json (see config/README.md)")
-    parser.add_argument("--events", help="Events JSON: {\"icod\": ..., \"events\": [...]}")
-    parser.add_argument("--demo-events", type=int, default=0, help="Generate N sample events instead")
-    parser.add_argument("--seed", type=int, default=7, help="Seed for --demo-events")
-    parser.add_argument("--date", help="UTC day to render, YYYY-MM-DD (default: today)")
-    parser.add_argument("--icod", help="Information Cut-Off Date, ISO 8601 UTC (overrides the events file)")
-    parser.add_argument("--locality", metavar="WKT", help="Locality as POINT(lon lat) (overrides the events file)")
-    parser.add_argument("--locality-name", help="Name for --locality, e.g. 'Mid-north 40°N'")
-    parser.add_argument("--out", help="Payload JSON to write")
-    parser.add_argument("--out-dir", help="Data folder: write <matrix>/<locality>/<date>.json and rebuild index.json")
-    parser.add_argument("--slug", help="Matrix id for --out-dir (default: the config file name, e.g. simplified)")
-    parser.add_argument("--label", help="Name for the Matrix dropdown (default: the config's \"label\")")
+    parser.add_argument("--matrix", default=str(MATRIX), help="Matrix configuration (default: config/matrix.json)")
+    parser.add_argument("--data", help="Data file: one place on one evaluation date (see load_data)")
+    parser.add_argument("--view", help="One view, e.g. simplified (default: every view; --out needs one)")
+    parser.add_argument("--out", help="Payload JSON to write (one view)")
+    parser.add_argument("--out-dir", help="Library folder: write <view>/<locality>/<date>.json and rebuild index.json")
     args = parser.parse_args()
 
     if args.rebuild_manifest:
         rebuild_manifest(args.rebuild_manifest)
         return
-    if not args.config or not (args.out or args.out_dir):
-        parser.error("--config and one of --out/--out-dir are required")
+    if not args.data or not (args.out or args.out_dir):
+        parser.error("--data and one of --out/--out-dir are required")
+    if args.out and not args.view:
+        parser.error("--out writes one payload: give --view")
 
     try:
-        config = load_config(args.config)
-    except ValueError as err:
-        parser.exit(2, "Error: %s\n" % err)
-
-    events, icod, icod_source, locality = None, None, "data", None
-    if args.events:
-        with open(args.events, "r") as f:
-            loaded = json.load(f)
-        if isinstance(loaded, dict):
-            events, icod, locality = loaded.get("events", []), loaded.get("icod"), loaded.get("locality")
+        matrix = load_config(args.matrix)
+        if args.out:
+            payload = build_view(matrix, args.view, load_data(args.data))
+            with open(args.out, "w") as f:
+                json.dump(payload, f, indent=2)
+            print("Wrote %s (%d groups, %d events)" % (args.out, len(payload["groups"]), len(payload["events"])))
         else:
-            events = loaded
-    if args.icod:
-        icod, icod_source = args.icod, "cli"
-    if args.locality:
-        if not args.locality_name:
-            parser.error("--locality needs --locality-name")
-        locality = {"name": args.locality_name, "point": args.locality}
-
-    day = date.fromisoformat(args.date) if args.date else None
-    try:
-        source = "Events file %s" % Path(args.events).name if args.events else None
-        payload = build_payload(config, events, day, args.demo_events, args.seed, icod, icod_source, locality,
-                                source=source)
-    except ValueError as err:
+            if args.view:
+                matrix = dict(matrix, views={args.view: matrix["views"][args.view]})
+            write_views(matrix, [args.data], args.out_dir)
+    except (ValueError, KeyError) as err:
         parser.exit(2, "Error: %s\n" % err)
-
-    slug = args.slug or Path(args.config).stem
-    if args.label:
-        payload["label"] = args.label
-
-    out = args.out
-    if args.out_dir:
-        out = (Path(args.out_dir) / slug / payload["locality"]["id"] /
-               (payload["window"]["start"][:10] + ".json"))
-        out.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(out, "w") as f:
-        json.dump(payload, f, indent=2)
-    print("Wrote %s (%d groups, %d events)" % (out, len(payload["groups"]), len(payload["events"])))
-
-    if args.out_dir:
-        rebuild_manifest(args.out_dir)
 
 
 if __name__ == "__main__":

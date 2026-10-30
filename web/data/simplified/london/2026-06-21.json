@@ -11,7 +11,7 @@
       "icod": "2026-06-21T18:00:00Z",
       "icod_source": "demo"
     },
-    "COM": {
+    "EO": {
       "source": "Demo data: generated sample events",
       "icod": "2026-06-21T18:00:00Z",
       "icod_source": "demo"
@@ -25,14 +25,9 @@
       "source": "Demo data: generated sample events",
       "icod": "2026-06-21T18:00:00Z",
       "icod_source": "demo"
-    },
-    "EO": {
-      "source": "Demo data: generated sample events",
-      "icod": "2026-06-21T18:00:00Z",
-      "icod_source": "demo"
     }
   },
-  "generated": "2026-10-28T22:17:42Z",
+  "generated": "2026-10-30T18:05:10Z",
   "locality": {
     "id": "london",
     "name": "London",
@@ -47,14 +42,14 @@
   },
   "groups": [
     {
-      "id": "COM",
-      "label": "COM",
-      "color": "#238b45",
-      "tint": "#c7e9c0",
+      "id": "EO",
+      "label": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         {
-          "id": "CIRCUS",
-          "label": "CIRCUS"
+          "id": "EO",
+          "label": "EO"
         }
       ]
     },
@@ -81,94 +76,127 @@
           "label": "SAR"
         }
       ]
-    },
-    {
-      "id": "EO",
-      "label": "EO",
-      "color": "#08519c",
-      "tint": "#c6dbef",
-      "rows": [
-        {
-          "id": "EO",
-          "label": "EO"
-        }
-      ]
     }
   ],
   "grouping": "Phenomenology",
   "alt_groupings": [],
   "events": [
     {
-      "id": "demo-00",
+      "id": "EO-0000",
+      "row": "EO",
+      "start": "2026-06-21T00:00:00Z",
+      "end": "2026-06-21T02:00:00Z",
+      "status": "High",
+      "label": "2 EO windows",
+      "notes": "WorldView-3; Legion-1"
+    },
+    {
+      "id": "SAR-0030",
       "row": "SAR",
-      "start": "2026-06-21T12:30:00Z",
-      "end": "2026-06-21T13:00:00Z",
-      "status": "High",
-      "label": "Demo event 1",
-      "notes": "Generated sample (seed 868)."
-    },
-    {
-      "id": "demo-01",
-      "row": "EO",
-      "start": "2026-06-21T02:00:00Z",
-      "end": "2026-06-21T02:30:00Z",
+      "start": "2026-06-21T00:30:00Z",
+      "end": "2026-06-21T01:00:00Z",
       "status": "Moderate",
-      "label": "Demo event 2",
-      "notes": "Generated sample (seed 868)."
+      "label": "1 SAR window",
+      "notes": "Capella-18"
     },
     {
-      "id": "demo-02",
-      "row": "CIRCUS",
-      "start": "2026-06-21T00:30:00Z",
-      "end": "2026-06-21T01:00:00Z",
-      "status": "No Concern",
-      "label": "Demo event 3",
-      "notes": "Generated sample (seed 868)."
-    },
-    {
-      "id": "demo-03",
+      "id": "EO-0330",
       "row": "EO",
-      "start": "2026-06-21T03:00:00Z",
-      "end": "2026-06-21T05:00:00Z",
+      "start": "2026-06-21T03:30:00Z",
+      "end": "2026-06-21T05:30:00Z",
+      "status": "Moderate",
+      "label": "1 EO window",
+      "notes": "Sentinel-2"
+    },
+    {
+      "id": "EO-0700",
+      "row": "EO",
+      "start": "2026-06-21T07:00:00Z",
+      "end": "2026-06-21T07:30:00Z",
+      "status": "High",
+      "label": "1 EO window",
+      "notes": "Sentinel-2"
+    },
+    {
+      "id": "SAR-0730",
+      "row": "SAR",
+      "start": "2026-06-21T07:30:00Z",
+      "end": "2026-06-21T08:00:00Z",
+      "status": "High",
+      "label": "1 SAR window",
+      "notes": "Capella-15"
+    },
+    {
+      "id": "IR-0900",
+      "row": "IR",
+      "start": "2026-06-21T09:00:00Z",
+      "end": "2026-06-21T09:30:00Z",
       "status": "Low",
-      "label": "Demo event 4",
-      "notes": "Generated sample (seed 868)."
+      "label": "1 IR window",
+      "notes": "Terra MODIS"
     },
     {
-      "id": "demo-04",
-      "row": "EO",
-      "start": "2026-06-21T11:00:00Z",
-      "end": "2026-06-21T13:00:00Z",
-      "status": "High",
-      "label": "Demo event 5",
-      "notes": "Generated sample (seed 868)."
+      "id": "SAR-0900",
+      "row": "SAR",
+      "start": "2026-06-21T09:00:00Z",
+      "end": "2026-06-21T11:00:00Z",
+      "status": "Moderate",
+      "label": "4 SAR windows",
+      "notes": "Capella-15; Capella-11; Capella-15; Sentinel-1"
     },
     {
-      "id": "demo-05",
+      "id": "EO-1030",
       "row": "EO",
-      "start": "2026-06-21T00:30:00Z",
-      "end": "2026-06-21T01:00:00Z",
-      "status": "High",
-      "label": "Demo event 6",
-      "notes": "Generated sample (seed 868)."
+      "start": "2026-06-21T10:30:00Z",
+      "end": "2026-06-21T12:30:00Z",
+      "status": "Moderate",
+      "label": "2 EO windows",
+      "notes": "Legion-6; Sentinel-2"
     },
     {
-      "id": "demo-06",
-      "row": "EO",
-      "start": "2026-06-21T15:00:00Z",
+      "id": "IR-1030",
+      "row": "IR",
+      "start": "2026-06-21T10:30:00Z",
+      "end": "2026-06-21T12:00:00Z",
+      "status": "Moderate",
+      "label": "1 IR window",
+      "notes": "Aqua MODIS"
+    },
+    {
+      "id": "SAR-1130",
+      "row": "SAR",
+      "start": "2026-06-21T11:30:00Z",
       "end": "2026-06-21T15:30:00Z",
-      "status": "Low",
-      "label": "Demo event 7",
-      "notes": "Generated sample (seed 868)."
+      "status": "High",
+      "label": "3 SAR windows",
+      "notes": "Capella-14; Capella-20; Capella-15"
     },
     {
-      "id": "demo-07",
-      "row": "CIRCUS",
-      "start": "2026-06-21T01:00:00Z",
-      "end": "2026-06-21T02:30:00Z",
+      "id": "EO-1400",
+      "row": "EO",
+      "start": "2026-06-21T14:00:00Z",
+      "end": "2026-06-21T14:30:00Z",
       "status": "Moderate",
-      "label": "Demo event 8",
-      "notes": "Generated sample (seed 868)."
+      "label": "1 EO window",
+      "notes": "Legion-2"
+    },
+    {
+      "id": "SAR-1700",
+      "row": "SAR",
+      "start": "2026-06-21T17:00:00Z",
+      "end": "2026-06-21T17:30:00Z",
+      "status": "No Concern",
+      "label": "1 SAR window",
+      "notes": "Capella-18"
+    },
+    {
+      "id": "IR-1900",
+      "row": "IR",
+      "start": "2026-06-21T19:00:00Z",
+      "end": "2026-06-21T20:30:00Z",
+      "status": "High",
+      "label": "1 IR window",
+      "notes": "NOAA-21 VIIRS"
     }
   ],
   "status_styles": {

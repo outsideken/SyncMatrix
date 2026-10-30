@@ -10,8 +10,8 @@ Steps, stopping at the first failure:
 1. scripts/fetch_tles.py: a new Celestrak snapshot in data/tle/ (its download
    time becomes the ICOD of the rebuilt library).
 2. Prune data/tle/ to the newest --keep snapshots (older ones are history in Git).
-3. scripts/build_live_data.py: rebuild web/live from the new snapshot (three
-   days from its date, replacing the previous days).
+3. scripts/build_live_data.py: rebuild data/predicted and web/live from the
+   new snapshot (three days from its date, replacing the previous days).
 4. Checks: check_data.py --live and check_demo_data.py --live.
 
 Nothing is committed here; the workflow commits if the checks pass.

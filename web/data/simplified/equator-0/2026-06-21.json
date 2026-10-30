@@ -11,7 +11,7 @@
       "icod": "2026-06-21T18:00:00Z",
       "icod_source": "demo"
     },
-    "COM": {
+    "EO": {
       "source": "Demo data: generated sample events",
       "icod": "2026-06-21T18:00:00Z",
       "icod_source": "demo"
@@ -25,14 +25,9 @@
       "source": "Demo data: generated sample events",
       "icod": "2026-06-21T18:00:00Z",
       "icod_source": "demo"
-    },
-    "EO": {
-      "source": "Demo data: generated sample events",
-      "icod": "2026-06-21T18:00:00Z",
-      "icod_source": "demo"
     }
   },
-  "generated": "2026-10-28T22:17:42Z",
+  "generated": "2026-10-30T18:05:09Z",
   "locality": {
     "id": "equator-0",
     "name": "Equator 0\u00b0",
@@ -47,14 +42,14 @@
   },
   "groups": [
     {
-      "id": "COM",
-      "label": "COM",
-      "color": "#238b45",
-      "tint": "#c7e9c0",
+      "id": "EO",
+      "label": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         {
-          "id": "CIRCUS",
-          "label": "CIRCUS"
+          "id": "EO",
+          "label": "EO"
         }
       ]
     },
@@ -81,94 +76,109 @@
           "label": "SAR"
         }
       ]
-    },
-    {
-      "id": "EO",
-      "label": "EO",
-      "color": "#08519c",
-      "tint": "#c6dbef",
-      "rows": [
-        {
-          "id": "EO",
-          "label": "EO"
-        }
-      ]
     }
   ],
   "grouping": "Phenomenology",
   "alt_groupings": [],
   "events": [
     {
-      "id": "demo-00",
+      "id": "EO-0030",
       "row": "EO",
-      "start": "2026-06-21T03:00:00Z",
-      "end": "2026-06-21T03:30:00Z",
-      "status": "Low",
-      "label": "Demo event 1",
-      "notes": "Generated sample (seed 568)."
+      "start": "2026-06-21T00:30:00Z",
+      "end": "2026-06-21T01:00:00Z",
+      "status": "Moderate",
+      "label": "1 EO window",
+      "notes": "GeoEye-1"
     },
     {
-      "id": "demo-01",
-      "row": "CIRCUS",
-      "start": "2026-06-21T12:30:00Z",
-      "end": "2026-06-21T13:00:00Z",
-      "status": "No Concern",
-      "label": "Demo event 2",
-      "notes": "Generated sample (seed 568)."
-    },
-    {
-      "id": "demo-02",
+      "id": "SAR-0230",
       "row": "SAR",
-      "start": "2026-06-21T10:00:00Z",
-      "end": "2026-06-21T11:30:00Z",
-      "status": "Low",
-      "label": "Demo event 3",
-      "notes": "Generated sample (seed 568)."
+      "start": "2026-06-21T02:30:00Z",
+      "end": "2026-06-21T04:00:00Z",
+      "status": "Moderate",
+      "label": "1 SAR window",
+      "notes": "Capella-14"
     },
     {
-      "id": "demo-03",
-      "row": "CIRCUS",
-      "start": "2026-06-21T03:30:00Z",
-      "end": "2026-06-21T05:00:00Z",
-      "status": "High",
-      "label": "Demo event 4",
-      "notes": "Generated sample (seed 568)."
-    },
-    {
-      "id": "demo-04",
-      "row": "IR",
-      "start": "2026-06-21T09:00:00Z",
-      "end": "2026-06-21T09:30:00Z",
-      "status": "No Concern",
-      "label": "Demo event 5",
-      "notes": "Generated sample (seed 568)."
-    },
-    {
-      "id": "demo-05",
-      "row": "SAR",
+      "id": "EO-0530",
+      "row": "EO",
       "start": "2026-06-21T05:30:00Z",
       "end": "2026-06-21T06:00:00Z",
-      "status": "Moderate",
-      "label": "Demo event 6",
-      "notes": "Generated sample (seed 568)."
+      "status": "High",
+      "label": "1 EO window",
+      "notes": "WorldView-1"
     },
     {
-      "id": "demo-06",
-      "row": "CIRCUS",
-      "start": "2026-06-21T18:00:00Z",
+      "id": "EO-0700",
+      "row": "EO",
+      "start": "2026-06-21T07:00:00Z",
+      "end": "2026-06-21T09:00:00Z",
+      "status": "Low",
+      "label": "2 EO windows",
+      "notes": "WorldView-3; Legion-4"
+    },
+    {
+      "id": "IR-0730",
+      "row": "IR",
+      "start": "2026-06-21T07:30:00Z",
+      "end": "2026-06-21T08:00:00Z",
+      "status": "No Concern",
+      "label": "1 IR window",
+      "notes": "NOAA-21 VIIRS"
+    },
+    {
+      "id": "SAR-0830",
+      "row": "SAR",
+      "start": "2026-06-21T08:30:00Z",
+      "end": "2026-06-21T09:00:00Z",
+      "status": "High",
+      "label": "1 SAR window",
+      "notes": "Capella-14"
+    },
+    {
+      "id": "SAR-1000",
+      "row": "SAR",
+      "start": "2026-06-21T10:00:00Z",
+      "end": "2026-06-21T12:00:00Z",
+      "status": "Moderate",
+      "label": "1 SAR window",
+      "notes": "Capella-16"
+    },
+    {
+      "id": "IR-1500",
+      "row": "IR",
+      "start": "2026-06-21T15:00:00Z",
+      "end": "2026-06-21T16:00:00Z",
+      "status": "High",
+      "label": "2 IR windows",
+      "notes": "S-NPP VIIRS; Sentinel-3 SLSTR"
+    },
+    {
+      "id": "EO-1600",
+      "row": "EO",
+      "start": "2026-06-21T16:00:00Z",
+      "end": "2026-06-21T16:30:00Z",
+      "status": "Moderate",
+      "label": "2 EO windows",
+      "notes": "Legion-2; WorldView-3"
+    },
+    {
+      "id": "SAR-1630",
+      "row": "SAR",
+      "start": "2026-06-21T16:30:00Z",
       "end": "2026-06-21T19:30:00Z",
       "status": "High",
-      "label": "Demo event 7",
-      "notes": "Generated sample (seed 568)."
+      "label": "4 SAR windows",
+      "notes": "Capella-11; Capella-18; Capella-17; Capella-18"
     },
     {
-      "id": "demo-07",
-      "row": "CIRCUS",
-      "start": "2026-06-21T04:30:00Z",
-      "end": "2026-06-21T06:30:00Z",
-      "status": "No Concern",
-      "label": "Demo event 8",
-      "notes": "Generated sample (seed 568)."
+      "id": "EO-1730",
+      "row": "EO",
+      "start": "2026-06-21T17:30:00Z",
+      "end": "2026-06-21T21:00:00Z",
+      "status": "Moderate",
+      "label": "4 EO windows",
+      "notes": "Legion-6; Legion-4; Legion-6; Legion-2"
     }
   ],
   "status_styles": {

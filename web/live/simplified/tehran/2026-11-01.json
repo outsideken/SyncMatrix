@@ -11,10 +11,11 @@
       "icod": "2026-10-30T11:23:26Z",
       "icod_source": "celestrak"
     },
-    "COM": {
-      "source": "No data source for COM",
-      "icod": null,
-      "icod_source": null
+    "EO": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T1123Z.json), computed with Skyfield",
+      "icod": "2026-10-30T11:23:26Z",
+      "icod_source": "celestrak",
+      "notes": "8 predicted passes from 7 of 15 configured satellites"
     },
     "IR": {
       "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T1123Z.json), computed with Skyfield",
@@ -27,15 +28,9 @@
       "icod": "2026-10-30T11:23:26Z",
       "icod_source": "celestrak",
       "notes": "11 predicted passes from 8 of 12 configured satellites"
-    },
-    "EO": {
-      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T1123Z.json), computed with Skyfield",
-      "icod": "2026-10-30T11:23:26Z",
-      "icod_source": "celestrak",
-      "notes": "8 predicted passes from 7 of 15 configured satellites"
     }
   },
-  "generated": "2026-10-30T11:24:12Z",
+  "generated": "2026-10-30T18:05:12Z",
   "locality": {
     "id": "tehran",
     "name": "Tehran",
@@ -50,14 +45,14 @@
   },
   "groups": [
     {
-      "id": "COM",
-      "label": "COM",
-      "color": "#238b45",
-      "tint": "#c7e9c0",
+      "id": "EO",
+      "label": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         {
-          "id": "CIRCUS",
-          "label": "CIRCUS"
+          "id": "EO",
+          "label": "EO"
         }
       ]
     },
@@ -82,18 +77,6 @@
         {
           "id": "SAR",
           "label": "SAR"
-        }
-      ]
-    },
-    {
-      "id": "EO",
-      "label": "EO",
-      "color": "#08519c",
-      "tint": "#c6dbef",
-      "rows": [
-        {
-          "id": "EO",
-          "label": "EO"
         }
       ]
     }

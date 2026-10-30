@@ -503,8 +503,8 @@
     //--------------------------------------------------------------------------
 
     const pad = Math.min(4, rowHeight * 0.15);
-    // Name events by what the Y-axis shows: the group (e.g. COM) in group-only
-    // matrices, else the row. e.row stays the data's row id (e.g. CIRCUS).
+    // Name events by what the Y-axis shows: the group (e.g. EO) in group-only
+    // matrices, else the row. e.row stays the payload's row id.
     const rowById = new Map(rows.map((r) => [r.id, r]));
     const phenomenologyOf = new Map(p.groups.flatMap((g) => g.rows.map((r) => [r.id, g])));
     const visibleEvents = p.events.filter((e) => rowY.has(e.row)).map((e) => {

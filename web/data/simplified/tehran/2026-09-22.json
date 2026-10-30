@@ -11,7 +11,7 @@
       "icod": "2026-09-22T18:00:00Z",
       "icod_source": "demo"
     },
-    "COM": {
+    "EO": {
       "source": "Demo data: generated sample events",
       "icod": "2026-09-22T18:00:00Z",
       "icod_source": "demo"
@@ -25,14 +25,9 @@
       "source": "Demo data: generated sample events",
       "icod": "2026-09-22T18:00:00Z",
       "icod_source": "demo"
-    },
-    "EO": {
-      "source": "Demo data: generated sample events",
-      "icod": "2026-09-22T18:00:00Z",
-      "icod_source": "demo"
     }
   },
-  "generated": "2026-10-28T22:23:42Z",
+  "generated": "2026-10-30T18:05:11Z",
   "locality": {
     "id": "tehran",
     "name": "Tehran",
@@ -47,14 +42,14 @@
   },
   "groups": [
     {
-      "id": "COM",
-      "label": "COM",
-      "color": "#238b45",
-      "tint": "#c7e9c0",
+      "id": "EO",
+      "label": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
       "rows": [
         {
-          "id": "CIRCUS",
-          "label": "CIRCUS"
+          "id": "EO",
+          "label": "EO"
         }
       ]
     },
@@ -81,94 +76,100 @@
           "label": "SAR"
         }
       ]
-    },
-    {
-      "id": "EO",
-      "label": "EO",
-      "color": "#08519c",
-      "tint": "#c6dbef",
-      "rows": [
-        {
-          "id": "EO",
-          "label": "EO"
-        }
-      ]
     }
   ],
   "grouping": "Phenomenology",
   "alt_groupings": [],
   "events": [
     {
-      "id": "demo-00",
+      "id": "EO-0130",
       "row": "EO",
-      "start": "2026-09-22T21:30:00Z",
-      "end": "2026-09-22T22:00:00Z",
+      "start": "2026-09-22T01:30:00Z",
+      "end": "2026-09-22T02:30:00Z",
       "status": "No Concern",
-      "label": "Demo event 1",
-      "notes": "Generated sample (seed 999)."
+      "label": "1 EO window",
+      "notes": "Legion-5"
     },
     {
-      "id": "demo-01",
-      "row": "CIRCUS",
-      "start": "2026-09-22T04:00:00Z",
-      "end": "2026-09-22T05:00:00Z",
-      "status": "Moderate",
-      "label": "Demo event 2",
-      "notes": "Generated sample (seed 999)."
+      "id": "IR-0300",
+      "row": "IR",
+      "start": "2026-09-22T03:00:00Z",
+      "end": "2026-09-22T04:30:00Z",
+      "status": "No Concern",
+      "label": "2 IR windows",
+      "notes": "NOAA-20 VIIRS; Sentinel-3 SLSTR"
     },
     {
-      "id": "demo-02",
-      "row": "CIRCUS",
-      "start": "2026-09-22T04:30:00Z",
-      "end": "2026-09-22T05:30:00Z",
-      "status": "Low",
-      "label": "Demo event 3",
-      "notes": "Generated sample (seed 999)."
-    },
-    {
-      "id": "demo-03",
+      "id": "EO-0330",
       "row": "EO",
-      "start": "2026-09-22T12:30:00Z",
-      "end": "2026-09-22T13:00:00Z",
-      "status": "High",
-      "label": "Demo event 4",
-      "notes": "Generated sample (seed 999)."
-    },
-    {
-      "id": "demo-04",
-      "row": "IR",
-      "start": "2026-09-22T08:30:00Z",
-      "end": "2026-09-22T09:00:00Z",
-      "status": "Moderate",
-      "label": "Demo event 5",
-      "notes": "Generated sample (seed 999)."
-    },
-    {
-      "id": "demo-05",
-      "row": "IR",
-      "start": "2026-09-22T05:30:00Z",
+      "start": "2026-09-22T03:30:00Z",
       "end": "2026-09-22T06:30:00Z",
-      "status": "High",
-      "label": "Demo event 6",
-      "notes": "Generated sample (seed 999)."
-    },
-    {
-      "id": "demo-06",
-      "row": "EO",
-      "start": "2026-09-22T17:30:00Z",
-      "end": "2026-09-22T19:30:00Z",
       "status": "Low",
-      "label": "Demo event 7",
-      "notes": "Generated sample (seed 999)."
+      "label": "2 EO windows",
+      "notes": "Legion-1; WorldView-1"
     },
     {
-      "id": "demo-07",
-      "row": "EO",
-      "start": "2026-09-22T04:00:00Z",
-      "end": "2026-09-22T05:30:00Z",
+      "id": "SAR-0600",
+      "row": "SAR",
+      "start": "2026-09-22T06:00:00Z",
+      "end": "2026-09-22T07:00:00Z",
       "status": "High",
-      "label": "Demo event 8",
-      "notes": "Generated sample (seed 999)."
+      "label": "1 SAR window",
+      "notes": "Capella-19"
+    },
+    {
+      "id": "EO-0700",
+      "row": "EO",
+      "start": "2026-09-22T07:00:00Z",
+      "end": "2026-09-22T09:00:00Z",
+      "status": "High",
+      "label": "2 EO windows",
+      "notes": "Legion-6; Sentinel-3 OLCI"
+    },
+    {
+      "id": "SAR-0930",
+      "row": "SAR",
+      "start": "2026-09-22T09:30:00Z",
+      "end": "2026-09-22T12:30:00Z",
+      "status": "Moderate",
+      "label": "3 SAR windows",
+      "notes": "Sentinel-1; Capella-13; Capella-18"
+    },
+    {
+      "id": "EO-1000",
+      "row": "EO",
+      "start": "2026-09-22T10:00:00Z",
+      "end": "2026-09-22T12:30:00Z",
+      "status": "High",
+      "label": "4 EO windows",
+      "notes": "Legion-1; GeoEye-1; Legion-6; GeoEye-1"
+    },
+    {
+      "id": "IR-1000",
+      "row": "IR",
+      "start": "2026-09-22T10:00:00Z",
+      "end": "2026-09-22T13:00:00Z",
+      "status": "Moderate",
+      "label": "2 IR windows",
+      "notes": "S-NPP VIIRS; Aqua MODIS"
+    },
+    {
+      "id": "SAR-1830",
+      "row": "SAR",
+      "start": "2026-09-22T18:30:00Z",
+      "end": "2026-09-22T19:30:00Z",
+      "status": "No Concern",
+      "label": "1 SAR window",
+      "notes": "Capella-16"
+    },
+    {
+      "id": "IR-2030",
+      "row": "IR",
+      "start": "2026-09-22T20:30:00Z",
+      "end": "2026-09-22T22:30:00Z",
+      "status": "Low",
+      "label": "2 IR windows",
+      "notes": "NOAA-21 VIIRS; Sentinel-3 SLSTR"
     }
   ],
   "status_styles": {
