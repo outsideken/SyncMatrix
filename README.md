@@ -128,7 +128,7 @@ The data file (format in [config/README.md](config/README.md#data-files)) is
 {"locality": {"name": "London", "point": "POINT(-0.1278 51.5074)"},
  "evaluation_date": "2026-10-27",
  "icod": "2026-10-27T19:28:00Z",
- "windows": [{"satellite": "Legion-3", "start": "...", "end": "...", "status": "High", "label": "...", "notes": "..."}]}
+ "windows": [{"satellite": "Legion-3", "start": "...", "end": "...", "status": "Predicted", "label": "...", "notes": "..."}]}
 ```
 
 with ISO 8601 UTC times; a satellite that isn't a matrix row or an

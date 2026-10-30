@@ -63,14 +63,14 @@ One matrix draws every view. Shortened:
 
 | Key | Required | Meaning |
 |---|---|---|
-| `views` | yes | The matrices on the page. The key is the view id (`web/live/simplified/…`, `?matrix=simplified`). `title` is the chart heading, `label` the name in the Matrix dropdown (default: `title`). `rows` is `satellites` (every row; Abstracted) or `groups` (one row per group, named after it, no other groupings; Simplified). A groups view rolls the same windows up: overlapping windows in a group become one bar, whose status is the members' first in `status_styles` order |
+| `views` | yes | The matrices on the page. The key is the view id (`web/live/simplified/…`, `?matrix=simplified`). `title` is the chart heading, `label` the name in the Matrix dropdown (default: `title`). `rows` is `satellites` (every row; Abstracted) or `groups` (one row per group, named after it, no other groupings; Simplified). A groups view rolls the same windows up: overlapping windows in a group become one bar ("2 EO passes", names in the notes); overlapping windows with different statuses are refused |
 | `groups` | yes | Y-axis groups and rows, **top to bottom as drawn**. A row is a name, or `{"id", "label"}` when the label shown differs from the id the data uses. `color` (default grey `#525252`) keys the group everywhere: its strip or bar, its event boxes, its provenance in popups and its chip on exports; `tint` (default `#d9d9d9`) is the light fill of its event boxes |
 | `alt_groupings` | | Other ways to group **the same rows** (e.g. Provider), offered by the page's Group by control in `satellites` views |
 | `grouping` | | Name of `groups`' grouping, shown in the Group by control |
 | `tick_minutes` | | Grid spacing (default 30); hour labels are always shown |
 | `show_daylight` | | Day/night shading for the payload's locality |
 | `show_end_of_local_day` | | Dashed line at local midnight |
-| `status_styles` | | How a window's `status` is drawn. Colour is always the row's group colour; the status sets the style: `fill` is `solid` (the colour), `tint` (the group's `tint`, the default) or `none` (outline only), and optional `dash` is an SVG dash pattern, e.g. `"4 3"`. The current matrix uses `{"fill": "tint"}` for every status. Its order also ranks statuses for roll-ups (High before Low) |
+| `status_styles` | | How a window's `status` is drawn. Colour is always the row's group colour; the status sets the style: `fill` is `solid` (the colour), `tint` (the group's `tint`, the default) or `none` (outline only), and optional `dash` is an SVG dash pattern, e.g. `"4 3"`. The current matrix uses `{"fill": "tint"}` for every status; every window, live and demo, is `Predicted` today |
 | `banners` | | Optional bars under the plot; `start`/`end` are UTC times of day (`HH:MM`, up to `24:00`); `level` 0 is nearest the plot. Not used now: the legacy banners carried each phenomenology's provenance, which now comes from the data |
 
 The exporter refuses a matrix with missing `groups`, a view without a title,
@@ -165,7 +165,8 @@ in routine operations.
   `keep_snapshots` kept in `data/tle`. The daily refresh overwrites this
   library only.
 - **`libraries.demo`**: the demo `days` (each with its demo ICOD) and
-  `events_per_day` sample windows on the matrix's satellite rows.
+  `events_per_day` sample windows on the matrix's satellite rows, all
+  `Predicted` like the live data.
 
 `load_workflow` (`python/workflow.py`) checks it first: unique names, a valid
 point on the globe, a timezone for every locality, a store and folder for each

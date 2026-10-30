@@ -221,15 +221,13 @@ def window_events(matrix: dict, data: dict) -> list:
     return events
 
 
-def roll_up(events: list, row_group: dict, status_order=()) -> list:
+def roll_up(events: list, row_group: dict) -> list:
     """Summarise per-satellite events by group (e.g. EO, IR, SAR) for a groups view.
 
-    Overlapping windows in the same group become one event listing them. Its
-    status is the members' first in status_order (the matrix's status_styles,
-    e.g. High before Low).
+    Overlapping windows in the same group become one event listing them, with
+    their shared status (all windows are Predicted today). Overlapping windows
+    with different statuses are an error rather than a silent choice.
     """
-    order = list(status_order)
-    rank = lambda s: order.index(s) if s in order else len(order)  # noqa: E731
     by_group = {}
     for event in events:
         by_group.setdefault(row_group[event["row"]], []).append(event)
@@ -246,15 +244,16 @@ def roll_up(events: list, row_group: dict, status_order=()) -> list:
                 merged.append({"start": e["start"], "end": e["end"], "members": [e]})
         for m in merged:
             names = [e["label"][:-5] if e.get("label", "").endswith(" pass") else e["row"] for e in m["members"]]
-            statuses = [e["status"] for e in m["members"]]
-            word = "pass" if set(statuses) == {"Predicted"} else "window"
+            statuses = sorted({e["status"] for e in m["members"]})
+            if len(statuses) > 1:
+                raise ValueError("Overlapping %s windows at %s have different statuses (%s); a merged bar has one"
+                                 % (group, m["start"], ", ".join(statuses)))
             out.append({"id": "%s-%s" % (group, m["start"][11:16].replace(":", "")),
                         "row": group,
                         "start": m["start"],
                         "end": m["end"],
-                        "status": min(statuses, key=rank),
-                        "label": "%d %s %s%s" % (len(names), group, word,
-                                                 "" if len(names) == 1 else ("es" if word == "pass" else "s")),
+                        "status": statuses[0],
+                        "label": "%d %s pass%s" % (len(names), group, "" if len(names) == 1 else "es"),
                         "notes": "; ".join(names)})
     out.sort(key=lambda e: (e["start"], e["row"]))
     return out
@@ -300,7 +299,7 @@ def build_view(matrix: dict, view_id: str, data: dict) -> dict:
     events = window_events(matrix, data)
     notes = group_notes(matrix, data, events)
     if matrix["views"][view_id].get("rows", "satellites") == "groups":
-        events = roll_up(events, row_groups(matrix), config.get("status_styles", {}))
+        events = roll_up(events, row_groups(matrix))
     return build_payload(config, events, date.fromisoformat(data["evaluation_date"]),
                          icod=data["icod"], icod_source=data.get("icod_source", "data"),
                          locality=data["locality"], source=data.get("source", "Data file"), provenance=notes)
@@ -448,11 +447,10 @@ def validate_events(events: list, groups: list, window_start: datetime, window_e
 
 
 def demo_events(groups: list, window_start: datetime, tick_minutes: int, count: int, seed: int) -> list:
-    """Deterministic sample events snapped to the tick grid."""
+    """Deterministic sample events snapped to the tick grid, all Predicted like the live data."""
     rng = random.Random(seed)
     rows = [row["id"] for group in groups for row in group["rows"]]
     slots = (24 * 60) // tick_minutes
-    statuses = ["High", "Moderate", "Low", "No Concern"]
     events = []
     for i in range(count):
         slot = rng.randrange(0, slots - 4)
@@ -462,7 +460,7 @@ def demo_events(groups: list, window_start: datetime, tick_minutes: int, count: 
                        "row": rng.choice(rows),
                        "start": iso(start),
                        "end": iso(start + timedelta(minutes=tick_minutes * length)),
-                       "status": rng.choice(statuses),
+                       "status": "Predicted",
                        "label": "Demo event %d" % (i + 1),
                        "notes": "Generated sample (seed %d)." % seed})
     return events

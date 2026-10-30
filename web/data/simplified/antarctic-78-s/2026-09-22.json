@@ -27,7 +27,7 @@
       "icod_source": "demo"
     }
   },
-  "generated": "2026-10-30T18:05:09Z",
+  "generated": "2026-10-30T20:04:38Z",
   "locality": {
     "id": "antarctic-78-s",
     "name": "Antarctic 78\u00b0S",
@@ -82,94 +82,139 @@
   "alt_groupings": [],
   "events": [
     {
-      "id": "EO-0130",
-      "row": "EO",
-      "start": "2026-09-22T01:30:00Z",
-      "end": "2026-09-22T03:30:00Z",
-      "status": "No Concern",
-      "label": "1 EO window",
-      "notes": "Sentinel-2"
+      "id": "IR-0300",
+      "row": "IR",
+      "start": "2026-09-22T03:00:00Z",
+      "end": "2026-09-22T04:30:00Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "Sentinel-3 SLSTR"
     },
     {
-      "id": "EO-0430",
+      "id": "SAR-0300",
+      "row": "SAR",
+      "start": "2026-09-22T03:00:00Z",
+      "end": "2026-09-22T03:30:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-11"
+    },
+    {
+      "id": "EO-0400",
       "row": "EO",
-      "start": "2026-09-22T04:30:00Z",
-      "end": "2026-09-22T07:30:00Z",
-      "status": "High",
-      "label": "4 EO windows",
-      "notes": "Sentinel-2; Legion-5; Legion-3; Sentinel-3 OLCI"
+      "start": "2026-09-22T04:00:00Z",
+      "end": "2026-09-22T04:30:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "Legion-2"
     },
     {
       "id": "IR-0630",
       "row": "IR",
       "start": "2026-09-22T06:30:00Z",
       "end": "2026-09-22T07:30:00Z",
-      "status": "Low",
-      "label": "1 IR window",
+      "status": "Predicted",
+      "label": "1 IR pass",
       "notes": "S-NPP VIIRS"
     },
     {
-      "id": "SAR-1130",
+      "id": "SAR-0630",
       "row": "SAR",
-      "start": "2026-09-22T11:30:00Z",
-      "end": "2026-09-22T12:30:00Z",
-      "status": "Low",
-      "label": "1 SAR window",
-      "notes": "Capella-16"
+      "start": "2026-09-22T06:30:00Z",
+      "end": "2026-09-22T08:00:00Z",
+      "status": "Predicted",
+      "label": "2 SAR passes",
+      "notes": "Capella-13; Capella-18"
+    },
+    {
+      "id": "EO-0900",
+      "row": "EO",
+      "start": "2026-09-22T09:00:00Z",
+      "end": "2026-09-22T11:00:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WorldView-3"
+    },
+    {
+      "id": "IR-0900",
+      "row": "IR",
+      "start": "2026-09-22T09:00:00Z",
+      "end": "2026-09-22T11:00:00Z",
+      "status": "Predicted",
+      "label": "2 IR passes",
+      "notes": "NOAA-21 VIIRS; S-NPP VIIRS"
+    },
+    {
+      "id": "SAR-1030",
+      "row": "SAR",
+      "start": "2026-09-22T10:30:00Z",
+      "end": "2026-09-22T11:00:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-17"
+    },
+    {
+      "id": "SAR-1230",
+      "row": "SAR",
+      "start": "2026-09-22T12:30:00Z",
+      "end": "2026-09-22T15:30:00Z",
+      "status": "Predicted",
+      "label": "2 SAR passes",
+      "notes": "Capella-17; Capella-16"
     },
     {
       "id": "EO-1430",
       "row": "EO",
       "start": "2026-09-22T14:30:00Z",
-      "end": "2026-09-22T16:30:00Z",
-      "status": "High",
-      "label": "5 EO windows",
-      "notes": "Legion-6; Legion-4; Legion-2; WorldView-1; GeoEye-1"
+      "end": "2026-09-22T15:30:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WorldView-2"
     },
     {
-      "id": "SAR-1600",
-      "row": "SAR",
+      "id": "EO-1600",
+      "row": "EO",
       "start": "2026-09-22T16:00:00Z",
       "end": "2026-09-22T16:30:00Z",
-      "status": "No Concern",
-      "label": "1 SAR window",
-      "notes": "Capella-19"
+      "status": "Predicted",
+      "label": "2 EO passes",
+      "notes": "WorldView-1; GeoEye-1"
+    },
+    {
+      "id": "IR-1600",
+      "row": "IR",
+      "start": "2026-09-22T16:00:00Z",
+      "end": "2026-09-22T16:30:00Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "S-NPP VIIRS"
     },
     {
       "id": "EO-1800",
       "row": "EO",
       "start": "2026-09-22T18:00:00Z",
       "end": "2026-09-22T19:00:00Z",
-      "status": "High",
-      "label": "2 EO windows",
-      "notes": "Legion-6; WorldView-1"
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "Legion-6"
     },
     {
       "id": "SAR-1800",
       "row": "SAR",
       "start": "2026-09-22T18:00:00Z",
       "end": "2026-09-22T20:00:00Z",
-      "status": "No Concern",
-      "label": "1 SAR window",
-      "notes": "Capella-18"
+      "status": "Predicted",
+      "label": "2 SAR passes",
+      "notes": "Capella-18; Capella-19"
     },
     {
-      "id": "IR-1830",
-      "row": "IR",
-      "start": "2026-09-22T18:30:00Z",
-      "end": "2026-09-22T20:00:00Z",
-      "status": "Moderate",
-      "label": "1 IR window",
-      "notes": "NOAA-21 VIIRS"
-    },
-    {
-      "id": "EO-2000",
+      "id": "EO-2130",
       "row": "EO",
-      "start": "2026-09-22T20:00:00Z",
+      "start": "2026-09-22T21:30:00Z",
       "end": "2026-09-22T23:00:00Z",
-      "status": "High",
-      "label": "3 EO windows",
-      "notes": "Legion-5; Legion-1; WorldView-1"
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WorldView-1"
     }
   ],
   "status_styles": {

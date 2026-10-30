@@ -27,7 +27,7 @@
       "icod_source": "demo"
     }
   },
-  "generated": "2026-10-30T18:05:10Z",
+  "generated": "2026-10-30T20:04:39Z",
   "locality": {
     "id": "london",
     "name": "London",
@@ -82,121 +82,130 @@
   "alt_groupings": [],
   "events": [
     {
+      "id": "SAR-0000",
+      "row": "SAR",
+      "start": "2026-09-22T00:00:00Z",
+      "end": "2026-09-22T01:30:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-18"
+    },
+    {
       "id": "EO-0100",
       "row": "EO",
       "start": "2026-09-22T01:00:00Z",
       "end": "2026-09-22T03:00:00Z",
-      "status": "High",
-      "label": "1 EO window",
+      "status": "Predicted",
+      "label": "1 EO pass",
       "notes": "Legion-5"
+    },
+    {
+      "id": "IR-0200",
+      "row": "IR",
+      "start": "2026-09-22T02:00:00Z",
+      "end": "2026-09-22T04:00:00Z",
+      "status": "Predicted",
+      "label": "1 IR pass",
+      "notes": "Terra MODIS"
     },
     {
       "id": "SAR-0230",
       "row": "SAR",
       "start": "2026-09-22T02:30:00Z",
       "end": "2026-09-22T03:00:00Z",
-      "status": "High",
-      "label": "1 SAR window",
-      "notes": "Capella-11"
+      "status": "Predicted",
+      "label": "2 SAR passes",
+      "notes": "Capella-11; Capella-11"
     },
     {
-      "id": "SAR-0530",
+      "id": "SAR-0500",
       "row": "SAR",
+      "start": "2026-09-22T05:00:00Z",
+      "end": "2026-09-22T06:00:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-19"
+    },
+    {
+      "id": "EO-0530",
+      "row": "EO",
       "start": "2026-09-22T05:30:00Z",
       "end": "2026-09-22T06:00:00Z",
-      "status": "High",
-      "label": "1 SAR window",
-      "notes": "Capella-15"
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "GeoEye-1"
     },
     {
-      "id": "EO-0700",
-      "row": "EO",
-      "start": "2026-09-22T07:00:00Z",
-      "end": "2026-09-22T07:30:00Z",
-      "status": "High",
-      "label": "1 EO window",
-      "notes": "Legion-2"
-    },
-    {
-      "id": "SAR-0700",
+      "id": "SAR-0630",
       "row": "SAR",
-      "start": "2026-09-22T07:00:00Z",
-      "end": "2026-09-22T08:00:00Z",
-      "status": "Moderate",
-      "label": "2 SAR windows",
-      "notes": "Capella-15; Capella-18"
+      "start": "2026-09-22T06:30:00Z",
+      "end": "2026-09-22T09:00:00Z",
+      "status": "Predicted",
+      "label": "3 SAR passes",
+      "notes": "Capella-18; Capella-15; Capella-17"
     },
     {
-      "id": "SAR-1000",
+      "id": "EO-1200",
+      "row": "EO",
+      "start": "2026-09-22T12:00:00Z",
+      "end": "2026-09-22T15:00:00Z",
+      "status": "Predicted",
+      "label": "2 EO passes",
+      "notes": "Legion-2; Legion-5"
+    },
+    {
+      "id": "SAR-1330",
       "row": "SAR",
-      "start": "2026-09-22T10:00:00Z",
-      "end": "2026-09-22T12:00:00Z",
-      "status": "Moderate",
-      "label": "1 SAR window",
-      "notes": "Capella-16"
+      "start": "2026-09-22T13:30:00Z",
+      "end": "2026-09-22T14:00:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-19"
     },
     {
-      "id": "EO-1130",
+      "id": "EO-1530",
       "row": "EO",
-      "start": "2026-09-22T11:30:00Z",
-      "end": "2026-09-22T12:30:00Z",
-      "status": "Low",
-      "label": "1 EO window",
-      "notes": "WorldView-2"
+      "start": "2026-09-22T15:30:00Z",
+      "end": "2026-09-22T16:00:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "Legion-5"
     },
     {
-      "id": "EO-1300",
-      "row": "EO",
-      "start": "2026-09-22T13:00:00Z",
-      "end": "2026-09-22T15:30:00Z",
-      "status": "Moderate",
-      "label": "3 EO windows",
-      "notes": "Legion-2; WorldView-3; Legion-6"
-    },
-    {
-      "id": "EO-1630",
-      "row": "EO",
+      "id": "SAR-1630",
+      "row": "SAR",
       "start": "2026-09-22T16:30:00Z",
-      "end": "2026-09-22T17:00:00Z",
-      "status": "High",
-      "label": "2 EO windows",
-      "notes": "Legion-6; Sentinel-2"
-    },
-    {
-      "id": "SAR-1700",
-      "row": "SAR",
-      "start": "2026-09-22T17:00:00Z",
       "end": "2026-09-22T17:30:00Z",
-      "status": "Moderate",
-      "label": "1 SAR window",
-      "notes": "Sentinel-1"
+      "status": "Predicted",
+      "label": "2 SAR passes",
+      "notes": "Capella-17; Sentinel-1"
     },
     {
-      "id": "EO-1800",
+      "id": "EO-1700",
       "row": "EO",
-      "start": "2026-09-22T18:00:00Z",
+      "start": "2026-09-22T17:00:00Z",
       "end": "2026-09-22T19:30:00Z",
-      "status": "Moderate",
-      "label": "1 EO window",
-      "notes": "WorldView-1"
+      "status": "Predicted",
+      "label": "2 EO passes",
+      "notes": "Legion-3; Sentinel-2"
     },
     {
       "id": "SAR-1830",
       "row": "SAR",
       "start": "2026-09-22T18:30:00Z",
-      "end": "2026-09-22T21:30:00Z",
-      "status": "High",
-      "label": "4 SAR windows",
-      "notes": "Capella-11; Capella-16; Capella-19; Capella-18"
+      "end": "2026-09-22T19:30:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-11"
     },
     {
-      "id": "IR-1900",
-      "row": "IR",
-      "start": "2026-09-22T19:00:00Z",
-      "end": "2026-09-22T19:30:00Z",
-      "status": "High",
-      "label": "1 IR window",
-      "notes": "Sentinel-3 SLSTR"
+      "id": "SAR-2030",
+      "row": "SAR",
+      "start": "2026-09-22T20:30:00Z",
+      "end": "2026-09-22T22:30:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-16"
     }
   ],
   "status_styles": {

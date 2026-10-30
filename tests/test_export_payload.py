@@ -61,9 +61,9 @@ def write_data(tmp_path, name="Mid-north 40°N", point="POINT(-100 40)", **chang
     data = {"locality": {"name": name, "point": point}, "evaluation_date": "2026-10-27",
             "icod": "2026-10-27T12:00:00Z", "icod_source": "data", "source": "Test feed",
             "windows": [{"satellite": "Legion-3", "start": "2026-10-27T06:00:00Z", "end": "2026-10-27T06:10:00Z",
-                         "status": "High", "label": "LEGION 3 pass"},
+                         "status": "Predicted", "label": "LEGION 3 pass"},
                         {"satellite": "WorldView-2", "start": "2026-10-27T06:05:00Z", "end": "2026-10-27T06:20:00Z",
-                         "status": "Low", "label": "WORLDVIEW-2 pass"},
+                         "status": "Predicted", "label": "WORLDVIEW-2 pass"},
                         {"satellite": "Sentinel-1", "start": "2026-10-27T18:00:00Z", "end": "2026-10-27T18:04:00Z",
                          "status": "Predicted", "norad": 39634}]}
     data.update(changes)
@@ -110,12 +110,19 @@ def test_both_views_draw_the_same_windows(tmp_path):
     data = ep.load_data(write_data(tmp_path))
     abstracted, simplified = (ep.build_view(matrix, v, data) for v in ("abstracted", "simplified"))
     assert [e["row"] for e in abstracted["events"]] == ["Legion-3", "WorldView-2", "Sentinel-1"]
-    # Simplified: the overlapping EO windows are one bar with the first status in status_styles order.
+    # Simplified: the overlapping EO windows are one bar.
     assert [(e["row"], e["start"], e["end"], e["status"], e["label"]) for e in simplified["events"]] == [
-        ("EO", "2026-10-27T06:00:00Z", "2026-10-27T06:20:00Z", "High", "2 EO windows"),
+        ("EO", "2026-10-27T06:00:00Z", "2026-10-27T06:20:00Z", "Predicted", "2 EO passes"),
         ("SAR", "2026-10-27T18:00:00Z", "2026-10-27T18:04:00Z", "Predicted", "1 SAR pass")]
     assert simplified["events"][0]["notes"] == "LEGION 3; WORLDVIEW-2"
     assert abstracted["icod"] == simplified["icod"] == "2026-10-27T12:00:00Z"
+
+
+def test_roll_up_refuses_mixed_statuses():
+    events = [{"row": "Legion-3", "start": "2026-10-27T06:00:00Z", "end": "2026-10-27T06:10:00Z", "status": "Predicted"},
+              {"row": "Legion-4", "start": "2026-10-27T06:05:00Z", "end": "2026-10-27T06:15:00Z", "status": "Collected"}]
+    with pytest.raises(ValueError, match="different statuses"):
+        ep.roll_up(events, ep.row_groups(ep.load_config(MATRIX)))
 
 
 def test_simplified_draws_the_groups_as_rows():
