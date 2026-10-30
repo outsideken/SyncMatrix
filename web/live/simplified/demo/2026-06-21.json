@@ -25,9 +25,14 @@
       "source": "Demo data: generated sample events",
       "icod": "2026-06-21T18:00:00Z",
       "icod_source": "demo"
+    },
+    "RF": {
+      "source": "Demo data: generated sample events",
+      "icod": "2026-06-21T18:00:00Z",
+      "icod_source": "demo"
     }
   },
-  "generated": "2026-10-30T21:32:15Z",
+  "generated": "2026-10-30T22:06:11Z",
   "locality": {
     "id": "demo",
     "name": "Demo",
@@ -76,28 +81,40 @@
           "label": "SAR"
         }
       ]
+    },
+    {
+      "id": "RF",
+      "label": "RF",
+      "color": "#238b45",
+      "tint": "#c7e9c0",
+      "rows": [
+        {
+          "id": "RF",
+          "label": "RF"
+        }
+      ]
     }
   ],
   "grouping": "Phenomenology",
   "alt_groupings": [],
   "events": [
     {
+      "id": "RF-0000",
+      "row": "RF",
+      "start": "2026-06-21T00:00:00Z",
+      "end": "2026-06-21T03:00:00Z",
+      "status": "Predicted",
+      "label": "7 RF passes",
+      "notes": "HE360 Cluster 7; HE360 Cluster 8; HE360 Cluster 5; BRO-20; BRO-18; BRO-8; BRO-18"
+    },
+    {
       "id": "IR-0030",
       "row": "IR",
       "start": "2026-06-21T00:30:00Z",
-      "end": "2026-06-21T01:30:00Z",
+      "end": "2026-06-21T01:00:00Z",
       "status": "Predicted",
       "label": "1 IR pass",
-      "notes": "Terra MODIS"
-    },
-    {
-      "id": "SAR-0100",
-      "row": "SAR",
-      "start": "2026-06-21T01:00:00Z",
-      "end": "2026-06-21T03:00:00Z",
-      "status": "Predicted",
-      "label": "3 SAR passes",
-      "notes": "Sentinel-1; Capella-16; Capella-20"
+      "notes": "NOAA-21 VIIRS"
     },
     {
       "id": "EO-0130",
@@ -106,97 +123,142 @@
       "end": "2026-06-21T03:00:00Z",
       "status": "Predicted",
       "label": "1 EO pass",
-      "notes": "Legion-5"
+      "notes": "WorldView-2"
     },
     {
-      "id": "SAR-0500",
+      "id": "SAR-0300",
       "row": "SAR",
+      "start": "2026-06-21T03:00:00Z",
+      "end": "2026-06-21T03:30:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-18"
+    },
+    {
+      "id": "RF-0500",
+      "row": "RF",
       "start": "2026-06-21T05:00:00Z",
       "end": "2026-06-21T05:30:00Z",
       "status": "Predicted",
-      "label": "1 SAR pass",
-      "notes": "Capella-14"
+      "label": "1 RF pass",
+      "notes": "BRO-31"
     },
     {
-      "id": "SAR-0630",
-      "row": "SAR",
-      "start": "2026-06-21T06:30:00Z",
+      "id": "IR-0600",
+      "row": "IR",
+      "start": "2026-06-21T06:00:00Z",
       "end": "2026-06-21T08:30:00Z",
       "status": "Predicted",
-      "label": "2 SAR passes",
-      "notes": "Capella-16; Capella-11"
+      "label": "2 IR passes",
+      "notes": "NOAA-21 VIIRS; Terra MODIS"
     },
     {
-      "id": "EO-0700",
-      "row": "EO",
-      "start": "2026-06-21T07:00:00Z",
+      "id": "RF-0630",
+      "row": "RF",
+      "start": "2026-06-21T06:30:00Z",
       "end": "2026-06-21T10:00:00Z",
       "status": "Predicted",
-      "label": "2 EO passes",
-      "notes": "Sentinel-3 OLCI; Sentinel-3 OLCI"
+      "label": "3 RF passes",
+      "notes": "BRO-31; HE360 Cluster 11; HE360 Cluster 3"
     },
     {
-      "id": "IR-1300",
+      "id": "EO-1000",
+      "row": "EO",
+      "start": "2026-06-21T10:00:00Z",
+      "end": "2026-06-21T10:30:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "WorldView-1"
+    },
+    {
+      "id": "RF-1100",
+      "row": "RF",
+      "start": "2026-06-21T11:00:00Z",
+      "end": "2026-06-21T12:00:00Z",
+      "status": "Predicted",
+      "label": "2 RF passes",
+      "notes": "HE360 Cluster 7; BRO-5"
+    },
+    {
+      "id": "EO-1130",
+      "row": "EO",
+      "start": "2026-06-21T11:30:00Z",
+      "end": "2026-06-21T13:30:00Z",
+      "status": "Predicted",
+      "label": "1 EO pass",
+      "notes": "Legion-4"
+    },
+    {
+      "id": "IR-1230",
       "row": "IR",
+      "start": "2026-06-21T12:30:00Z",
+      "end": "2026-06-21T16:30:00Z",
+      "status": "Predicted",
+      "label": "4 IR passes",
+      "notes": "NOAA-20 VIIRS; Terra MODIS; Sentinel-3 SLSTR; NOAA-21 VIIRS"
+    },
+    {
+      "id": "SAR-1230",
+      "row": "SAR",
+      "start": "2026-06-21T12:30:00Z",
+      "end": "2026-06-21T13:00:00Z",
+      "status": "Predicted",
+      "label": "1 SAR pass",
+      "notes": "Capella-16"
+    },
+    {
+      "id": "RF-1300",
+      "row": "RF",
       "start": "2026-06-21T13:00:00Z",
       "end": "2026-06-21T13:30:00Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "NOAA-21 VIIRS"
+      "label": "1 RF pass",
+      "notes": "HE360 Cluster 1"
     },
     {
-      "id": "EO-1430",
-      "row": "EO",
-      "start": "2026-06-21T14:30:00Z",
-      "end": "2026-06-21T16:30:00Z",
-      "status": "Predicted",
-      "label": "2 EO passes",
-      "notes": "Sentinel-3 OLCI; GeoEye-1"
-    },
-    {
-      "id": "SAR-1500",
+      "id": "SAR-1430",
       "row": "SAR",
-      "start": "2026-06-21T15:00:00Z",
-      "end": "2026-06-21T17:00:00Z",
+      "start": "2026-06-21T14:30:00Z",
+      "end": "2026-06-21T16:00:00Z",
       "status": "Predicted",
-      "label": "2 SAR passes",
-      "notes": "Capella-17; Capella-14"
+      "label": "1 SAR pass",
+      "notes": "Capella-17"
     },
     {
-      "id": "IR-1630",
-      "row": "IR",
-      "start": "2026-06-21T16:30:00Z",
-      "end": "2026-06-21T17:00:00Z",
+      "id": "RF-1500",
+      "row": "RF",
+      "start": "2026-06-21T15:00:00Z",
+      "end": "2026-06-21T18:00:00Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "Terra MODIS"
+      "label": "7 RF passes",
+      "notes": "BRO-22; HE360 Cluster 14; HE360 Cluster 9; HE360 Cluster 6; HE360 Cluster 9; HE360 Cluster 5; BRO-22"
     },
     {
       "id": "EO-1700",
       "row": "EO",
       "start": "2026-06-21T17:00:00Z",
-      "end": "2026-06-21T20:00:00Z",
+      "end": "2026-06-21T18:30:00Z",
       "status": "Predicted",
-      "label": "2 EO passes",
-      "notes": "Legion-1; Legion-1"
+      "label": "1 EO pass",
+      "notes": "Legion-2"
     },
     {
-      "id": "SAR-1930",
+      "id": "SAR-1800",
       "row": "SAR",
-      "start": "2026-06-21T19:30:00Z",
-      "end": "2026-06-21T20:00:00Z",
+      "start": "2026-06-21T18:00:00Z",
+      "end": "2026-06-21T18:30:00Z",
       "status": "Predicted",
       "label": "1 SAR pass",
-      "notes": "Capella-13"
+      "notes": "Capella-15"
     },
     {
-      "id": "IR-2030",
-      "row": "IR",
-      "start": "2026-06-21T20:30:00Z",
+      "id": "RF-1900",
+      "row": "RF",
+      "start": "2026-06-21T19:00:00Z",
       "end": "2026-06-21T22:00:00Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "S-NPP VIIRS"
+      "label": "4 RF passes",
+      "notes": "HE360 Cluster 12; HE360 Cluster 12; HE360 Cluster 3; BRO-32"
     }
   ],
   "status_styles": {

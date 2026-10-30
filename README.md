@@ -28,7 +28,9 @@ web/demo_dashboard.html    stand-in dashboard for testing iframe + postMessage
 ## Matrices
 
 One matrix, [`config/matrix.json`](config/README.md), draws two views of the
-same data:
+same data. **A chart shows what its data file covers**: a place that only
+evaluates RF shows only RF, one that evaluates EO and SAR shows EO and SAR,
+with no view or setting per mix.
 
 - **Abstracted Sync Matrix** (view `abstracted`): one row per satellite
   (or instrument), grouped by **phenomenology**, rows alphabetical (numbers in
@@ -39,14 +41,16 @@ same data:
     NOAA-20 and NOAA-21 VIIRS); Sentinel-3 SLSTR.
   - **SAR**: Capella Acadia satellites Capella-11 and -13 to -20 (Capella-12
     is not in Celestrak's catalogue); Sentinel-1.
+  - **RF** (commercial RF geolocation): HawkEye 360 clusters 1–16 (HE360
+    Cluster N, no cluster 4) and Unseenlabs BRO satellites.
 
   The same rows can be grouped by **provider** with the page's **Group by:
   Phenomenology | Provider** control: Capella; Copernicus (Sentinel-1, -2,
-  -3 OLCI, -3 SLSTR); NASA FIRMS (MODIS and VIIRS); Vantor (GeoEye-1, Legion,
-  WorldView). Each grouping has its own colours (see config/README.md); event
+  -3 OLCI, -3 SLSTR); HawkEye 360; NASA FIRMS (MODIS and VIIRS); Unseenlabs;
+  Vantor (GeoEye-1, Legion, WorldView). Each grouping has its own colours (see config/README.md); event
   boxes follow the grouping shown.
 - **Simplified Sync Matrix** (view `simplified`): the same groups (EO, IR,
-  SAR) without the satellite rows, drawn as bars without row labels. Its
+  SAR, RF) without the satellite rows, drawn as bars without row labels. Its
   windows are Abstracted's rolled up: overlapping windows in a group become
   one bar ("2 EO passes", names in the notes). Always phenomenology, so the
   Group by control is hidden.
@@ -72,10 +76,18 @@ October, December solstice), labelled **DEMO DATA**. It is set in
 
 ## Predicted passes (live data)
 
-`web/live` holds **real predicted passes**: for each site (the seven neutral
-latitude sites and eight cities: London, Kiev, Assisi, Tokyo, Tehran, Cairo,
-Kathmandu, Gao) and the three days from the orbit snapshot, when each
-satellite row can image the site.
+`web/live` holds **real predicted passes**: for each site and the three days
+from the orbit snapshot, when each satellite row can access the site. The
+sites show different phenomenology mixes (`evaluate` in
+`config/workflow.json`):
+
+| Mix | Sites |
+|---|---|
+| RF only (dark ships / IUU fishing) | Galápagos EEZ edge, Mile 201, Gulf of Guinea (open water) |
+| EO / SAR | London, Kiev |
+| EO / SAR / RF | Tokyo, Cairo |
+| IR only | Gao |
+| All | Tehran, Kathmandu, Assisi, the seven neutral latitude sites, Demo |
 
 This is the page's one library; the **Demo** locality at the end of the
 Locality list is the only generated data in it (`?locality=demo` opens on it).
@@ -90,7 +102,7 @@ github-actions[bot], and starts the Pages deploy. The same steps locally:
 .venv/bin/python scripts/refresh_live_data.py   # fetch_tles.py + prune + build_live_data.py + checks
 ```
 
-- **Orbits** come from Celestrak (one request per satellite, with a pause),
+- **Orbits** come from Celestrak (one request per satellite, with a pause, retried a few times if Celestrak answers 5xx or times out),
   saved with their download time. Passes are computed with Skyfield, so a
   committed snapshot always rebuilds the same library; CI checks it does.
 - **A pass counts** when the satellite is above the row's elevation threshold
@@ -297,4 +309,4 @@ same checks locally before pushing:
 | `check_data.py` | A `web/live` file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
 | `check_build.py` | `data/demo`, `data/predicted` or `web/live` out of date with `config/`, the exporter, the newest committed TLE snapshot or the pass prediction (rebuilds everything into a temp folder and compares, ignoring timestamps) |
 | `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |
-| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed library: default view (predicted, no Data switch), Demo as the last locality (DEMO DATA badge, keeps the matrix, lands on the right demo day, also with the clock frozen on a demo day), layout (groups, 28 rows, 24 hour labels), localities north to south, ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |
+| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed library: default view (predicted, no Data switch), Demo as the last locality (DEMO DATA badge, keeps the matrix, lands on the right demo day, also with the clock frozen on a demo day), layout (groups, 61 rows, 24 hour labels), localities north to south, each place shows only the groups it evaluates (RF only at sea, EO/SAR, EO/SAR/RF, IR only, all), ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |

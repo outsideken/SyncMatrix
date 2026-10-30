@@ -127,7 +127,7 @@ def test_roll_up_refuses_mixed_statuses():
 
 def test_simplified_draws_the_groups_as_rows():
     config = ep.load_config(MATRIX, "simplified")
-    assert [(g["name"], g["rows"]) for g in config["groups"]] == [("EO", ["EO"]), ("IR", ["IR"]), ("SAR", ["SAR"])]
+    assert [(g["name"], g["rows"]) for g in config["groups"]] == [("EO", ["EO"]), ("IR", ["IR"]), ("SAR", ["SAR"]), ("RF", ["RF"])]
     assert config["label"] == "Simplified Sync Matrix"
 
 
@@ -158,9 +158,33 @@ def test_group_notes_count_evaluated_spacecraft(tmp_path):
     notes = ep.build_view(matrix, "simplified", data)["provenance"]
     assert notes["EO"]["notes"] == "2 predicted passes from 2 of 2 configured satellites"
     assert notes["SAR"]["notes"] == "1 predicted pass from 1 of 2 configured satellites"
-    assert notes["IR"]["source"] == "No data source for IR"  # nothing evaluated: no feed, no ICOD
-    # Without "evaluated" (demo), every group shares the file's provenance.
-    assert ep.build_view(matrix, "simplified", ep.load_data(write_data(tmp_path)))["provenance"]["IR"]["source"] == "Test feed"
+    assert "IR" not in notes  # nothing evaluated there: IR isn't drawn at all
+    # Without "evaluated", the groups with windows are drawn and share the file's provenance.
+    plain = ep.build_view(matrix, "simplified", ep.load_data(write_data(tmp_path)))["provenance"]
+    assert set(plain) == {"all", "EO", "SAR"} and plain["EO"]["source"] == "Test feed"
+
+
+def test_a_chart_shows_what_its_data_file_covers(tmp_path):
+    # EO and SAR evaluated: only those groups and rows are drawn, in every grouping.
+    matrix = ep.load_config(MATRIX)
+    data = ep.load_data(write_data(tmp_path, evaluated={"Legion-3": [60452], "WorldView-2": [35946],
+                                                         "Sentinel-1": [39634], "Capella-14": [1]}))
+    abstracted = ep.build_view(matrix, "abstracted", data)
+    assert [(g["id"], [r["id"] for r in g["rows"]]) for g in abstracted["groups"]] == [
+        ("EO", ["Legion-3", "WorldView-2"]), ("SAR", ["Capella-14", "Sentinel-1"])]
+    [provider] = abstracted["alt_groupings"]
+    assert [g["id"] for g in provider["groups"]] == ["Capella", "Copernicus", "Vantor"]  # empty providers dropped
+    assert [g["id"] for g in ep.build_view(matrix, "simplified", data)["groups"]] == ["EO", "SAR"]
+    # An evaluated row with no passes still shows (no passes is information); an RF-only file draws only RF.
+    rf = ep.load_data(write_data(tmp_path, windows=[], evaluated={"HE360 Cluster 2": [47505], "BRO-5": [51061]}))
+    rf_view = ep.build_view(matrix, "abstracted", rf)
+    assert [(g["id"], len(g["rows"])) for g in rf_view["groups"]] == [("RF", 2)] and rf_view["events"] == []
+    assert rf_view["provenance"]["RF"]["notes"] == "No predicted passes from the 2 configured satellites"
+
+
+def test_slugs_drop_accents_but_keep_word_breaks():
+    assert ep.slugify("Galápagos EEZ edge") == "galapagos-eez-edge"
+    assert ep.slugify("High Arctic 78°N") == "high-arctic-78-n"
 
 ################################################################################
 ## Alternate groupings ("Group by")
@@ -171,10 +195,11 @@ def test_abstracted_offers_provider_grouping_over_the_same_rows():
     groups = ep.build_groups(config["groups"])
     [provider] = ep.build_alt_groupings(config)
     assert (provider["id"], provider["label"]) == ("provider", "Provider")
-    assert [g["label"] for g in provider["groups"]] == ["Capella", "Copernicus", "NASA FIRMS", "Vantor"]
+    assert [g["label"] for g in provider["groups"]] == ["Capella", "Copernicus", "HawkEye 360", "NASA FIRMS", "Unseenlabs", "Vantor"]
     assert {g["label"]: (g["color"], g["tint"]) for g in provider["groups"]} == {
         "Capella": ("#525252", "#d9d9d9"), "Copernicus": ("#08519c", "#c6dbef"),
-        "NASA FIRMS": ("#cb181d", "#fcbba1"), "Vantor": ("#6a51a3", "#dadaeb")}
+        "NASA FIRMS": ("#cb181d", "#fcbba1"), "Vantor": ("#6a51a3", "#dadaeb"),
+        "HawkEye 360": ("#238b45", "#c7e9c0"), "Unseenlabs": ("#d94801", "#fdd0a2")}
     row_ids = lambda gs: sorted(r["id"] for g in gs for r in g["rows"])
     assert row_ids(provider["groups"]) == row_ids(groups)
 
@@ -338,7 +363,7 @@ def test_end_of_local_day_quarter_hour_offset():
 def test_provenance_defaults_to_the_matrix_for_every_group():
     config = ep.load_config(MATRIX, "abstracted")
     prov = ep.build_provenance(config, "Events file x.json", "2026-10-28T12:00:00Z", "data")
-    assert set(prov) == {"all", "EO", "IR", "SAR"}
+    assert set(prov) == {"all", "EO", "IR", "SAR", "RF"}
     assert prov["EO"] == prov["all"] == {"source": "Events file x.json", "icod": "2026-10-28T12:00:00Z",
                                           "icod_source": "data"}
 
@@ -356,7 +381,8 @@ def test_payload_carries_source_provenance_and_group_colours():
                                icod="2026-10-27T12:00:00Z", locality={"name": "X", "point": "POINT(-100 40)"})
     assert payload["source"].startswith("Demo data")
     assert payload["provenance"]["SAR"]["icod_source"] == "demo"
-    assert {g["label"]: g["color"] for g in payload["groups"]} == {"EO": "#08519c", "IR": "#cb181d", "SAR": "#525252"}
+    assert {g["label"]: g["color"] for g in payload["groups"]} == {"EO": "#08519c", "IR": "#cb181d", "SAR": "#525252",
+                                                                       "RF": "#238b45"}
     assert payload["banners"] == []  # provenance replaces the legacy banners
 
 
@@ -364,7 +390,8 @@ def test_status_styles_and_tints():
     payload = ep.build_payload(ep.load_config(MATRIX, "abstracted"), day=date(2026, 10, 27), demo_count=1,
                                icod="2026-10-27T12:00:00Z", locality={"name": "X", "point": "POINT(-100 40)"})
     assert payload["status_styles"]["Predicted"] == {"fill": "tint"}  # solid outline + light tint, for now
-    assert {g["label"]: g["tint"] for g in payload["groups"]} == {"EO": "#c6dbef", "IR": "#fcbba1", "SAR": "#d9d9d9"}
+    assert {g["label"]: g["tint"] for g in payload["groups"]} == {"EO": "#c6dbef", "IR": "#fcbba1", "SAR": "#d9d9d9",
+                                                                      "RF": "#c7e9c0"}
 
 
 def test_icod_ageing_is_checked_and_reaches_the_payload(tmp_path):

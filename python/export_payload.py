@@ -37,6 +37,7 @@ import argparse
 import json
 import random
 import re
+import unicodedata
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -272,8 +273,8 @@ def group_notes(matrix: dict, data: dict, events: list) -> dict:
     without "evaluated" (demo) shares the file's provenance.
     """
     evaluated = data.get("evaluated")
-    if evaluated is None:
-        return {}
+    if evaluated is None or data.get("icod_source") == "demo":
+        return {}  # demo shares the file's provenance: no pass counts for sample windows
     rows = row_groups(matrix)
     out = {}
     for group in matrix["groups"]:
@@ -294,14 +295,43 @@ def group_notes(matrix: dict, data: dict, events: list) -> dict:
     return out
 
 
+def covered_matrix(matrix: dict, data: dict) -> dict:
+    """The matrix cut down to what the data file covers, so a chart shows only that.
+
+    With "evaluated", only those rows (a file that checked EO and SAR draws
+    EO and SAR; an EO row checked with no passes still shows, empty). Without
+    it, the groups that have windows. Other groupings keep the same rows;
+    groups left empty are dropped. A file covering nothing draws everything.
+    """
+    groups_of = row_groups(matrix)
+    if data.get("evaluated") is not None:
+        keep = set(data["evaluated"])
+    else:
+        with_windows = {groups_of.get(w["satellite"]) for w in data["windows"]}
+        keep = {r for r, g in groups_of.items() if g in with_windows}
+    if not keep & set(groups_of):
+        return matrix
+
+    def cut(groups):
+        return [dict(g, rows=[r for r in g["rows"] if row_id(r) in keep]) for g in groups
+                if any(row_id(r) in keep for r in g["rows"])]
+
+    out = dict(matrix, groups=cut(matrix["groups"]))
+    if "alt_groupings" in matrix:
+        out["alt_groupings"] = {label: cut(groups) for label, groups in matrix["alt_groupings"].items()}
+    return out
+
+
 def build_view(matrix: dict, view_id: str, data: dict) -> dict:
     """One view's payload for one data file (one place, one evaluation date).
 
-    A colour or group change only re-runs this over the stored data files;
-    the windows are not recomputed.
+    The chart shows what the data file covers (covered_matrix()). A colour or
+    group change only re-runs this over the stored data files; the windows
+    are not recomputed.
     """
-    config = view_config(matrix, view_id)
     events = window_events(matrix, data)
+    matrix = covered_matrix(matrix, data)
+    config = view_config(matrix, view_id)
     notes = group_notes(matrix, data, events)
     if matrix["views"][view_id].get("rows", "satellites") == "groups":
         events = roll_up(events, row_groups(matrix))
@@ -561,7 +591,9 @@ def build_payload(config: dict, events: list = None, day: date = None,
 
 
 def slugify(text: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    """URL id for a name: accents dropped (Galápagos -> galapagos), anything else to dashes."""
+    plain = "".join(c for c in unicodedata.normalize("NFKD", text) if not unicodedata.combining(c))
+    return re.sub(r"[^a-z0-9]+", "-", plain.lower()).strip("-")
 
 
 def rebuild_manifest(data_dir: str) -> dict:

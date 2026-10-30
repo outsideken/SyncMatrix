@@ -87,8 +87,8 @@ def test_abstracted_layout(page, base_url, errors):
     open_page(page, base_url + ABSTRACTED)
     expect(page.locator(".sm-title")).to_have_text("Abstracted Sync Matrix")
     expect(page.locator(".sm-subtitle")).to_have_text("Demo · 28 October 2026")
-    assert texts(page, ".sm-group-label") == ["EO", "IR", "SAR"]
-    assert page.locator(".sm-row-label").count() == 28
+    assert texts(page, ".sm-group-label") == ["EO", "IR", "SAR", "RF"]
+    assert page.locator(".sm-row-label").count() == 61
     hours = texts(page, ".sm-axis .tick text")
     assert hours[0] == "0000Z" and hours[-1] == "2300Z" and len(hours) == 24
     assert errors == []
@@ -120,7 +120,7 @@ def test_group_by_provider_regroups_the_same_events(page, base_url, errors):
     open_page(page, base_url + ABSTRACTED)
     events_before = sorted(page.locator(".sm-event").evaluate_all("els => els.map(e => e.getAttribute('aria-label'))"))
     page.get_by_role("radio", name="Provider").click()
-    assert texts(page, ".sm-group-label") == ["Capella", "Copernicus", "NASA FIRMS", "Vantor"]
+    assert texts(page, ".sm-group-label") == ["Capella", "Copernicus", "HawkEye 360", "NASA FIRMS", "Unseenlabs", "Vantor"]
     assert query(page)["group"] == "provider"
     events_after = sorted(page.locator(".sm-event").evaluate_all("els => els.map(e => e.getAttribute('aria-label'))"))
     assert events_after == events_before
@@ -132,7 +132,7 @@ def test_group_by_provider_regroups_the_same_events(page, base_url, errors):
 def test_simplified_is_always_phenomenology(page, base_url, errors):
     open_page(page, base_url + SIMPLIFIED + "&group=provider")
     expect(page.locator("#sm-grouping")).to_be_hidden()
-    assert texts(page, ".sm-group-label") == ["EO", "IR", "SAR"]  # the matrix's groups, in its order
+    assert texts(page, ".sm-group-label") == ["EO", "IR", "SAR", "RF"]  # the matrix's groups, in its order
     assert page.locator(".sm-row-label").count() == 0  # group bars only
     assert errors == []
 
@@ -394,6 +394,23 @@ def test_boxes_take_the_colour_of_the_group_shown(page, base_url, errors):
     assert {"#6a51a3", "#cb181d", "#525252"} <= seen
     strips = page.locator("svg.sm-root rect[fill]").evaluate_all("els => els.map(e => e.getAttribute('fill'))")
     assert "#6a51a3" in strips
+    assert errors == []
+
+
+def test_each_place_shows_only_what_it_evaluates(page, base_url, errors):
+    # Same matrix, different data: the groups drawn follow each place's data file.
+    open_page(page, base_url + "/index.html?matrix=abstracted&locality=mile-201")
+    assert texts(page, ".sm-group-label") == ["RF"]                     # dark-ships example: RF only
+    page.get_by_role("radio", name="Provider").click()
+    assert texts(page, ".sm-group-label") == ["HawkEye 360", "Unseenlabs"]
+    page.get_by_role("radio", name="Phenomenology").click()
+    for locality, groups in (("london", ["EO", "SAR"]), ("tokyo", ["EO", "SAR", "RF"]), ("gao", ["IR"]),
+                             ("tehran", ["EO", "IR", "SAR", "RF"])):
+        page.locator("#sm-locality").select_option(locality)
+        expect(page.locator(".sm-group-label")).to_have_text(groups)  # waits for the redraw
+    page.locator("#sm-matrix").select_option("simplified")
+    page.wait_for_selector("svg.sm-root .sm-event")
+    assert texts(page, ".sm-group-label") == ["EO", "IR", "SAR", "RF"]
     assert errors == []
 
 

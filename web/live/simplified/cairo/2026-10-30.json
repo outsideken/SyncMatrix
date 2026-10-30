@@ -2,35 +2,35 @@
   "version": 1,
   "title": "Simplified Sync Matrix",
   "subtitle": "Cairo \u00b7 30 October 2026",
-  "icod": "2026-10-30T11:23:26Z",
+  "icod": "2026-10-30T22:02:03Z",
   "icod_source": "celestrak",
-  "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T1123Z.json), computed with Skyfield",
+  "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T2202Z.json), computed with Skyfield",
   "provenance": {
     "all": {
-      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T1123Z.json), computed with Skyfield",
-      "icod": "2026-10-30T11:23:26Z",
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T2202Z.json), computed with Skyfield",
+      "icod": "2026-10-30T22:02:03Z",
       "icod_source": "celestrak"
     },
     "EO": {
-      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T1123Z.json), computed with Skyfield",
-      "icod": "2026-10-30T11:23:26Z",
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T2202Z.json), computed with Skyfield",
+      "icod": "2026-10-30T22:02:03Z",
       "icod_source": "celestrak",
       "notes": "8 predicted passes from 7 of 15 configured satellites"
     },
-    "IR": {
-      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T1123Z.json), computed with Skyfield",
-      "icod": "2026-10-30T11:23:26Z",
-      "icod_source": "celestrak",
-      "notes": "13 predicted passes from 6 of 7 configured satellites"
-    },
     "SAR": {
-      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T1123Z.json), computed with Skyfield",
-      "icod": "2026-10-30T11:23:26Z",
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T2202Z.json), computed with Skyfield",
+      "icod": "2026-10-30T22:02:03Z",
       "icod_source": "celestrak",
       "notes": "9 predicted passes from 7 of 12 configured satellites"
+    },
+    "RF": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-10-30T2202Z.json), computed with Skyfield",
+      "icod": "2026-10-30T22:02:03Z",
+      "icod_source": "celestrak",
+      "notes": "73 predicted passes from 33 of 33 configured satellites"
     }
   },
-  "generated": "2026-10-30T21:32:15Z",
+  "generated": "2026-10-30T22:06:11Z",
   "locality": {
     "id": "cairo",
     "name": "Cairo",
@@ -57,18 +57,6 @@
       ]
     },
     {
-      "id": "IR",
-      "label": "IR",
-      "color": "#cb181d",
-      "tint": "#fcbba1",
-      "rows": [
-        {
-          "id": "IR",
-          "label": "IR"
-        }
-      ]
-    },
-    {
       "id": "SAR",
       "label": "SAR",
       "color": "#525252",
@@ -79,19 +67,49 @@
           "label": "SAR"
         }
       ]
+    },
+    {
+      "id": "RF",
+      "label": "RF",
+      "color": "#238b45",
+      "tint": "#c7e9c0",
+      "rows": [
+        {
+          "id": "RF",
+          "label": "RF"
+        }
+      ]
     }
   ],
   "grouping": "Phenomenology",
   "alt_groupings": [],
   "events": [
     {
-      "id": "IR-0011",
-      "row": "IR",
-      "start": "2026-10-30T00:11:54Z",
-      "end": "2026-10-30T00:18:48Z",
+      "id": "RF-0010",
+      "row": "RF",
+      "start": "2026-10-30T00:10:18Z",
+      "end": "2026-10-30T00:15:46Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "NOAA 20 (JPSS-1)"
+      "label": "1 RF pass",
+      "notes": "BRO-13"
+    },
+    {
+      "id": "RF-0025",
+      "row": "RF",
+      "start": "2026-10-30T00:25:31Z",
+      "end": "2026-10-30T00:30:47Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-9A"
+    },
+    {
+      "id": "RF-0050",
+      "row": "RF",
+      "start": "2026-10-30T00:50:11Z",
+      "end": "2026-10-30T00:55:29Z",
+      "status": "Predicted",
+      "label": "2 RF passes",
+      "notes": "BRO-19; HAWK-15A"
     },
     {
       "id": "SAR-0101",
@@ -103,13 +121,31 @@
       "notes": "CAPELLA-20 (ACADIA-10)"
     },
     {
-      "id": "IR-0200",
-      "row": "IR",
-      "start": "2026-10-30T02:00:14Z",
-      "end": "2026-10-30T02:05:42Z",
+      "id": "RF-0108",
+      "row": "RF",
+      "start": "2026-10-30T01:08:43Z",
+      "end": "2026-10-30T01:13:31Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "AQUA"
+      "label": "1 RF pass",
+      "notes": "HAWK-14A"
+    },
+    {
+      "id": "RF-0125",
+      "row": "RF",
+      "start": "2026-10-30T01:25:36Z",
+      "end": "2026-10-30T01:31:02Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-8A"
+    },
+    {
+      "id": "RF-0207",
+      "row": "RF",
+      "start": "2026-10-30T02:07:12Z",
+      "end": "2026-10-30T02:10:01Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-9A"
     },
     {
       "id": "SAR-0215",
@@ -119,6 +155,42 @@
       "status": "Predicted",
       "label": "1 SAR pass",
       "notes": "CAPELLA-11 (ACADIA-1)"
+    },
+    {
+      "id": "RF-0244",
+      "row": "RF",
+      "start": "2026-10-30T02:44:43Z",
+      "end": "2026-10-30T02:48:15Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-5A"
+    },
+    {
+      "id": "RF-0325",
+      "row": "RF",
+      "start": "2026-10-30T03:25:16Z",
+      "end": "2026-10-30T03:30:53Z",
+      "status": "Predicted",
+      "label": "2 RF passes",
+      "notes": "HAWK-13A; HAWK-12A"
+    },
+    {
+      "id": "RF-0445",
+      "row": "RF",
+      "start": "2026-10-30T04:45:58Z",
+      "end": "2026-10-30T04:50:26Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-16A"
+    },
+    {
+      "id": "RF-0504",
+      "row": "RF",
+      "start": "2026-10-30T05:04:48Z",
+      "end": "2026-10-30T05:06:41Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-3A"
     },
     {
       "id": "EO-0544",
@@ -139,13 +211,58 @@
       "notes": "LEGION 3"
     },
     {
-      "id": "IR-0644",
-      "row": "IR",
-      "start": "2026-10-30T06:44:52Z",
-      "end": "2026-10-30T06:50:21Z",
+      "id": "RF-0641",
+      "row": "RF",
+      "start": "2026-10-30T06:41:34Z",
+      "end": "2026-10-30T06:46:04Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "TERRA"
+      "label": "1 RF pass",
+      "notes": "HAWK-2A"
+    },
+    {
+      "id": "RF-0726",
+      "row": "RF",
+      "start": "2026-10-30T07:26:30Z",
+      "end": "2026-10-30T07:30:45Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-A"
+    },
+    {
+      "id": "RF-0741",
+      "row": "RF",
+      "start": "2026-10-30T07:41:08Z",
+      "end": "2026-10-30T07:43:54Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-21"
+    },
+    {
+      "id": "RF-0746",
+      "row": "RF",
+      "start": "2026-10-30T07:46:50Z",
+      "end": "2026-10-30T07:49:17Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-32"
+    },
+    {
+      "id": "RF-0808",
+      "row": "RF",
+      "start": "2026-10-30T08:08:46Z",
+      "end": "2026-10-30T08:14:00Z",
+      "status": "Predicted",
+      "label": "2 RF passes",
+      "notes": "BRO-22; BRO-20"
+    },
+    {
+      "id": "RF-0816",
+      "row": "RF",
+      "start": "2026-10-30T08:16:36Z",
+      "end": "2026-10-30T08:21:35Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-23"
     },
     {
       "id": "EO-0826",
@@ -157,19 +274,19 @@
       "notes": "WORLDVIEW-3 (WV-3)"
     },
     {
-      "id": "IR-0835",
-      "row": "IR",
-      "start": "2026-10-30T08:35:29Z",
-      "end": "2026-10-30T08:37:50Z",
+      "id": "RF-0830",
+      "row": "RF",
+      "start": "2026-10-30T08:30:02Z",
+      "end": "2026-10-30T08:36:45Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "SENTINEL-3B"
+      "label": "3 RF passes",
+      "notes": "BRO-31; BRO-15; BRO-8"
     },
     {
       "id": "EO-0835",
       "row": "EO",
       "start": "2026-10-30T08:35:53Z",
-      "end": "2026-10-30T08:37:26Z",
+      "end": "2026-10-30T08:37:27Z",
       "status": "Predicted",
       "label": "1 EO pass",
       "notes": "SENTINEL-3B"
@@ -193,6 +310,15 @@
       "notes": "CAPELLA-16 (ACADIA-6)"
     },
     {
+      "id": "RF-0855",
+      "row": "RF",
+      "start": "2026-10-30T08:55:00Z",
+      "end": "2026-10-30T09:00:24Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-14"
+    },
+    {
       "id": "EO-0859",
       "row": "EO",
       "start": "2026-10-30T08:59:25Z",
@@ -202,31 +328,58 @@
       "notes": "GEOEYE 1"
     },
     {
+      "id": "RF-0901",
+      "row": "RF",
+      "start": "2026-10-30T09:01:10Z",
+      "end": "2026-10-30T09:04:51Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-17"
+    },
+    {
+      "id": "RF-0905",
+      "row": "RF",
+      "start": "2026-10-30T09:05:18Z",
+      "end": "2026-10-30T09:10:17Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-10A"
+    },
+    {
+      "id": "RF-0912",
+      "row": "RF",
+      "start": "2026-10-30T09:12:27Z",
+      "end": "2026-10-30T09:16:31Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-11"
+    },
+    {
+      "id": "RF-0928",
+      "row": "RF",
+      "start": "2026-10-30T09:28:36Z",
+      "end": "2026-10-30T09:32:35Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-16"
+    },
+    {
       "id": "SAR-0954",
       "row": "SAR",
-      "start": "2026-10-30T09:54:09Z",
-      "end": "2026-10-30T09:57:15Z",
+      "start": "2026-10-30T09:54:13Z",
+      "end": "2026-10-30T09:57:19Z",
       "status": "Predicted",
       "label": "1 SAR pass",
       "notes": "CAPELLA-13 (ACADIA-3)"
     },
     {
-      "id": "IR-1032",
-      "row": "IR",
-      "start": "2026-10-30T10:32:09Z",
-      "end": "2026-10-30T10:39:15Z",
+      "id": "RF-1003",
+      "row": "RF",
+      "start": "2026-10-30T10:03:30Z",
+      "end": "2026-10-30T10:07:21Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "NOAA 21 (JPSS-2)"
-    },
-    {
-      "id": "IR-1108",
-      "row": "IR",
-      "start": "2026-10-30T11:08:50Z",
-      "end": "2026-10-30T11:16:29Z",
-      "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "SUOMI NPP"
+      "label": "1 RF pass",
+      "notes": "BRO-6"
     },
     {
       "id": "EO-1124",
@@ -238,13 +391,22 @@
       "notes": "WORLDVIEW-1 (WV-1)"
     },
     {
-      "id": "IR-1128",
-      "row": "IR",
-      "start": "2026-10-30T11:28:50Z",
-      "end": "2026-10-30T11:35:53Z",
+      "id": "RF-1126",
+      "row": "RF",
+      "start": "2026-10-30T11:26:29Z",
+      "end": "2026-10-30T11:31:21Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "NOAA 20 (JPSS-1)"
+      "label": "1 RF pass",
+      "notes": "BRO-18"
+    },
+    {
+      "id": "RF-1143",
+      "row": "RF",
+      "start": "2026-10-30T11:43:11Z",
+      "end": "2026-10-30T11:45:27Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-14A"
     },
     {
       "id": "SAR-1149",
@@ -256,6 +418,15 @@
       "notes": "CAPELLA-20 (ACADIA-10)"
     },
     {
+      "id": "RF-1157",
+      "row": "RF",
+      "start": "2026-10-30T11:57:38Z",
+      "end": "2026-10-30T12:01:01Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-13"
+    },
+    {
       "id": "EO-1227",
       "row": "EO",
       "start": "2026-10-30T12:27:05Z",
@@ -265,13 +436,22 @@
       "notes": "LEGION 4"
     },
     {
-      "id": "IR-1258",
-      "row": "IR",
-      "start": "2026-10-30T12:58:01Z",
-      "end": "2026-10-30T13:02:51Z",
+      "id": "RF-1255",
+      "row": "RF",
+      "start": "2026-10-30T12:55:14Z",
+      "end": "2026-10-30T13:00:51Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "AQUA"
+      "label": "2 RF passes",
+      "notes": "BRO-12; BRO-19"
+    },
+    {
+      "id": "RF-1447",
+      "row": "RF",
+      "start": "2026-10-30T14:47:58Z",
+      "end": "2026-10-30T14:56:41Z",
+      "status": "Predicted",
+      "label": "2 RF passes",
+      "notes": "HAWK-15A; HAWK-11A"
     },
     {
       "id": "SAR-1514",
@@ -283,31 +463,175 @@
       "notes": "SENTINEL-1C; CAPELLA-18 (ACADIA-8)"
     },
     {
-      "id": "IR-1743",
-      "row": "IR",
-      "start": "2026-10-30T17:43:15Z",
-      "end": "2026-10-30T17:47:52Z",
+      "id": "RF-1532",
+      "row": "RF",
+      "start": "2026-10-30T15:32:14Z",
+      "end": "2026-10-30T15:38:43Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "TERRA"
+      "label": "3 RF passes",
+      "notes": "HAWK-13A; HAWK-12A; HAWK-5A"
+    },
+    {
+      "id": "RF-1628",
+      "row": "RF",
+      "start": "2026-10-30T16:28:39Z",
+      "end": "2026-10-30T16:37:55Z",
+      "status": "Predicted",
+      "label": "3 RF passes",
+      "notes": "HAWK-15A; HAWK-11A; HAWK-6A"
+    },
+    {
+      "id": "RF-1658",
+      "row": "RF",
+      "start": "2026-10-30T16:58:31Z",
+      "end": "2026-10-30T17:04:08Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-8A"
+    },
+    {
+      "id": "RF-1738",
+      "row": "RF",
+      "start": "2026-10-30T17:38:59Z",
+      "end": "2026-10-30T17:44:36Z",
+      "status": "Predicted",
+      "label": "2 RF passes",
+      "notes": "HAWK-9A; HAWK-3A"
+    },
+    {
+      "id": "RF-1757",
+      "row": "RF",
+      "start": "2026-10-30T17:57:27Z",
+      "end": "2026-10-30T18:02:16Z",
+      "status": "Predicted",
+      "label": "2 RF passes",
+      "notes": "HAWK-16A; HAWK-A"
+    },
+    {
+      "id": "RF-1813",
+      "row": "RF",
+      "start": "2026-10-30T18:13:25Z",
+      "end": "2026-10-30T18:16:32Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-6A"
     },
     {
       "id": "SAR-1825",
       "row": "SAR",
-      "start": "2026-10-30T18:25:45Z",
-      "end": "2026-10-30T18:28:25Z",
+      "start": "2026-10-30T18:25:50Z",
+      "end": "2026-10-30T18:28:30Z",
       "status": "Predicted",
       "label": "1 SAR pass",
       "notes": "CAPELLA-13 (ACADIA-3)"
     },
     {
-      "id": "IR-1948",
-      "row": "IR",
-      "start": "2026-10-30T19:48:46Z",
-      "end": "2026-10-30T19:51:43Z",
+      "id": "RF-1840",
+      "row": "RF",
+      "start": "2026-10-30T18:40:54Z",
+      "end": "2026-10-30T18:43:53Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "SENTINEL-3B"
+      "label": "2 RF passes",
+      "notes": "HAWK-8A; HAWK-2A"
+    },
+    {
+      "id": "RF-1850",
+      "row": "RF",
+      "start": "2026-10-30T18:50:24Z",
+      "end": "2026-10-30T18:54:43Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-22"
+    },
+    {
+      "id": "RF-1934",
+      "row": "RF",
+      "start": "2026-10-30T19:34:11Z",
+      "end": "2026-10-30T19:45:17Z",
+      "status": "Predicted",
+      "label": "3 RF passes",
+      "notes": "BRO-17; BRO-14; BRO-11"
+    },
+    {
+      "id": "RF-1947",
+      "row": "RF",
+      "start": "2026-10-30T19:47:44Z",
+      "end": "2026-10-30T19:58:12Z",
+      "status": "Predicted",
+      "label": "3 RF passes",
+      "notes": "HAWK-10A; HAWK-7A; BRO-32"
+    },
+    {
+      "id": "RF-1959",
+      "row": "RF",
+      "start": "2026-10-30T19:59:44Z",
+      "end": "2026-10-30T20:07:01Z",
+      "status": "Predicted",
+      "label": "2 RF passes",
+      "notes": "BRO-16; BRO-5"
+    },
+    {
+      "id": "RF-2016",
+      "row": "RF",
+      "start": "2026-10-30T20:16:35Z",
+      "end": "2026-10-30T20:22:28Z",
+      "status": "Predicted",
+      "label": "2 RF passes",
+      "notes": "BRO-20; BRO-31"
+    },
+    {
+      "id": "RF-2023",
+      "row": "RF",
+      "start": "2026-10-30T20:23:33Z",
+      "end": "2026-10-30T20:24:08Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-8"
+    },
+    {
+      "id": "RF-2025",
+      "row": "RF",
+      "start": "2026-10-30T20:25:37Z",
+      "end": "2026-10-30T20:28:50Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-23"
+    },
+    {
+      "id": "RF-2048",
+      "row": "RF",
+      "start": "2026-10-30T20:48:19Z",
+      "end": "2026-10-30T20:53:15Z",
+      "status": "Predicted",
+      "label": "2 RF passes",
+      "notes": "BRO-21; BRO-15"
+    },
+    {
+      "id": "RF-2130",
+      "row": "RF",
+      "start": "2026-10-30T21:30:10Z",
+      "end": "2026-10-30T21:33:27Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-11A"
+    },
+    {
+      "id": "RF-2133",
+      "row": "RF",
+      "start": "2026-10-30T21:33:44Z",
+      "end": "2026-10-30T21:37:00Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-6A"
+    },
+    {
+      "id": "RF-2150",
+      "row": "RF",
+      "start": "2026-10-30T21:50:51Z",
+      "end": "2026-10-30T21:54:15Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-6"
     },
     {
       "id": "SAR-2158",
@@ -319,31 +643,49 @@
       "notes": "CAPELLA-14 (ACADIA-4)"
     },
     {
-      "id": "IR-2256",
-      "row": "IR",
-      "start": "2026-10-30T22:56:53Z",
-      "end": "2026-10-30T23:02:52Z",
+      "id": "RF-2308",
+      "row": "RF",
+      "start": "2026-10-30T23:08:21Z",
+      "end": "2026-10-30T23:12:16Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "NOAA 21 (JPSS-2)"
+      "label": "1 RF pass",
+      "notes": "HAWK-11A"
     },
     {
-      "id": "IR-2333",
-      "row": "IR",
-      "start": "2026-10-30T23:33:16Z",
-      "end": "2026-10-30T23:40:40Z",
+      "id": "RF-2312",
+      "row": "RF",
+      "start": "2026-10-30T23:12:25Z",
+      "end": "2026-10-30T23:21:59Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "SUOMI NPP"
+      "label": "2 RF passes",
+      "notes": "HAWK-6A; HAWK-15A"
     },
     {
-      "id": "IR-2352",
-      "row": "IR",
-      "start": "2026-10-30T23:52:51Z",
-      "end": "2026-10-31T00:00:00Z",
+      "id": "RF-2333",
+      "row": "RF",
+      "start": "2026-10-30T23:33:19Z",
+      "end": "2026-10-30T23:34:57Z",
       "status": "Predicted",
-      "label": "1 IR pass",
-      "notes": "NOAA 20 (JPSS-1)"
+      "label": "1 RF pass",
+      "notes": "BRO-18"
+    },
+    {
+      "id": "RF-2337",
+      "row": "RF",
+      "start": "2026-10-30T23:37:41Z",
+      "end": "2026-10-30T23:42:39Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "BRO-12"
+    },
+    {
+      "id": "RF-2345",
+      "row": "RF",
+      "start": "2026-10-30T23:45:25Z",
+      "end": "2026-10-30T23:50:13Z",
+      "status": "Predicted",
+      "label": "1 RF pass",
+      "notes": "HAWK-8A"
     }
   ],
   "status_styles": {
