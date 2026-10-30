@@ -73,6 +73,7 @@
     bannerHeight: 24,
     footerHeight: 26,
     hourLabelGap: 6,
+    nowTagHeight: 20, // the NOW tag's slot above the hour labels (only on today's chart)
   };
   // Event boxes: colour = the group the row is shown in (phenomenology, or e.g.
   // provider under Group by Provider), so a strip and its boxes always match;
@@ -340,7 +341,11 @@
     const rotateHours = plotWidth / Math.max(hours.length, 1) < hourLabelWidth + LAYOUT.hourLabelGap;
     const axisHeight = rotateHours ? hourLabelWidth + 12 : LAYOUT.axisHeight;
 
-    const top = (options.showTitle ? LAYOUT.titleHeight : 6) + axisHeight;
+    // NOW gets its own slot above the hour labels, so it never covers one.
+    const now = new Date();
+    const showNow = now >= p.window.start && now <= p.window.end;
+    const nowSlot = showNow ? LAYOUT.nowTagHeight : 0;
+    const top = (options.showTitle ? LAYOUT.titleHeight : 6) + nowSlot + axisHeight;
     const rowHeight = Math.max(LAYOUT.rowMin,
       Math.min(LAYOUT.rowMax, (height - top - bottom) / Math.max(rows.length, 1)));
     const plotHeight = rowHeight * rows.length;
@@ -528,15 +533,23 @@
       icodMark.append("title").text(ICOD_MEANING);
     }
 
-    const now = new Date();
-    if (now >= p.window.start && now <= p.window.end) {
+    if (showNow) {
+      // The line runs through the plot; the tag sits in its slot above the hour
+      // labels (kept inside the plot's width), with a pointer at the exact minute.
       const nx = x(now);
       plot.append("line").attr("class", "sm-now").attr("x1", nx).attr("x2", nx).attr("y1", 0).attr("y2", plotHeight);
-      plot.append("text").attr("class", "sm-now-tag")
-        .attr("x", nx + 3).attr("y", plotHeight - 4)
-        .attr("text-anchor", nx > plotWidth - 60 ? "end" : "start")
-        .attr("dx", nx > plotWidth - 60 ? -6 : 0)
-        .text("NOW " + formatTick(now));
+      const tagY = -axisHeight - nowSlot / 2;
+      const nowTag = plot.append("g").attr("class", "sm-now-mark");
+      const text = nowTag.append("text").attr("class", "sm-now-tag").attr("text-anchor", "middle")
+        .attr("y", tagY).attr("dy", "0.35em").text("NOW " + formatTick(now));
+      const w = text.node().getComputedTextLength() + 10;
+      const cx = Math.max(w / 2, Math.min(plotWidth - w / 2, nx));
+      text.attr("x", cx);
+      nowTag.insert("rect", "text").attr("class", "sm-now-tag-bg")
+        .attr("x", cx - w / 2).attr("y", tagY - 7.5).attr("width", w).attr("height", 15).attr("rx", 3);
+      nowTag.insert("path", "text").attr("class", "sm-now-tag-bg")
+        .attr("d", `M${nx - 4},${tagY + 7}L${nx + 4},${tagY + 7}L${nx},${tagY + 11}Z`);
+      nowTag.append("title").text("Now: " + formatFull(now));
     }
 
     plot.append("rect").attr("class", "sm-frame").attr("width", plotWidth).attr("height", plotHeight);

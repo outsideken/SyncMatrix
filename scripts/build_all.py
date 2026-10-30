@@ -27,6 +27,7 @@ def run(*args) -> None:
 def main() -> int:
     argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter).parse_args()
     try:
+        run(SCRIPTS / "stamp_assets.py")
         run(SCRIPTS / "build_demo_data.py")
         run(SCRIPTS / "build_live_data.py")
         run(SCRIPTS / "check_data.py")
