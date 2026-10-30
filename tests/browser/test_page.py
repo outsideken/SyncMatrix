@@ -11,6 +11,7 @@ import sys
 from datetime import date
 from urllib.parse import parse_qs, urlparse
 
+import pytest
 from playwright.sync_api import Page, expect
 
 from conftest import WEB
@@ -51,12 +52,31 @@ def test_default_view_is_the_predicted_library(page, base_url, errors):
     assert errors == []
 
 
-def test_demo_is_a_locality(page, base_url, errors):
+def demo_day_after_switch(current: str, today: str) -> str:
+    """The day the page lands on when switching to Demo: the same order as select() in sync_matrix.js."""
+    workflow = json.loads((WEB.parent / "config" / "workflow.json").read_text())
+    days = sorted((d["date"] for d in workflow["libraries"]["demo"]["days"]), reverse=True)
+    return current if current in days else today if today in days else days[0]
+
+
+def test_demo_day_fallback_order():
+    # The cases test_demo_is_a_locality meets depending on the calendar.
+    assert demo_day_after_switch("2026-10-31", "2026-10-31") == "2026-12-21"  # neither is a demo day: newest
+    assert demo_day_after_switch("2026-10-29", "2026-10-28") == "2026-10-28"  # today is a demo day
+    assert demo_day_after_switch("2026-12-21", "2026-12-20") == "2026-12-21"  # the current day is one
+
+
+@pytest.mark.parametrize("frozen", [None, "2026-10-28T15:00:00Z"], ids=["today", "on-a-demo-day"])
+def test_demo_is_a_locality(page, base_url, errors, frozen):
+    if frozen:
+        page.clock.set_fixed_time(frozen)  # the page's "today" is a demo day
     open_page(page, base_url + "/index.html?matrix=simplified&locality=mid-north-40-n")
+    current = query(page)["date"]
+    today = page.evaluate("new Date().toISOString().slice(0, 10)")  # the page's own "today" (UTC)
     page.locator("#sm-locality").select_option("demo")
     expect(page.locator("#sm-icod-badge")).to_contain_text("DEMO DATA")
     assert query(page)["matrix"] == "simplified" and query(page)["locality"] == "demo"
-    assert query(page)["date"] == "2026-12-21"  # the predicted day isn't a demo day: newest demo day
+    assert query(page)["date"] == demo_day_after_switch(current, today)
     assert texts(page, "#sm-locality option")[-1] == "Demo (generated sample)"
     page.locator("#sm-locality").select_option("london")
     expect(page.locator("#sm-icod-badge")).not_to_contain_text("DEMO DATA")
