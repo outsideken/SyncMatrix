@@ -84,11 +84,14 @@ status fill, or a banner that ends before it starts.
 
 ColorBrewer2, the dark end of the 9-class sequential ramps, the same in every
 view: **EO `#08519c`** (Blues), **IR `#cb181d`** (Reds), **SAR `#525252`**
-(Greys). Lighter tints come from the same ramps.
+(Greys), **RF `#238b45`** (Greens, tint `#c7e9c0`). Lighter tints come from
+the same ramps.
 
 Provider groups (`alt_groupings.Provider`) reuse that palette, plus purple
-for Vantor: **Capella `#525252`**, **Copernicus `#08519c`**, **NASA FIRMS
-`#cb181d`**, **Vantor `#6a51a3`** (Purples, tint `#dadaeb`). Event boxes take
+for Vantor and orange for Unseenlabs: **Capella `#525252`**, **Copernicus
+`#08519c`**, **HawkEye 360 `#238b45`**, **NASA FIRMS `#cb181d`**,
+**Unseenlabs `#d94801`** (Oranges, tint `#fdd0a2`), **Vantor `#6a51a3`**
+(Purples, tint `#dadaeb`). Event boxes take
 the colour of the group they are shown in, so under Group by Provider they
 turn provider colours; the provenance in popups and exports stays per
 phenomenology.
@@ -132,10 +135,19 @@ tasking rules; tune them here.
 | NOAA-20 / NOAA-21 / S-NPP VIIRS | ≥ 20° | ±56° scan, 3040 km swath |
 | Capella-11, -13…-20 | 35°–75° | incidence ~15–55° |
 | Sentinel-1 (1A, 1C, 1D) | 44°–61° | IW mode, incidence ~29–46° |
+| HE360 Cluster 1…16 (HawkEye 360), BRO-5…32 (Unseenlabs) | ≥ 20°, day and night | Commercial RF: wide field of regard, no imaging footprint |
 
 Capella-12 is not in Celestrak's catalogue, so it has no row. Sentinel-1B is
 in orbit but out of service since 2021; Sentinel-3C is left out until it is
 in routine operations.
+
+**RF rows.** HawkEye 360 flies clusters of three satellites in formation; a
+row is one cluster and uses its lead satellite (HAWK-A, HAWK-2A…), so a
+cluster pass is one window rather than three drawn on top of each other.
+Cluster 1 is the original HAWK-A/B/C trio; there is no cluster 4 in
+Celestrak. SEAHAWK-1 is an ocean-colour cubesat, not RF. Unseenlabs rows are
+its BRO satellites, one each. Kleos Space (KSM1) is in Celestrak but left out
+while its operational status is unclear.
 
 ## workflow.json
 
@@ -156,10 +168,12 @@ in routine operations.
 ```
 
 - **`localities`** are shared by every view. `point` is
-  `POINT(longitude latitude)`, longitude first. `kind` (`reference` or `city`)
-  is optional and informational. The timezone, sunrise and sunset, and the
-  predicted passes are all worked out from the point. The page lists them
-  north to south.
+  `POINT(longitude latitude)`, longitude first. `kind` (`reference`, `city`
+  or `sea`) is optional and informational. The timezone, sunrise and sunset,
+  and the predicted passes are all worked out from the point. The page lists
+  them north to south. Optional **`evaluate`** lists the matrix groups
+  predicted there, e.g. `["EO", "SAR"]` (default: all). A chart draws what its
+  data file evaluated, so that place's charts show EO and SAR only.
 - **`folder`** is the one library the page reads: every view of every data
   file in every store is drawn there.
 - **Each source of data files** in `libraries` has a `store` under `data/`.
@@ -208,5 +222,5 @@ view: every view is drawn from it.
 | `icod` | yes | Information Cut-Off Date: when the data was grabbed; anything newer is not reflected. Never the export time |
 | `icod_source` | | Where the ICOD came from (`celestrak`; `demo` marks demo data) |
 | `source` | | One line on where the windows came from, shown on exports |
-| `evaluated` | | Per row, the spacecraft checked, so "no passes" is told apart from "not checked". Gives each group's provenance notes; a group with no evaluated rows has no feed |
+| `evaluated` | | Per row, the spacecraft checked, so "no passes" is told apart from "not checked". **The chart draws exactly these rows** (in every view and grouping; empty groups are dropped), and each group's provenance notes count them. Without it, the groups that have windows are drawn |
 | `windows` | yes | Access windows: `satellite` (a matrix row), `start`, `end` (ISO 8601 UTC), `status` (a `status_styles` key), plus `norad` when the window comes from the catalogue, and optional `id`, `label`, `notes` shown in popups |

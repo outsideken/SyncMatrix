@@ -128,11 +128,11 @@ def test_catalogue_entries_need_norad_and_threshold(tmp_path):
 
 
 def test_live_simplified_provenance():
-    payload = json.loads(next(p for p in (REPO / "web" / "live" / "simplified").glob("*/*.json")
-                              if p.parent.name != "demo").read_text())
+    # A place that evaluates everything: one provenance entry per phenomenology drawn.
+    payload = json.loads(next((REPO / "web" / "live" / "simplified" / "tehran").glob("*.json")).read_text())
     prov = payload["provenance"]
-    assert set(prov) == {"all", "EO", "IR", "SAR"}  # COM was a dummy row; it is gone
-    for group in ("EO", "IR", "SAR"):
+    assert set(prov) == {"all", "EO", "IR", "SAR", "RF"}  # COM was a dummy row; it is gone
+    for group in ("EO", "IR", "SAR", "RF"):
         assert prov[group]["icod"] == payload["icod"] and prov[group]["icod_source"] == "celestrak"
         assert "predicted pass" in prov[group]["notes"]
 
@@ -144,7 +144,7 @@ def test_live_notes_count_the_spacecraft_that_pass():
             continue  # generated sample windows, not passes
         payload = json.loads(path.read_text())
         group_of = {r["id"]: g["id"] for g in payload["groups"] for r in g["rows"]}
-        for group in ("EO", "IR", "SAR"):
+        for group in (g["id"] for g in payload["groups"]):  # the groups this place evaluates
             events = [e for e in payload["events"] if group_of[e["row"]] == group]
             notes = payload["provenance"][group]["notes"]
             if events:

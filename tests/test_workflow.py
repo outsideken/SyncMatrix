@@ -48,6 +48,29 @@ def test_demo_is_one_locality_listed_last():
         assert not any(p.get("demo") for p in places)
 
 
+def test_each_place_shows_the_groups_it_evaluates():
+    # The examples: RF only at sea, EO/SAR, EO/SAR/RF, IR only, and everything elsewhere.
+    workflow = wf.load_workflow()
+    every = [g["name"] for g in wf.load_matrix()["groups"]]
+    for loc in workflow["localities"]:
+        wanted = [g for g in every if g in loc.get("evaluate", every)]
+        for view in ("abstracted", "simplified"):
+            for path in (REPO / workflow["folder"] / view / ep.slugify(loc["name"])).glob("*.json"):
+                assert [g["id"] for g in json.loads(path.read_text())["groups"]] == wanted, (view, path.parent.name)
+    mixes = {tuple(l.get("evaluate", every)) for l in workflow["localities"]}
+    assert {("RF",), ("EO", "SAR"), ("EO", "SAR", "RF"), ("IR",), tuple(every)} <= mixes
+
+
+def test_evaluate_must_name_matrix_groups(workflow_copy, monkeypatch):
+    path, data = workflow_copy
+    data["localities"][0]["evaluate"] = ["EO", "COM"]
+    with pytest.raises(ValueError, match="evaluate must list matrix groups .*got COM"):
+        load(path, data, monkeypatch)
+    data["localities"][0]["evaluate"] = []
+    with pytest.raises(ValueError, match="evaluate must list matrix groups"):
+        load(path, data, monkeypatch)
+
+
 def test_demo_data_is_reproducible():
     workflow = wf.load_workflow()
     fresh = wf.demo_data(workflow, wf.load_matrix())

@@ -16,6 +16,7 @@ Committing the snapshot makes the predicted library reproducible.
 import json
 import sys
 import time
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -31,6 +32,23 @@ def norads() -> list:
     return sorted(ids)
 
 
+def get(url: str, tries: int = 4) -> str:
+    """GET with a few retries: Celestrak sometimes answers 5xx or times out for a moment."""
+    request = urllib.request.Request(url, headers={"User-Agent": "SyncMatrix/1 (fetch_tles.py)"})
+    for attempt in range(1, tries + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                return response.read().decode()
+        except urllib.error.HTTPError as err:
+            if err.code < 500 or attempt == tries:
+                raise
+        except urllib.error.URLError:
+            if attempt == tries:
+                raise
+        print("  retrying %s (attempt %d of %d)" % (url, attempt + 1, tries))
+        time.sleep(5 * attempt)
+
+
 def main() -> int:
     import argparse
     argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter).parse_args()
@@ -40,9 +58,7 @@ def main() -> int:
     for i, norad in enumerate(ids):
         if i:
             time.sleep(1)
-        request = urllib.request.Request(URL % norad, headers={"User-Agent": "SyncMatrix/1 (fetch_tles.py)"})
-        with urllib.request.urlopen(request, timeout=30) as response:
-            body = response.read().decode()
+        body = get(URL % norad)
         found = json.loads(body) if body.strip().startswith("[") else []
         if not found:
             print("WARNING: NORAD %d not found at Celestrak" % norad)

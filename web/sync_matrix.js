@@ -574,7 +574,7 @@
       plot.append("circle").attr("class", "sm-icod-dot").attr("cx", 5).attr("cy", footerY - 4).attr("r", 5)
         .attr("data-state", icodState(p, oldestIcod(p)));
       const icodText = plot.append("text").attr("class", "sm-icod").attr("x", 14).attr("y", footerY)
-        .classed("warn", !oldestIcod(p)) // red only when the ICOD is missing; demo is grey, like the badge
+        .classed("warn", !p.icod || p.icod_source === "demo")
         .text(icodLabel(p));
       icodText.append("title").text(ICOD_MEANING + " " + ageingRule(p));
       icodWidth = 14 + icodText.node().getComputedTextLength();

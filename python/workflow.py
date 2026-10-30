@@ -18,8 +18,11 @@ change only redraws (scripts/build_views.py); it never re-runs Skyfield.
 workflow.json, checked by load_workflow():
 
 - localities: a name and a POINT(lon lat) each (optional "kind", e.g.
-  "reference" or "city"); names and their ids are unique, points are on the
-  globe, and a timezone is found for each. Every view shares them.
+  "reference", "city" or "sea"); names and their ids are unique, points are
+  on the globe, and a timezone is found for each. Every view shares them.
+  Optional "evaluate" lists the matrix groups predicted there (e.g.
+  ["EO", "SAR"]); without it, every group in the catalogue. A chart draws
+  only what its data file evaluated.
 - folder: the library the page reads (web/live).
 - libraries.predicted: store, days (from the orbit snapshot's date),
   keep_snapshots.
@@ -82,6 +85,13 @@ def load_workflow(path=CONFIG / "workflow.json") -> dict:
         if finder.timezone_at(lat=lat, lng=lon) is None:
             fail("%s: no timezone found for %s" % (name, point))
 
+    groups = {g["name"] for g in load_matrix()["groups"]}
+    for loc in localities:
+        unknown = sorted(set(loc.get("evaluate", groups)) - groups)
+        if unknown or loc.get("evaluate") == []:
+            fail("%s: evaluate must list matrix groups (%s); got %s"
+                 % (loc["name"], ", ".join(sorted(groups)), ", ".join(unknown) or "none"))
+
     if not workflow.get("folder"):
         fail("needs a folder (the library the page reads)")
     for library_id, library in libraries.items():
@@ -141,10 +151,15 @@ def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
     catalogue = pp.load_catalogue(CONFIG / "catalogue.json")
     predicted = workflow["libraries"]["predicted"]
     first_day = date.fromisoformat(snapshot["fetched"][:10])
-    evaluated = {row: spec["norad"] for row, spec in catalogue["satellites"].items()}
+    group_of = ep.row_groups(load_matrix())
     out = []
-    for name, point in sites(workflow):
+    for loc in workflow["localities"]:
+        name, point = loc["name"], loc["point"]
         lon, lat = ep.parse_wkt_point(point)
+        # Only the groups this place evaluates (all by default): its data file covers those, and the chart shows them.
+        wanted = set(loc.get("evaluate", group_of.values()))
+        here = {"satellites": {row: spec for row, spec in catalogue["satellites"].items() if group_of[row] in wanted}}
+        evaluated = {row: spec["norad"] for row, spec in here["satellites"].items()}
         for offset in range(int(predicted["days"])):
             day = first_day + timedelta(days=offset)
             start = ep.parse_iso("%sT00:00:00Z" % day.isoformat())
@@ -154,7 +169,7 @@ def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
                         "icod_source": "celestrak",
                         "source": PREDICTED_SOURCE % snapshot_name,
                         "evaluated": evaluated,
-                        "windows": pp.predict_windows(catalogue, snapshot, lat, lon, start,
+                        "windows": pp.predict_windows(here, snapshot, lat, lon, start,
                                                       start + timedelta(days=1))})
     return out
 
@@ -180,6 +195,8 @@ def demo_data(workflow: dict, matrix: dict) -> list:
                     "icod": day["icod"],
                     "icod_source": "demo",
                     "source": DEMO_SOURCE,
+                    # Demo covers every row, so its charts show every group.
+                    "evaluated": {ep.row_id(r): [] for g in matrix["groups"] for r in g["rows"]},
                     "windows": [{"id": e["id"], "satellite": e["row"], "start": e["start"], "end": e["end"],
                                  "status": e["status"], "label": e["label"], "notes": e["notes"]}
                                 for e in events]})

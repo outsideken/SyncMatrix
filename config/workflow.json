@@ -38,7 +38,11 @@
     {
       "name": "London",
       "point": "POINT(-0.1278 51.5074)",
-      "kind": "city"
+      "kind": "city",
+      "evaluate": [
+        "EO",
+        "SAR"
+      ]
     },
     {
       "name": "Tehran",
@@ -48,12 +52,21 @@
     {
       "name": "Kiev",
       "point": "POINT(30.5234 50.4501)",
-      "kind": "city"
+      "kind": "city",
+      "evaluate": [
+        "EO",
+        "SAR"
+      ]
     },
     {
       "name": "Tokyo",
       "point": "POINT(139.6917 35.6895)",
-      "kind": "city"
+      "kind": "city",
+      "evaluate": [
+        "EO",
+        "SAR",
+        "RF"
+      ]
     },
     {
       "name": "Kathmandu",
@@ -63,17 +76,49 @@
     {
       "name": "Cairo",
       "point": "POINT(31.2357 30.0444)",
-      "kind": "city"
+      "kind": "city",
+      "evaluate": [
+        "EO",
+        "SAR",
+        "RF"
+      ]
     },
     {
       "name": "Gao",
       "point": "POINT(-0.0444 16.2717)",
-      "kind": "city"
+      "kind": "city",
+      "evaluate": [
+        "IR"
+      ]
     },
     {
       "name": "Assisi",
       "point": "POINT(12.6176 43.0707)",
       "kind": "city"
+    },
+    {
+      "name": "Galápagos EEZ edge",
+      "point": "POINT(-94 -1)",
+      "kind": "sea",
+      "evaluate": [
+        "RF"
+      ]
+    },
+    {
+      "name": "Mile 201",
+      "point": "POINT(-60.5 -45.5)",
+      "kind": "sea",
+      "evaluate": [
+        "RF"
+      ]
+    },
+    {
+      "name": "Gulf of Guinea",
+      "point": "POINT(3 2)",
+      "kind": "sea",
+      "evaluate": [
+        "RF"
+      ]
     }
   ],
   "folder": "web/live",
@@ -107,7 +152,7 @@
           "icod": "2026-10-28T12:00:00Z"
         }
       ],
-      "events_per_day": 20
+      "events_per_day": 40
     }
   }
 }
