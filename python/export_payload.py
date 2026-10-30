@@ -24,7 +24,7 @@ Usage
     python export_payload.py --data london.json --view simplified --out simplified-london.json
 
     # Rebuild only the manifest (e.g. after deleting old days).
-    python export_payload.py --rebuild-manifest ../web/data
+    python export_payload.py --rebuild-manifest ../web/live
 
 See config/README.md for the matrix and data formats.
 
@@ -570,7 +570,7 @@ def rebuild_manifest(data_dir: str) -> dict:
     for matrix_dir in sorted(p for p in root.iterdir() if p.is_dir()):
         localities, title, label = [], matrix_dir.name, None
         for locality_dir in sorted(p for p in matrix_dir.iterdir() if p.is_dir()):
-            dates, loc = [], {"name": locality_dir.name}
+            dates, loc, demo = [], {"name": locality_dir.name}, False
             for path in locality_dir.glob("*.json"):
                 if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", path.stem):
                     continue
@@ -578,6 +578,7 @@ def rebuild_manifest(data_dir: str) -> dict:
                     payload = json.load(f)
                 title, loc = payload.get("title", title), payload.get("locality", loc)
                 label = payload.get("label", label)
+                demo = demo or payload.get("icod_source") == "demo"
                 dates.append({"date": path.stem,
                               "file": "%s/%s/%s" % (matrix_dir.name, locality_dir.name, path.name),
                               "events": len(payload.get("events", [])),
@@ -585,12 +586,15 @@ def rebuild_manifest(data_dir: str) -> dict:
                               "icod_source": payload.get("icod_source")})
             if dates:
                 dates.sort(key=lambda d: d["date"], reverse=True)  # newest first
-                localities.append({"id": locality_dir.name, "name": loc.get("name", locality_dir.name),
-                                   "lat": loc.get("lat"), "timezone": loc.get("timezone"), "dates": dates})
+                entry = {"id": locality_dir.name, "name": loc.get("name", locality_dir.name),
+                         "lat": loc.get("lat"), "timezone": loc.get("timezone"), "dates": dates}
+                if demo:
+                    entry["demo"] = True
+                localities.append(entry)
                 files += len(dates)
         if localities:
-            # North to south, so the Locality dropdown reads like a map.
-            localities.sort(key=lambda l: -(l["lat"] if l["lat"] is not None else 0))
+            # North to south, so the Locality dropdown reads like a map; demo data last.
+            localities.sort(key=lambda l: (l.get("demo", False), -(l["lat"] if l["lat"] is not None else 0)))
             matrices.append({"id": matrix_dir.name, "label": label or title, "title": title,
                              "localities": localities})
 

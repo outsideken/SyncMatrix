@@ -4,9 +4,9 @@
 #   - exporter and pass-prediction tests (pytest): config checks, ICOD rules,
 #     output layout, events, pass thresholds/daylight/SAR swath, roll-up,
 #     day/night shading at extreme latitudes, end of local day
-#   - data: every web/data and web/live JSON parses and matches its index.json
-#   - libraries: web/data matches a fresh build from config/, and web/live a
-#     fresh pass prediction from the committed TLE snapshot
+#   - data: every web/live JSON parses and matches its index.json
+#   - build: data/demo, data/predicted and web/live match a fresh build from
+#     config/ and the newest committed TLE snapshot
 #   - JavaScript: web/*.js and inline <script> blocks pass `node --check`
 # browser:
 #   - the real page in headless Chromium (tests/browser): layout, controls,
@@ -55,12 +55,9 @@ jobs:
       - name: Data files
         run: |
           python scripts/check_data.py
-          python scripts/check_data.py --live
 
-      - name: Libraries match a fresh build
-        run: |
-          python scripts/check_demo_data.py
-          python scripts/check_demo_data.py --live
+      - name: Data files and library match a fresh build
+        run: python scripts/check_build.py
 
       - name: JavaScript syntax
         run: python scripts/check_js_syntax.py

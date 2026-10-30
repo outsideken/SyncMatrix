@@ -8,7 +8,7 @@ else lists views, satellites or localities.
 config/
   matrix.json       draws the chart: groups, rows, colours, groupings, and its views
   catalogue.json    the prediction catalogue: which spacecraft each row covers, and when a pass counts
-  workflow.json     what gets built: the shared localities and the libraries
+  workflow.json     what gets built: the shared localities, the data stores and the page's library
 ```
 
 The data the chart shows is kept apart from all three, in **data files** under
@@ -19,7 +19,7 @@ those payloads.
 ```
 config/catalogue.json + orbits ─┐
                                 ├─► data/<store>/<locality>/<date>.json ─┐
-config/workflow.json ───────────┘                                         ├─► web/<folder>/<view>/<locality>/<date>.json
+config/workflow.json ───────────┘                                         ├─► web/live/<view>/<locality>/<date>.json
 config/matrix.json ───────────────────────────────────────────────────────┘
 ```
 
@@ -143,34 +143,35 @@ in routine operations.
     {"name": "High Arctic 78°N", "point": "POINT(16 78)", "kind": "reference"},
     {"name": "London", "point": "POINT(-0.1278 51.5074)", "kind": "city"}
   ],
+  "folder": "web/live",
   "libraries": {
-    "predicted": {"store": "data/predicted", "folder": "web/live", "days": 3, "keep_snapshots": 14},
-    "demo": {"store": "data/demo", "folder": "web/data",
+    "predicted": {"store": "data/predicted", "days": 3, "keep_snapshots": 14},
+    "demo": {"store": "data/demo", "locality": {"name": "Demo", "point": "POINT(-100 40)"},
              "days": [{"date": "2026-10-28", "icod": "2026-10-28T12:00:00Z"}],
              "events_per_day": 20}
   }
 }
 ```
 
-- **`localities`** are shared by every view and both libraries. `point` is
+- **`localities`** are shared by every view. `point` is
   `POINT(longitude latitude)`, longitude first. `kind` (`reference` or `city`)
   is optional and informational. The timezone, sunrise and sunset, and the
   predicted passes are all worked out from the point. The page lists them
-  north to south. **Add new localities at the end**: the demo library seeds its
-  sample windows from a locality's position, so appending leaves existing demo
-  data unchanged.
-- **Each library** has a `store` (its data files) and a `folder` (the
-  payloads the page reads).
+  north to south.
+- **`folder`** is the one library the page reads: every view of every data
+  file in every store is drawn there.
+- **Each source of data files** in `libraries` has a `store` under `data/`.
 - **`libraries.predicted`**: `days` from the orbit snapshot's date and
   `keep_snapshots` kept in `data/tle`. The daily refresh overwrites this
-  library only.
-- **`libraries.demo`**: the demo `days` (each with its demo ICOD) and
-  `events_per_day` sample windows on the matrix's satellite rows, all
-  `Predicted` like the live data.
+  store only.
+- **`libraries.demo`**: one extra `locality` (the **Demo** entry, always last
+  in the page's Locality list; its point sets the day/night shading), the
+  demo `days` (each with its demo ICOD) and `events_per_day` sample windows
+  on the matrix's satellite rows, all `Predicted` like the live data.
 
 `load_workflow` (`python/workflow.py`) checks it first: unique names, a valid
-point on the globe, a timezone for every locality, a store and folder for each
-library, and every catalogue row in the matrix. `POINT` takes longitude
+point on the globe, a timezone for every locality (the Demo one too), a
+folder, a store for each source, and every catalogue row in the matrix. `POINT` takes longitude
 first. A latitude-first point is caught only when it lands off the globe (its
 longitude is above 90° either way, e.g. `POINT(51.5 -120)`); one that stays
 on the globe, like London as `POINT(51.5074 -0.1278)`, is accepted, so check

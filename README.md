@@ -9,20 +9,19 @@ config/catalogue.json      prediction catalogue: NORAD ids and pass thresholds p
 config/workflow.json       the shared localities and how each library is built
 python/export_payload.py   matrix + data file -> one payload per view
 python/predict_passes.py   predicted satellite passes over a locality (Skyfield)
-python/workflow.py         loads workflow.json; writes data files; draws libraries
+python/workflow.py         loads workflow.json; writes data files; draws the library
 scripts/fetch_tles.py      snapshots current orbits from Celestrak into data/tle/
 scripts/build_live_data.py predicts data/predicted from a snapshot, then draws web/live
-scripts/build_demo_data.py generates data/demo, then draws web/data
+scripts/build_demo_data.py generates data/demo (the Demo locality), then draws web/live
 scripts/build_views.py     redraws web/ from the stored data files (after a matrix change)
-scripts/build_all.py       rebuilds and checks both libraries: the one command after editing config/
+scripts/build_all.py       rebuilds and checks data/ and web/live: the one command after editing config/
 data/tle/                  committed orbit snapshots (provenance + reproducible builds)
 data/<store>/<locality>/<date>.json  data files: one place, one UTC evaluation date, its access windows
 web/index.html             the renderer (embed this)
 web/sync_matrix.js|css     renderer code and theme
 web/vendor/d3.v7.9.0.min.js  vendored d3, so no CDN access is needed
-web/data/index.json        manifest: matrices -> localities -> days (generated)
-web/data/<view>/<locality>/<date>.json  one view, one locality, one UTC day (demo windows)
-web/live/...               same layout: predicted passes, the page's default library (refreshed daily)
+web/live/index.json        manifest: matrices -> localities -> days (generated)
+web/live/<view>/<locality>/<date>.json  one view, one locality, one UTC day (refreshed daily)
 web/demo_dashboard.html    stand-in dashboard for testing iframe + postMessage
 ```
 
@@ -58,13 +57,18 @@ change colours, groups or views, edit `config/matrix.json` and run
 `python scripts/build_views.py`: it redraws `web/` from the stored data files
 without re-predicting. To change thresholds or spacecraft, edit
 `config/catalogue.json` and run `python scripts/build_all.py`. CI fails if the
-committed data files or libraries don't match the configs.
+committed data files or library don't match the configs.
 
 **To add a locality**, add it to the end of `localities` in
 `config/workflow.json` (`{"name": "Nairobi", "point": "POINT(36.8219 -1.2921)"}`,
 longitude first), run `python scripts/build_all.py`, and commit `config/`, `data/`
-and `web/` in a PR. Both libraries, the page, the checks and the browser
+and `web/` in a PR. The library, the page, the checks and the browser
 tests pick it up from there; nothing else lists localities.
+
+**Demo** is the last entry in the Locality list: generated sample windows at
+Mid-north 40°N on four fixed days (June solstice, September equinox, 28
+October, December solstice), labelled **DEMO DATA**. It is set in
+`libraries.demo` in `config/workflow.json`.
 
 ## Predicted passes (live data)
 
@@ -73,14 +77,13 @@ latitude sites and eight cities: London, Kiev, Assisi, Tokyo, Tehran, Cairo,
 Kathmandu, Gao) and the three days from the orbit snapshot, when each
 satellite row can image the site.
 
-This is the page's **default** library. The toolbar's **Data: Predicted | Demo**
-switch changes to the demo library (generated events, DEMO DATA) and back,
-keeping the matrix and locality; `?source=demo` opens on the demo.
+This is the page's one library; the **Demo** locality at the end of the
+Locality list is the only generated data in it (`?locality=demo` opens on it).
 
 **Refreshed daily** by `.github/workflows/refresh-live.yml` (05:17 UTC, or
 *Run workflow* by hand): it fetches new orbits, prunes `data/tle` to the 14
 newest snapshots, rebuilds `data/predicted` and `web/live` (three days from
-the new snapshot, replacing the old days; it never touches the demo library), runs the checks and unit tests, commits to `main` as
+the new snapshot, replacing the old days; it never touches the demo data), runs the checks and unit tests, commits to `main` as
 github-actions[bot], and starts the Pages deploy. The same steps locally:
 
 ```bash
@@ -111,15 +114,15 @@ github-actions[bot], and starts the Pages deploy. The same steps locally:
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt -c constraints.txt
-.venv/bin/python python/export_payload.py --data london-2026-10-27.json --out-dir web/data
+.venv/bin/python python/export_payload.py --data london-2026-10-27.json --out-dir web/live
 ```
 
 `--out-dir` draws every view of the data file, e.g.
-`web/data/simplified/london/2026-10-27.json`, and rebuilds `web/data/index.json`
+`web/live/simplified/london/2026-10-27.json`, and rebuilds `web/live/index.json`
 from the files on disk, so the new day shows up in the page's Date dropdown.
 `--view simplified` draws one view; `--view simplified --out FILE` writes a
 single payload without touching the manifest. After deleting old days, run
-`export_payload.py --rebuild-manifest web/data`. `--matrix` picks another
+`export_payload.py --rebuild-manifest web/live`. `--matrix` picks another
 matrix file (default `config/matrix.json`).
 
 The data file (format in [config/README.md](config/README.md#data-files)) is
@@ -195,8 +198,7 @@ or shared link reopens the same view.
 | `daylight=0` | Start with the toolbar's **Day/night shading** switch off |
 | `group=provider` | Start grouped by provider (Abstracted); default is the matrix's own grouping |
 | `icodmark=1` | Draw the ICOD line and hatch the period after it (off by default) |
-| `source=demo` | Start on the demo library (default: predicted passes); the toolbar's Data switch changes it |
-| `manifest` | Read this manifest instead (hides the Data switch) |
+| `manifest` | Read this manifest instead of `live/index.json` |
 | `data` | Draw this one payload instead; no manifest, no dropdowns |
 | `refresh` | Re-fetch every N seconds (0 = once); new days appear in the dropdown |
 | `title=0` | Hide the title when the dashboard panel has its own header |
@@ -226,16 +228,16 @@ need `allow-downloads`.
 
 `.github/workflows/pages.yml` publishes `web/` to GitHub Pages on every push
 to `main` that touches `web/` (or by hand from the Actions tab). It first
-runs `scripts/check_data.py` on both libraries (`web/data` and `web/live`).
+runs `scripts/check_data.py` on the library (`web/live`).
 Once enabled, the page is at:
 
 - `https://outsideken.github.io/SyncMatrix/`: the Sync Matrix (predicted passes)
-- `https://outsideken.github.io/SyncMatrix/?source=demo`: the demo library
+- `https://outsideken.github.io/SyncMatrix/?locality=demo`: the Demo locality
 - `https://outsideken.github.io/SyncMatrix/demo_dashboard.html`: the iframe test page
 
-Everything in `web/` is published: the page, the demo library (neutral sites,
-generated events) and the predicted-pass library (public Celestrak orbits over
-the same neutral sites).
+Everything in `web/` is published: the page and its library (predicted passes
+from public Celestrak orbits over the neutral sites and cities, plus the Demo
+locality's generated windows).
 
 One-time setup: **Settings → Pages → Build and deployment → Source: GitHub
 Actions**. A Pages site is **public**, even from a private repo (Pages on a
@@ -261,7 +263,7 @@ version CI uses. Pass predictions depend on those exact versions, and CI
 checks `web/live` against a fresh build, so an unpinned upgrade could change
 the results without any code change. To upgrade: change a pin, install both
 files into a fresh Python 3.12 venv, `pip freeze` into `constraints.txt`,
-rebuild `web/data` and `web/live`, and commit together.
+run `scripts/build_all.py`, and commit together.
 
 ## Checks (CI)
 
@@ -273,15 +275,15 @@ same checks locally before pushing:
 .venv/bin/python -m playwright install chromium
 .venv/bin/python -m pytest -q tests --ignore=tests/browser
 .venv/bin/python -m pytest -q tests/browser
-.venv/bin/python scripts/check_data.py && .venv/bin/python scripts/check_data.py --live
-.venv/bin/python scripts/check_demo_data.py && .venv/bin/python scripts/check_demo_data.py --live
+.venv/bin/python scripts/check_data.py
+.venv/bin/python scripts/check_build.py
 .venv/bin/python scripts/check_js_syntax.py
 ```
 
 | Check | What it catches |
 |---|---|
 | `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the High Arctic when the sun never rises, Sentinel-1 stays in its swath, Simplified roll-up merges overlaps), config checks (a view without a title, duplicate rows, a grouping with different rows, bad banner times, a catalogue row not in the matrix, a library without a store), data files (required fields, unknown satellites, both views drawn from one file, no matrix named in it, demo data reproducible), ICOD rules (missing or future ICOD fails, demo is labelled), the `<view>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
-| `check_data.py` | A `web/data` (or `--live`: `web/live`) file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
-| `check_demo_data.py` | `data/demo` or `web/data` out of date with `config/` or the exporter; with `--live`, `data/predicted` or `web/live` out of date with the newest committed TLE snapshot or the pass prediction (rebuilds into a temp folder and compares, ignoring timestamps) |
+| `check_data.py` | A `web/live` file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
+| `check_build.py` | `data/demo`, `data/predicted` or `web/live` out of date with `config/`, the exporter, the newest committed TLE snapshot or the pass prediction (rebuilds everything into a temp folder and compares, ignoring timestamps) |
 | `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |
-| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed libraries: default view (predicted), the Data switch (Predicted ↔ Demo, keeps matrix/locality), `manifest=` hides the switch, layout (groups, 28 rows, 24 hour labels), localities north to south, ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |
+| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed library: default view (predicted, no Data switch), Demo as the last locality (DEMO DATA badge, keeps the matrix, lands on the right demo day, also with the clock frozen on a demo day), layout (groups, 28 rows, 24 hour labels), localities north to south, ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |

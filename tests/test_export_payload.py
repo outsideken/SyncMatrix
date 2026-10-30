@@ -380,7 +380,8 @@ def test_config_readme_samples_are_valid(tmp_path):
     readme = (REPO / "config" / "README.md").read_text()
     matrix, catalogue, workflow, data = [json.loads(b) for b in re.findall(r"```json\n(.*?)\n```", readme, re.S)]
     assert {"localities", "libraries"} <= set(workflow) and workflow["localities"][0]["point"].startswith("POINT(")
-    assert all({"store", "folder"} <= set(lib) for lib in workflow["libraries"].values())
+    assert workflow["folder"] and all("store" in lib for lib in workflow["libraries"].values())
+    assert workflow["libraries"]["demo"]["locality"]["point"].startswith("POINT(")
     (tmp_path / "catalogue.json").write_text(json.dumps(catalogue))
     assert set(pp.load_catalogue(tmp_path / "catalogue.json")["satellites"]) <= set(ep.row_groups(matrix))
     (tmp_path / "matrix.json").write_text(json.dumps(matrix))

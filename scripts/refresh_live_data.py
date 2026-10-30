@@ -12,7 +12,7 @@ Steps, stopping at the first failure:
 2. Prune data/tle/ to the newest --keep snapshots (older ones are history in Git).
 3. scripts/build_live_data.py: rebuild data/predicted and web/live from the
    new snapshot (three days from its date, replacing the previous days).
-4. Checks: check_data.py --live and check_demo_data.py --live.
+4. Checks: check_data.py and check_build.py.
 
 Nothing is committed here; the workflow commits if the checks pass.
 """
@@ -50,8 +50,8 @@ def main() -> int:
             old.unlink()
 
         run(SCRIPTS / "build_live_data.py")
-        run(SCRIPTS / "check_data.py", "--live")
-        run(SCRIPTS / "check_demo_data.py", "--live")
+        run(SCRIPTS / "check_data.py")
+        run(SCRIPTS / "check_build.py")
     except subprocess.CalledProcessError as err:
         print("FAILED:", err, file=sys.stderr)
         return 1
