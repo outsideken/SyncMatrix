@@ -50,8 +50,11 @@ shared setting in `defaults.json`) and do the same.
   matrix, `events_per_day` and `seed_offset`.
 
 `load_workflow` (`python/workflow.py`) checks it first: unique names, a valid
-point on the globe (a latitude-first point is caught), a timezone for every
-locality, and every named matrix exists.
+point on the globe, a timezone for every locality, and every named matrix
+exists. `POINT` takes longitude first. A latitude-first point is caught only
+when it lands off the globe (its longitude is above 90° either way, e.g.
+`POINT(51.5 -120)`); one that stays on the globe, like London as
+`POINT(51.5074 -0.1278)`, is accepted, so check the map after adding a place.
 
 ## defaults.json and matrices/
 
