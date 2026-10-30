@@ -15,8 +15,8 @@ import pytest
 import export_payload as ep
 from conftest import REPO
 
-ABSTRACTED = REPO / "config" / "abstracted.json"
-SIMPLIFIED = REPO / "config" / "simplified.json"
+ABSTRACTED = REPO / "config" / "matrices" / "abstracted.json"
+SIMPLIFIED = REPO / "config" / "matrices" / "simplified.json"
 EXPORTER = REPO / "python" / "export_payload.py"
 
 
@@ -305,13 +305,18 @@ def test_status_style_fill_is_checked(tmp_path):
         ep.load_config(write_config(tmp_path, status_styles={"Predicted": {"fill": "stripes"}}))
 
 
-def test_config_readme_sample_is_a_valid_config(tmp_path):
-    # The sample in config/README.md must stay loadable, so the docs can't drift from the format.
+def test_config_readme_samples_are_valid(tmp_path):
+    # The samples in config/README.md must stay loadable, so the docs can't drift from the format:
+    # workflow.json, then defaults.json, then a matrix merged over those defaults.
     import re
     readme = (REPO / "config" / "README.md").read_text()
-    sample = re.search(r"```json\n(.*?)\n```", readme, re.S).group(1)
-    path = tmp_path / "sample.json"
-    path.write_text(sample)
+    workflow, defaults, matrix = [json.loads(b) for b in re.findall(r"```json\n(.*?)\n```", readme, re.S)]
+    assert {"localities", "libraries"} <= set(workflow) and workflow["localities"][0]["point"].startswith("POINT(")
+    (tmp_path / "matrices").mkdir()
+    (tmp_path / "defaults.json").write_text(json.dumps(defaults))
+    path = tmp_path / "matrices" / "sample.json"
+    path.write_text(json.dumps(matrix))
     config = ep.load_config(path)
-    assert "status_styles" in config and "status_colors" not in config
+    assert config["status_styles"] == defaults["status_styles"]  # inherited
+    assert "status_colors" not in config
     assert ep.build_groups(config["groups"])[1]["tint"] == "#d9d9d9"

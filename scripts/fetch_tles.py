@@ -1,4 +1,4 @@
-"""Snapshot current orbits (TLE/OMM) for every satellite in config/*.json.
+"""Snapshot current orbits (TLE/OMM) for every satellite in config/matrices/*.json.
 
 Downloads each NORAD catalogue number from Celestrak's GP API, one request
 at a time with a pause (Celestrak asks clients not to hammer it, and its data
@@ -26,13 +26,15 @@ URL = "https://celestrak.org/NORAD/elements/gp.php?CATNR=%d&FORMAT=json"
 
 def norads() -> list:
     ids = set()
-    for path in sorted((REPO / "config").glob("*.json")):
+    for path in sorted((REPO / "config" / "matrices").glob("*.json")):
         for spec in json.loads(path.read_text()).get("satellites", {}).values():
             ids.update(spec["norad"])
     return sorted(ids)
 
 
 def main() -> int:
+    import argparse
+    argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter).parse_args()
     ids = norads()
     fetched = datetime.now(timezone.utc).replace(microsecond=0)
     records = []

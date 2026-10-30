@@ -4,12 +4,15 @@ Python builds a JSON payload; a d3 page draws it. The page is made to be
 embedded in a dashboard with an `<iframe>`.
 
 ```
-config/<matrix>.json       matrix definitions: groups, rows, groupings, banners (see config/README.md)
+config/workflow.json       the shared localities and how each library is built (see config/README.md)
+config/defaults.json       settings every matrix shares
+config/matrices/<id>.json  one per matrix: groups, rows, groupings, satellites (only what differs)
 python/export_payload.py   config + events -> payload JSON
 python/predict_passes.py   predicted satellite passes over a locality (Skyfield)
 scripts/fetch_tles.py      snapshots current orbits from Celestrak into data/tle/
 scripts/build_live_data.py builds the predicted-pass library in web/live from a snapshot
 scripts/build_demo_data.py rebuilds the demo library in web/data from config/
+scripts/build_all.py       rebuilds and checks both libraries: the one command after editing config/
 data/tle/                  committed orbit snapshots (provenance + reproducible builds)
 web/index.html             the renderer (embed this)
 web/sync_matrix.js|css     renderer code and theme
@@ -24,7 +27,7 @@ web/demo_dashboard.html    stand-in dashboard for testing iframe + postMessage
 
 Two matrices, defined in [`config/`](config/README.md):
 
-- **Abstracted Sync Matrix** (`config/abstracted.json`): one row per satellite
+- **Abstracted Sync Matrix** (`config/matrices/abstracted.json`): one row per satellite
   (or instrument), grouped by **phenomenology**, rows alphabetical (numbers in
   numeric order):
   - **EO**: GeoEye-1, Legion-1 to -6, WorldView-1 to -3 (Vantor); Sentinel-2;
@@ -39,13 +42,20 @@ Two matrices, defined in [`config/`](config/README.md):
   -3 OLCI, -3 SLSTR); NASA FIRMS (MODIS and VIIRS); Vantor (GeoEye-1, Legion,
   WorldView). Each grouping has its own colours (see config/README.md); event
   boxes follow the grouping shown.
-- **Simplified Sync Matrix** (`config/simplified.json`): the phenomenology groups
+- **Simplified Sync Matrix** (`config/matrices/simplified.json`): the phenomenology groups
   only (COM, IR, SAR, EO), drawn as grey bars without row labels. Always
   phenomenology, so the Group by control is hidden. The COM row's id is
   `CIRCUS`, which is what events reference.
 
-To change a matrix, edit its config and run `python scripts/build_demo_data.py`
-(CI fails if the committed demo data doesn't match the configs).
+To change a matrix, edit its file in `config/matrices/` (or `config/defaults.json`)
+and run `python scripts/build_all.py` (CI fails if the committed libraries
+don't match the configs).
+
+**To add a locality**, add it to the end of `localities` in
+`config/workflow.json` (`{"name": "Nairobi", "point": "POINT(36.8219 -1.2921)"}`,
+longitude first), run `python scripts/build_all.py`, and commit `config/`, `web/data`
+and `web/live` in a PR. Both libraries, the page, the checks and the browser
+tests pick it up from there; nothing else lists localities.
 
 ## Predicted passes (live data)
 
@@ -74,7 +84,7 @@ github-actions[bot], and starts the Pages deploy. The same steps locally:
 - **A pass counts** when the satellite is above the row's elevation threshold
   over the site; optical (EO) rows also need the sun up; side-looking SAR rows
   (Sentinel-1, Capella) need the site in the swath. Thresholds and NORAD
-  numbers are in `config/abstracted.json` under `satellites` (table in
+  numbers are in `config/matrices/abstracted.json` under `satellites` (table in
   [config/README.md](config/README.md#pass-thresholds-abstracted)).
 - **Events** are status `Predicted`. Hover shows the highest elevation,
   the sun's elevation, the threshold and the orbit's NORAD number, epoch and
@@ -91,7 +101,7 @@ github-actions[bot], and starts the Pages deploy. The same steps locally:
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt -c constraints.txt
-.venv/bin/python python/export_payload.py --config config/simplified.json \
+.venv/bin/python python/export_payload.py --config config/matrices/simplified.json \
     --date 2026-10-27 --events events.json --out-dir web/data
 ```
 

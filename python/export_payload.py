@@ -10,23 +10,23 @@ Usage
 -----
     # Add a day to the page's library: writes
     # <out-dir>/<matrix>/<locality>/<YYYY-MM-DD>.json and rebuilds <out-dir>/index.json.
-    python export_payload.py --config ../config/simplified.json --date 2026-10-27 \
+    python export_payload.py --config ../config/matrices/simplified.json --date 2026-10-27 \
                              --events events.json --out-dir ../web/data
 
     # No events yet? Generate deterministic sample events for a demo
     # (the locality can come from the events file or --locality/--locality-name).
-    python export_payload.py --config ../config/abstracted.json --demo-events 14 \
+    python export_payload.py --config ../config/matrices/abstracted.json --demo-events 14 \
                              --locality "POINT(-100 40)" --locality-name "Mid-north 40°N" \
                              --icod 2026-10-27T12:00:00Z --out-dir ../web/data
 
     # Write a single payload file, without touching the manifest.
-    python export_payload.py --config ../config/simplified.json \
+    python export_payload.py --config ../config/matrices/simplified.json \
                              --events events.json --out simplified-mid-north.json
 
     # Rebuild only the manifest (e.g. after deleting old days).
     python export_payload.py --rebuild-manifest ../web/data
 
-The matrix id (--slug) defaults to the config file name (config/simplified.json ->
+The matrix id (--slug) defaults to the config file name (config/matrices/simplified.json ->
 "simplified"); the dropdown label comes from the config's "label". See
 config/README.md for the config format.
 
@@ -102,16 +102,33 @@ def row_id(row) -> str:
     return row if isinstance(row, str) else row["id"]
 
 
+def merge(base: dict, override: dict) -> dict:
+    """Deep merge: dicts merge key by key, anything else in override replaces base."""
+    out = dict(base)
+    for key, value in override.items():
+        out[key] = merge(out[key], value) if isinstance(value, dict) and isinstance(out.get(key), dict) else value
+    return out
+
+
 def load_config(path) -> dict:
-    """Read a matrix config (config/*.json) and check it before anything is built.
+    """Read a matrix config and check it before anything is built.
+
+    A matrix in config/matrices/<id>.json holds only what differs; it is merged
+    over config/defaults.json (the settings every matrix shares). The merge is
+    declarative: a setting comes from the matrix file or from the defaults,
+    never from another matrix.
 
     Fails with a clear message on: missing title/groups, a duplicate group or
     row, an alternative grouping whose rows differ from "groups" (events must
     land on the same row in every grouping), or a banner time that isn't
     HH:MM.
     """
+    path = Path(path)
     with open(path, "r") as f:
         config = json.load(f)
+    defaults = path.parent.parent / "defaults.json"
+    if path.parent.name == "matrices" and defaults.exists():
+        config = merge(json.loads(defaults.read_text()), config)
     for key in ("title", "groups"):
         if key not in config:
             raise ValueError("%s: missing %r" % (path, key))
@@ -433,7 +450,7 @@ def rebuild_manifest(data_dir: str) -> dict:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--rebuild-manifest", metavar="DATA_DIR", help="Only rebuild DATA_DIR/index.json")
-    parser.add_argument("--config", help="Matrix config, e.g. config/simplified.json (see config/README.md)")
+    parser.add_argument("--config", help="Matrix config, e.g. config/matrices/simplified.json (see config/README.md)")
     parser.add_argument("--events", help="Events JSON: {\"icod\": ..., \"events\": [...]}")
     parser.add_argument("--demo-events", type=int, default=0, help="Generate N sample events instead")
     parser.add_argument("--seed", type=int, default=7, help="Seed for --demo-events")
