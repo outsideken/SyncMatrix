@@ -47,7 +47,7 @@ def test_default_view_is_the_predicted_library(page, base_url, errors):
     assert query(page)["locality"] != "demo"
     assert texts(page, "#sm-matrix option") == ["Abstracted Sync Matrix", "Simplified Sync Matrix"]
     expect(page.locator("#sm-icod-badge")).not_to_contain_text("DEMO DATA")
-    assert "Predicted" in texts(page, ".sm-legend text")
+    assert texts(page, ".sm-legend text") == []  # one status (Predicted): no legend
     assert page.locator("#sm-source").count() == 0  # no Data switch: Demo is a locality
     assert errors == []
 
@@ -319,7 +319,7 @@ def test_predicted_pass_library(page, base_url, errors):
     expect(badge).not_to_contain_text("DEMO DATA")  # real orbit data, not demo
     labels = page.locator(".sm-event").evaluate_all("els => els.map(e => e.getAttribute('aria-label'))")
     assert labels and all(" pass" in l for l in labels)
-    assert "Predicted" in texts(page, ".sm-legend text")
+    assert texts(page, ".sm-legend text") == []  # every window is Predicted: nothing to explain
     page.locator("#sm-matrix").select_option("simplified")
     page.wait_for_selector("svg.sm-root .sm-event")
     assert any(re.search(r"\d+ (EO|IR|SAR) pass", l) for l in
@@ -411,6 +411,15 @@ def test_each_place_shows_only_what_it_evaluates(page, base_url, errors):
     page.locator("#sm-matrix").select_option("simplified")
     page.wait_for_selector("svg.sm-root .sm-event")
     assert texts(page, ".sm-group-label") == ["EO", "IR", "SAR", "RF"]
+    assert errors == []
+
+
+def test_status_legend_only_when_statuses_differ(page, base_url, errors):
+    two = dated_payload()
+    two["events"].append(dict(two["events"][0], start="2026-10-28T12:00:00Z", end="2026-10-28T12:10:00Z",
+                              status="Collected"))
+    open_payload(page, base_url, two)
+    assert sorted(texts(page, ".sm-legend text")) == ["Collected", "Predicted"]
     assert errors == []
 
 
