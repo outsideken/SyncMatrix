@@ -51,7 +51,8 @@ def main() -> int:
 
     wf.write_store(store, wf.predicted_data(workflow, pp.load_snapshot(tle_path), tle_path.name))
     others = [REPO / lib["store"] for lib_id, lib in workflow["libraries"].items() if lib_id != "predicted"]
-    wf.draw_library(wf.load_matrix(), [store, *others], args.out or REPO / workflow["folder"])
+    wf.draw_library(wf.load_matrix(), [store, *others], args.out or REPO / workflow["folder"],
+                    workflow["max_seclab"])
     return 0
 
 

@@ -88,11 +88,17 @@ def passes(sat: EarthSatellite, lat: float, lon: float, start: datetime, end: da
 
 
 def load_catalogue(path) -> dict:
-    """The prediction catalogue: {"satellites": {row: {"norad": [...], "min_elevation": ...}}}."""
+    """The prediction catalogue: {"seclab": ..., "satellites": {row: {"norad": [...], "min_elevation": ...}}}.
+
+    "seclab" is the security label written on every predicted window; a row
+    may set its own.
+    """
     catalogue = json.loads(Path(path).read_text())
     for row, spec in catalogue.get("satellites", {}).items():
         if not spec.get("norad") or "min_elevation" not in spec:
             raise ValueError("%s: satellites[%r] needs \"norad\" and \"min_elevation\"" % (Path(path).name, row))
+        if not spec.get("seclab", catalogue.get("seclab")):
+            raise ValueError("%s: satellites[%r] has no \"seclab\" (nor has the catalogue)" % (Path(path).name, row))
     return catalogue
 
 
@@ -120,6 +126,7 @@ def predict_windows(catalogue: dict, snapshot: dict, lat: float, lon: float,
                     "start": iso(rise),
                     "end": iso(set_),
                     "status": "Predicted",
+                    "seclab": spec.get("seclab", catalogue.get("seclab")),
                     "label": "%s pass" % name,
                     "notes": "Highest %.0f° at %s (sun %.0f°). Threshold %s°. Orbit: Celestrak "
                              "NORAD %s, epoch %s, fetched %s."

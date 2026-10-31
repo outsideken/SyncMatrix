@@ -61,11 +61,11 @@ def write_data(tmp_path, name="Mid-north 40°N", point="POINT(-100 40)", **chang
     data = {"locality": {"name": name, "point": point}, "evaluation_date": "2026-10-27",
             "icod": "2026-10-27T12:00:00Z", "icod_source": "data", "source": "Test feed",
             "windows": [{"satellite": "Legion-3", "start": "2026-10-27T06:00:00Z", "end": "2026-10-27T06:10:00Z",
-                         "status": "Predicted", "label": "LEGION 3 pass"},
+                         "status": "Predicted", "seclab": "UNCLASSIFIED", "label": "LEGION 3 pass"},
                         {"satellite": "WorldView-2", "start": "2026-10-27T06:05:00Z", "end": "2026-10-27T06:20:00Z",
-                         "status": "Predicted", "label": "WORLDVIEW-2 pass"},
+                         "status": "Predicted", "seclab": "UNCLASSIFIED", "label": "WORLDVIEW-2 pass"},
                         {"satellite": "Sentinel-1", "start": "2026-10-27T18:00:00Z", "end": "2026-10-27T18:04:00Z",
-                         "status": "Predicted", "norad": 39634}]}
+                         "status": "Predicted", "seclab": "UNCLASSIFIED", "norad": 39634}]}
     data.update(changes)
     path = tmp_path / ("%s.json" % ep.slugify(name))
     path.write_text(json.dumps(data))
@@ -119,10 +119,10 @@ def test_both_views_draw_the_same_windows(tmp_path):
 
 
 def test_roll_up_refuses_mixed_statuses():
-    events = [{"row": "Legion-3", "start": "2026-10-27T06:00:00Z", "end": "2026-10-27T06:10:00Z", "status": "Predicted"},
-              {"row": "Legion-4", "start": "2026-10-27T06:05:00Z", "end": "2026-10-27T06:15:00Z", "status": "Collected"}]
+    events = [{"row": "Legion-3", "start": "2026-10-27T06:00:00Z", "end": "2026-10-27T06:10:00Z", "status": "Predicted", "seclab": "UNCLASSIFIED"},
+              {"row": "Legion-4", "start": "2026-10-27T06:05:00Z", "end": "2026-10-27T06:15:00Z", "status": "Collected", "seclab": "UNCLASSIFIED"}]
     with pytest.raises(ValueError, match="different statuses"):
-        ep.roll_up(events, ep.row_groups(ep.load_config(MATRIX)))
+        ep.roll_up(events, ep.row_groups(ep.load_config(MATRIX)), ep.seclab_rank(ep.load_config(MATRIX)))
 
 
 def test_simplified_draws_the_groups_as_rows():
@@ -141,7 +141,7 @@ def test_data_file_checks(tmp_path):
         path.write_text(json.dumps(data))
         ep.load_data(path)
     data = ep.load_data(write_data(tmp_path, windows=[{"satellite": "CIRCUS", "start": "2026-10-27T06:00:00Z",
-                                                        "end": "2026-10-27T07:00:00Z", "status": "High"}]))
+                                                        "end": "2026-10-27T07:00:00Z", "status": "High", "seclab": "UNCLASSIFIED"}]))
     with pytest.raises(ValueError, match="'CIRCUS' is not a row"):
         ep.build_view(ep.load_config(MATRIX), "abstracted", data)
 
@@ -429,3 +429,102 @@ def test_config_readme_samples_are_valid(tmp_path):
     for view in matrix["views"]:
         payload = ep.build_view(matrix, view, data)
         assert payload["events"] and payload["icod"] == data["icod"]
+
+################################################################################
+## Security labels
+################################################################################
+
+def restricted(tmp_path, **changes):
+    """A data file with one RESTRICTED window overlapping an UNCLASSIFIED one (EO, 06:05-06:10)."""
+    path = write_data(tmp_path, **changes)
+    data = json.loads(path.read_text())
+    data["windows"][1]["seclab"] = "RESTRICTED"
+    path.write_text(json.dumps(data))
+    return ep.load_data(path)
+
+
+def test_seclab_rank_is_the_list_position_not_the_spelling():
+    rank = ep.seclab_rank(ep.load_config(MATRIX))
+    assert rank == {"UNCLASSIFIED": 0, "RESTRICTED": 1}
+    assert "RESTRICTED" < "UNCLASSIFIED"  # as text the order is the other way round
+    assert ep.highest_seclab(["UNCLASSIFIED", "RESTRICTED", "UNCLASSIFIED"], rank) == "RESTRICTED"
+
+
+def test_window_without_a_seclab_is_an_error(tmp_path):
+    path = write_data(tmp_path)
+    data = json.loads(path.read_text())
+    del data["windows"][2]["seclab"]
+    path.write_text(json.dumps(data))
+    with pytest.raises(ValueError, match="window 2 is missing seclab"):
+        ep.load_data(path)
+
+
+def test_unknown_seclab_is_an_error(tmp_path):
+    path = write_data(tmp_path)
+    data = json.loads(path.read_text())
+    data["windows"][0]["seclab"] = "Unclassified"  # labels are exact names, not spellings
+    path.write_text(json.dumps(data))
+    with pytest.raises(ValueError, match="unknown security label 'Unclassified'"):
+        ep.build_view(ep.load_config(MATRIX), "abstracted", ep.load_data(path))
+
+
+def test_window_above_the_ceiling_is_refused(tmp_path):
+    # The default ceiling is the lowest label; a string comparison would let RESTRICTED (< "UNCLASSIFIED") through.
+    data = restricted(tmp_path)
+    with pytest.raises(ValueError, match="RESTRICTED, above this library's ceiling UNCLASSIFIED"):
+        ep.build_view(ep.load_config(MATRIX), "abstracted", data)
+    with pytest.raises(ValueError, match="above this library's ceiling UNCLASSIFIED"):
+        ep.build_view(ep.load_config(MATRIX), "abstracted", data, "UNCLASSIFIED")
+    with pytest.raises(ValueError, match="Ceiling 'SECRET' is not a security label"):
+        ep.build_view(ep.load_config(MATRIX), "abstracted", data, "SECRET")
+
+
+def test_labels_reach_the_payload_and_a_rolled_up_bar_takes_the_highest(tmp_path):
+    data, matrix = restricted(tmp_path), ep.load_config(MATRIX)
+    abstracted = ep.build_view(matrix, "abstracted", data, "RESTRICTED")
+    assert [e["seclab"] for e in abstracted["events"]] == ["UNCLASSIFIED", "RESTRICTED", "UNCLASSIFIED"]
+    assert abstracted["seclabs"] == {"labels": matrix["seclabs"], "ceiling": "RESTRICTED"}
+    simplified = ep.build_view(matrix, "simplified", data, "RESTRICTED")
+    assert [(e["label"], e["seclab"]) for e in simplified["events"]] == [
+        ("2 EO passes", "RESTRICTED"), ("1 SAR pass", "UNCLASSIFIED")]
+
+
+def test_payload_lists_only_labels_at_or_under_its_ceiling():
+    # web/live is public: an UNCLASSIFIED build never names RESTRICTED, even in its list of labels.
+    matrix = ep.load_config(MATRIX)
+    assert ep.published_seclabs(matrix, "UNCLASSIFIED") == {"labels": matrix["seclabs"][:1], "ceiling": "UNCLASSIFIED"}
+    assert ep.published_seclabs(matrix) == ep.published_seclabs(matrix, "UNCLASSIFIED")
+    assert ep.published_seclabs(matrix, "RESTRICTED")["labels"] == matrix["seclabs"]
+    with pytest.raises(ValueError, match="Ceiling 'SECRET' is not a security label"):
+        ep.published_seclabs(matrix, "SECRET")
+
+
+def test_roll_up_merges_mixed_labels():
+    # Unlike status, mixed labels are allowed: the bar takes the higher one, in either order.
+    matrix = ep.load_config(MATRIX)
+    for first, second in (("UNCLASSIFIED", "RESTRICTED"), ("RESTRICTED", "UNCLASSIFIED")):
+        events = [{"row": "Legion-3", "start": "2026-10-27T06:00:00Z", "end": "2026-10-27T06:10:00Z",
+                   "status": "Predicted", "seclab": first},
+                  {"row": "Legion-4", "start": "2026-10-27T06:05:00Z", "end": "2026-10-27T06:15:00Z",
+                   "status": "Predicted", "seclab": second}]
+        [bar] = ep.roll_up(events, ep.row_groups(matrix), ep.seclab_rank(matrix))
+        assert bar["seclab"] == "RESTRICTED"
+
+
+def test_seclabs_are_checked(tmp_path):
+    for bad in ([], [{"name": "UNCLASSIFIED"}],
+                [{"name": "UNCLASSIFIED", "color": "#1a9850"}, {"name": "UNCLASSIFIED", "color": "#f46d43"}]):
+        with pytest.raises(ValueError, match="seclabs must list security labels lowest first"):
+            ep.load_config(write_config(tmp_path, seclabs=bad))
+
+
+def test_exporter_cli_ceiling(tmp_path):
+    path = write_data(tmp_path)
+    data = json.loads(path.read_text())
+    data["windows"][0]["seclab"] = "RESTRICTED"
+    path.write_text(json.dumps(data))
+    refused = run_exporter("--data", path, "--out-dir", tmp_path / "lib")
+    assert refused.returncode == 2 and "above this library's ceiling UNCLASSIFIED" in refused.stderr
+    assert not (tmp_path / "lib").exists()
+    allowed = run_exporter("--data", path, "--out-dir", tmp_path / "lib", "--max-seclab", "RESTRICTED")
+    assert allowed.returncode == 0, allowed.stderr

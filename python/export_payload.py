@@ -103,7 +103,8 @@ def check_config(config: dict, where) -> dict:
     Fails with a clear message on: missing groups, a duplicate group or row,
     an alternative grouping whose rows differ from "groups" (events must land
     on the same row in every grouping), an unknown status fill, a banner time
-    that isn't HH:MM, or a view without a title.
+    that isn't HH:MM, a view without a title, or a security label list that
+    is empty, repeats a name or lacks a colour.
     """
     if "groups" not in config:
         raise ValueError("%s: missing 'groups'" % where)
@@ -143,7 +144,59 @@ def check_config(config: dict, where) -> dict:
         hours = [ageing.get(k) for k in ("ageing_after_hours", "stale_after_hours")]
         if not all(isinstance(h, (int, float)) and h > 0 for h in hours) or hours[0] >= hours[1]:
             raise ValueError("%s: icod_ageing needs 0 < ageing_after_hours < stale_after_hours" % where)
+    labels = config.get("seclabs")
+    names = [l.get("name") for l in labels or []]
+    if not labels or not all(names) or len(set(names)) != len(names) or not all(l.get("color") for l in labels):
+        raise ValueError("%s: seclabs must list security labels lowest first, each with a unique name "
+                         "and a color" % where)
     return config
+
+
+def seclab_rank(matrix: dict) -> dict:
+    """Security label -> its rank: its position in the matrix's "seclabs" list, lowest first.
+
+    The rank is never the label's spelling: "RESTRICTED" sorts before
+    "UNCLASSIFIED" as text, so a string comparison would invert a ceiling.
+    """
+    return {l["name"]: i for i, l in enumerate(matrix["seclabs"])}
+
+
+def highest_seclab(labels, rank: dict) -> str:
+    """The highest of these labels (a merged bar, a chart banner)."""
+    return max(labels, key=rank.__getitem__)
+
+
+def published_seclabs(matrix: dict, ceiling: str = None) -> dict:
+    """The payload's "seclabs": the labels at or under the ceiling, lowest first, and the ceiling.
+
+    A label above the ceiling is never named in what the library publishes:
+    web/live is public, so an UNCLASSIFIED build lists only UNCLASSIFIED.
+    """
+    ceiling = ceiling or matrix["seclabs"][0]["name"]
+    rank = seclab_rank(matrix)
+    if ceiling not in rank:
+        raise ValueError("Ceiling %r is not a security label (%s)" % (ceiling, ", ".join(rank)))
+    return {"labels": matrix["seclabs"][:rank[ceiling] + 1], "ceiling": ceiling}
+
+
+def check_seclabs(matrix: dict, data: dict, ceiling: str) -> None:
+    """Every window has a known label at or under the library's ceiling.
+
+    The ceiling is the highest label the library may publish (web/live is a
+    public site: UNCLASSIFIED). A window above it fails the build; it is
+    never dropped quietly.
+    """
+    rank = seclab_rank(matrix)
+    if ceiling not in rank:
+        raise ValueError("Ceiling %r is not a security label (%s)" % (ceiling, ", ".join(rank)))
+    for i, w in enumerate(data["windows"]):
+        label = w["seclab"]
+        if label not in rank:
+            raise ValueError("Window %d (%s): unknown security label %r (%s)"
+                             % (i, w.get("id", w["satellite"]), label, ", ".join(rank)))
+        if rank[label] > rank[ceiling]:
+            raise ValueError("Window %d (%s) is %s, above this library's ceiling %s; it cannot be published here"
+                             % (i, w.get("id", w["satellite"]), label, ceiling))
 
 
 def load_config(path, view: str = None) -> dict:
@@ -193,12 +246,14 @@ def load_data(path) -> dict:
      "source": "one line on where the windows came from",
      "evaluated": {"Sentinel-2": [40697, 42063, 60989]},     (optional)
      "windows": [{"satellite": "Sentinel-2", "start": ..., "end": ...,
-                  "status": "Predicted", "norad": 40697,      (norad: from the catalogue)
+                  "status": "Predicted", "seclab": "UNCLASSIFIED",
+                  "norad": 40697,                            (norad: from the catalogue)
                   "id": ..., "label": ..., "notes": ...}]}   (optional)
 
     It names no matrix: build_view() draws it in every view. "evaluated"
     lists the catalogue's spacecraft per row, so a row that was checked and
-    had no passes is told apart from one that was not checked.
+    had no passes is told apart from one that was not checked. "seclab" is
+    the window's security label; it is required and never defaulted.
     """
     with open(path, "r") as f:
         data = json.load(f)
@@ -208,7 +263,7 @@ def load_data(path) -> dict:
             raise ValueError("%s: missing %r" % (where, key))
     date.fromisoformat(data["evaluation_date"])
     for i, window in enumerate(data["windows"]):
-        missing = [k for k in ("satellite", "start", "end", "status") if k not in window]
+        missing = [k for k in ("satellite", "start", "end", "status", "seclab") if k not in window]
         if missing:
             raise ValueError("%s: window %d is missing %s" % (where, i, ", ".join(missing)))
     return data
@@ -221,18 +276,20 @@ def window_events(matrix: dict, data: dict) -> list:
     for i, w in enumerate(data["windows"]):
         if w["satellite"] not in rows:
             raise ValueError("Window %d: %r is not a row of the matrix" % (i, w["satellite"]))
-        event = {"row": w["satellite"], "start": w["start"], "end": w["end"], "status": w["status"]}
+        event = {"row": w["satellite"], "start": w["start"], "end": w["end"], "status": w["status"],
+                 "seclab": w["seclab"]}
         event.update({k: w[k] for k in ("id", "label", "notes") if k in w})
         events.append(event)
     return events
 
 
-def roll_up(events: list, row_group: dict) -> list:
+def roll_up(events: list, row_group: dict, rank: dict) -> list:
     """Summarise per-satellite events by group (e.g. EO, IR, SAR) for a groups view.
 
     Overlapping windows in the same group become one event listing them, with
     their shared status (all windows are Predicted today). Overlapping windows
-    with different statuses are an error rather than a silent choice.
+    with different statuses are an error rather than a silent choice. Different
+    security labels are not: the merged bar takes the highest (rank: seclab_rank()).
     """
     by_group = {}
     for event in events:
@@ -259,6 +316,7 @@ def roll_up(events: list, row_group: dict) -> list:
                         "start": m["start"],
                         "end": m["end"],
                         "status": statuses[0],
+                        "seclab": highest_seclab((e["seclab"] for e in m["members"]), rank),
                         "label": "%d %s pass%s" % (len(names), group, "" if len(names) == 1 else "es"),
                         "notes": "; ".join(names)})
     out.sort(key=lambda e: (e["start"], e["row"]))
@@ -322,31 +380,38 @@ def covered_matrix(matrix: dict, data: dict) -> dict:
     return out
 
 
-def build_view(matrix: dict, view_id: str, data: dict) -> dict:
+def build_view(matrix: dict, view_id: str, data: dict, ceiling: str = None) -> dict:
     """One view's payload for one data file (one place, one evaluation date).
 
     The chart shows what the data file covers (covered_matrix()). A colour or
     group change only re-runs this over the stored data files; the windows
-    are not recomputed.
+    are not recomputed. ceiling: the highest security label the library may
+    publish (default: the lowest label); it travels in the payload.
     """
+    ceiling = ceiling or matrix["seclabs"][0]["name"]
+    check_seclabs(matrix, data, ceiling)
     events = window_events(matrix, data)
     matrix = covered_matrix(matrix, data)
     config = view_config(matrix, view_id)
     notes = group_notes(matrix, data, events)
     if matrix["views"][view_id].get("rows", "satellites") == "groups":
-        events = roll_up(events, row_groups(matrix))
+        events = roll_up(events, row_groups(matrix), seclab_rank(matrix))
     return build_payload(config, events, date.fromisoformat(data["evaluation_date"]),
                          icod=data["icod"], icod_source=data.get("icod_source", "data"),
-                         locality=data["locality"], source=data.get("source", "Data file"), provenance=notes)
+                         locality=data["locality"], source=data.get("source", "Data file"), provenance=notes,
+                         ceiling=ceiling)
 
 
-def write_views(matrix: dict, data_files, out_dir) -> int:
-    """Draw every view of every data file into <out_dir>/<view>/<locality>/<date>.json."""
+def write_views(matrix: dict, data_files, out_dir, ceiling: str = None) -> int:
+    """Draw every view of every data file into <out_dir>/<view>/<locality>/<date>.json.
+
+    ceiling: the highest security label the library may publish (build_view()).
+    """
     out_dir, count = Path(out_dir), 0
     for path in data_files:
         data = load_data(path)
         for view_id in matrix["views"]:
-            payload = build_view(matrix, view_id, data)
+            payload = build_view(matrix, view_id, data, ceiling)
             out = out_dir / view_id / payload["locality"]["id"] / ("%s.json" % data["evaluation_date"])
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(json.dumps(payload, indent=2))
@@ -481,7 +546,8 @@ def validate_events(events: list, groups: list, window_start: datetime, window_e
     return clean
 
 
-def demo_events(groups: list, window_start: datetime, tick_minutes: int, count: int, seed: int) -> list:
+def demo_events(groups: list, window_start: datetime, tick_minutes: int, count: int, seed: int,
+                seclab: str) -> list:
     """Deterministic sample events snapped to the tick grid, all Predicted like the live data."""
     rng = random.Random(seed)
     rows = [row["id"] for group in groups for row in group["rows"]]
@@ -496,6 +562,7 @@ def demo_events(groups: list, window_start: datetime, tick_minutes: int, count: 
                        "start": iso(start),
                        "end": iso(start + timedelta(minutes=tick_minutes * length)),
                        "status": "Predicted",
+                       "seclab": seclab,
                        "label": "Demo event %d" % (i + 1),
                        "notes": "Generated sample (seed %d)." % seed})
     return events
@@ -543,11 +610,12 @@ def build_payload(config: dict, events: list = None, day: date = None,
                   demo_count: int = 0, seed: int = 7,
                   icod: str = None, icod_source: str = "data",
                   locality: dict = None, source: str = None,
-                  provenance: dict = None) -> dict:
+                  provenance: dict = None, ceiling: str = None) -> dict:
     """One matrix, one locality, one UTC day.
 
     source: where the events came from (one line, shown on exports);
-    provenance: per-group overrides for build_provenance().
+    provenance: per-group overrides for build_provenance(); ceiling: the
+    library's highest security label (default: the lowest label).
     """
     now = datetime.now(timezone.utc)
     day = day or now.date()
@@ -562,7 +630,8 @@ def build_payload(config: dict, events: list = None, day: date = None,
     markers = build_end_of_local_day(loc["timezone"], window_start, window_end) if config.get("show_end_of_local_day") else []
 
     if demo_count:
-        events = demo_events(groups, window_start, window["tick_minutes"], demo_count, seed)
+        events = demo_events(groups, window_start, window["tick_minutes"], demo_count, seed,
+                             config["seclabs"][0]["name"])
     events = validate_events(events or [], groups, window_start, window_end)
 
     if source is None:
@@ -584,6 +653,8 @@ def build_payload(config: dict, events: list = None, day: date = None,
             "events": events,
             "status_styles": config.get("status_styles", {}),
             "icod_ageing": config.get("icod_ageing"),
+            # Labels lowest first, up to the library's ceiling: the page banners the highest label drawn.
+            "seclabs": published_seclabs(config, ceiling),
             "daylight": daylight,
             "markers": markers,
             "banners": build_banners(config, window_start),
@@ -651,6 +722,7 @@ def main():
     parser.add_argument("--view", help="One view, e.g. simplified (default: every view; --out needs one)")
     parser.add_argument("--out", help="Payload JSON to write (one view)")
     parser.add_argument("--out-dir", help="Library folder: write <view>/<locality>/<date>.json and rebuild index.json")
+    parser.add_argument("--max-seclab", help="Highest security label to publish (default: the lowest label)")
     args = parser.parse_args()
 
     if args.rebuild_manifest:
@@ -664,14 +736,14 @@ def main():
     try:
         matrix = load_config(args.matrix)
         if args.out:
-            payload = build_view(matrix, args.view, load_data(args.data))
+            payload = build_view(matrix, args.view, load_data(args.data), args.max_seclab)
             with open(args.out, "w") as f:
                 json.dump(payload, f, indent=2)
             print("Wrote %s (%d groups, %d events)" % (args.out, len(payload["groups"]), len(payload["events"])))
         else:
             if args.view:
                 matrix = dict(matrix, views={args.view: matrix["views"][args.view]})
-            write_views(matrix, [args.data], args.out_dir)
+            write_views(matrix, [args.data], args.out_dir, args.max_seclab)
     except (ValueError, KeyError) as err:
         parser.exit(2, "Error: %s\n" % err)
 

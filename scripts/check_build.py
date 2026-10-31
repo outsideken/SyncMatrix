@@ -54,7 +54,7 @@ def main() -> int:
         for library_id, data_files in built.items():
             wf.write_store(fresh / library_id, data_files)
             pairs.append((REPO / libraries[library_id]["store"], fresh / library_id))
-        wf.draw_library(matrix, [fresh / library_id for library_id in built], fresh / "web")
+        wf.draw_library(matrix, [fresh / library_id for library_id in built], fresh / "web", workflow["max_seclab"])
         pairs.append((REPO / workflow["folder"], fresh / "web"))
 
         for committed_dir, rebuilt_dir in pairs:
