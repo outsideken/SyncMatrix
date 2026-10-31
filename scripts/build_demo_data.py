@@ -35,7 +35,7 @@ def main() -> int:
     matrix = wf.load_matrix()
     wf.write_store(args.store, wf.demo_data(workflow, matrix))
     others = [REPO / lib["store"] for lib_id, lib in workflow["libraries"].items() if lib_id != "demo"]
-    wf.draw_library(matrix, [args.store, *others], args.out)
+    wf.draw_library(matrix, [args.store, *others], args.out, workflow["max_seclab"])
     return 0
 
 

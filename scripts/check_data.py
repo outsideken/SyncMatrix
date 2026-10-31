@@ -3,7 +3,10 @@
 - every JSON file parses;
 - every file listed in index.json exists, and every payload is listed;
 - each payload has the fields the page needs, an ICOD, and events that
-  point at rows that exist.
+  point at rows that exist;
+- every event has a security label at or under the library's ceiling
+  (workflow.json max_seclab), ranked by config/matrix.json "seclabs", never
+  by spelling. The payloads' own copy of the ceiling is not trusted for this.
 
 Exit code 1 with a list of problems if anything is wrong.
 """
@@ -15,14 +18,17 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 REQUIRED = ("version", "title", "icod", "icod_source", "source", "provenance", "locality", "window",
-            "groups", "events")
+            "groups", "events", "seclabs")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.parse_args()
     # The page's library (web/live); read without importing anything, so Pages can run this bare.
-    DATA = REPO / json.loads((REPO / "config" / "workflow.json").read_text())["folder"]
+    workflow = json.loads((REPO / "config" / "workflow.json").read_text())
+    DATA = REPO / workflow["folder"]
+    rank = {l["name"]: i for i, l in enumerate(json.loads((REPO / "config" / "matrix.json").read_text())["seclabs"])}
+    ceiling = workflow["max_seclab"]
     problems = []
 
     payloads = {}
@@ -69,6 +75,16 @@ def main() -> int:
         for event in payload["events"]:
             if event["row"] not in rows:
                 problems.append("%s: event %r on unknown row %r" % (name, event.get("label"), event["row"]))
+            label = event.get("seclab")
+            if label not in rank:
+                problems.append("%s: event %r has security label %r, not one of %s"
+                                % (name, event.get("label"), label, ", ".join(rank)))
+            elif rank[label] > rank[ceiling]:
+                problems.append("%s: event %r is %s, above the library's ceiling %s"
+                                % (name, event.get("label"), label, ceiling))
+        if payload["seclabs"].get("ceiling") != ceiling:
+            problems.append("%s: payload ceiling %r is not workflow.json max_seclab %r"
+                            % (name, payload["seclabs"].get("ceiling"), ceiling))
 
     for problem in problems:
         print("FAIL", problem)

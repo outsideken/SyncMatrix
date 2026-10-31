@@ -32,7 +32,7 @@
       "icod_source": "demo"
     }
   },
-  "generated": "2026-10-31T10:56:24Z",
+  "generated": "2026-10-31T20:01:56Z",
   "locality": {
     "id": "demo",
     "name": "Demo",
@@ -104,6 +104,7 @@
       "start": "2026-09-22T01:00:00Z",
       "end": "2026-09-22T02:30:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "1 IR pass",
       "notes": "S-NPP VIIRS"
     },
@@ -113,6 +114,7 @@
       "start": "2026-09-22T04:00:00Z",
       "end": "2026-09-22T05:30:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "1 EO pass",
       "notes": "WorldView-3"
     },
@@ -122,6 +124,7 @@
       "start": "2026-09-22T04:00:00Z",
       "end": "2026-09-22T07:30:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "5 RF passes",
       "notes": "HE360 Cluster 1; BRO-8; HE360 Cluster 2; BRO-5; BRO-22"
     },
@@ -131,6 +134,7 @@
       "start": "2026-09-22T04:30:00Z",
       "end": "2026-09-22T08:30:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "3 SAR passes",
       "notes": "Capella-13; Capella-15; Capella-14"
     },
@@ -140,6 +144,7 @@
       "start": "2026-09-22T07:00:00Z",
       "end": "2026-09-22T08:00:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "2 EO passes",
       "notes": "WorldView-3; WorldView-2"
     },
@@ -149,6 +154,7 @@
       "start": "2026-09-22T09:30:00Z",
       "end": "2026-09-22T12:30:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "2 EO passes",
       "notes": "Legion-2; Legion-5"
     },
@@ -158,6 +164,7 @@
       "start": "2026-09-22T09:30:00Z",
       "end": "2026-09-22T11:00:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "4 RF passes",
       "notes": "BRO-32; BRO-5; HE360 Cluster 6; HE360 Cluster 13"
     },
@@ -167,6 +174,7 @@
       "start": "2026-09-22T11:00:00Z",
       "end": "2026-09-22T11:30:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "1 IR pass",
       "notes": "Sentinel-3 SLSTR"
     },
@@ -176,6 +184,7 @@
       "start": "2026-09-22T11:30:00Z",
       "end": "2026-09-22T15:30:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "7 RF passes",
       "notes": "HE360 Cluster 11; BRO-19; BRO-15; BRO-22; BRO-5; HE360 Cluster 10; BRO-32"
     },
@@ -185,6 +194,7 @@
       "start": "2026-09-22T12:00:00Z",
       "end": "2026-09-22T12:30:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "1 IR pass",
       "notes": "Aqua MODIS"
     },
@@ -194,6 +204,7 @@
       "start": "2026-09-22T16:00:00Z",
       "end": "2026-09-22T18:00:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "4 RF passes",
       "notes": "BRO-15; BRO-19; BRO-6; BRO-20"
     },
@@ -203,6 +214,7 @@
       "start": "2026-09-22T16:30:00Z",
       "end": "2026-09-22T18:00:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "1 IR pass",
       "notes": "Sentinel-3 SLSTR"
     },
@@ -212,6 +224,7 @@
       "start": "2026-09-22T17:00:00Z",
       "end": "2026-09-22T17:30:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "1 SAR pass",
       "notes": "Sentinel-1"
     },
@@ -221,6 +234,7 @@
       "start": "2026-09-22T18:00:00Z",
       "end": "2026-09-22T20:00:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "1 EO pass",
       "notes": "Sentinel-3 OLCI"
     },
@@ -230,6 +244,7 @@
       "start": "2026-09-22T19:00:00Z",
       "end": "2026-09-22T23:00:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "4 RF passes",
       "notes": "HE360 Cluster 7; HE360 Cluster 5; BRO-13; BRO-5"
     },
@@ -239,6 +254,7 @@
       "start": "2026-09-22T20:00:00Z",
       "end": "2026-09-22T21:00:00Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "label": "2 IR passes",
       "notes": "Sentinel-3 SLSTR; Aqua MODIS"
     }
@@ -266,6 +282,21 @@
   "icod_ageing": {
     "ageing_after_hours": 30,
     "stale_after_hours": 54
+  },
+  "seclabs": {
+    "labels": [
+      {
+        "name": "UNCLASSIFIED",
+        "color": "#1a9850",
+        "text_color": "#ffffff"
+      },
+      {
+        "name": "RESTRICTED",
+        "color": "#f46d43",
+        "text_color": "#000000"
+      }
+    ],
+    "ceiling": "UNCLASSIFIED"
   },
   "daylight": {
     "step_minutes": 10,

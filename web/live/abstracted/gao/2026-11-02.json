@@ -18,7 +18,7 @@
       "notes": "9 predicted passes from 6 of 7 configured satellites"
     }
   },
-  "generated": "2026-10-31T10:56:25Z",
+  "generated": "2026-10-31T20:01:57Z",
   "locality": {
     "id": "gao",
     "name": "Gao",
@@ -120,6 +120,7 @@
       "start": "2026-11-02T01:01:47Z",
       "end": "2026-11-02T01:07:35Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "id": "NOAA-20 VIIRS-43013-0104Z",
       "label": "NOAA 20 (JPSS-1) pass",
       "notes": "Highest 33\u00b0 at 0104Z (sun -70\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 43013, epoch 2026-10-31 02:37Z, fetched 2026-10-31T10:54:38Z."
@@ -129,6 +130,7 @@
       "start": "2026-11-02T01:44:19Z",
       "end": "2026-11-02T01:51:46Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "id": "NOAA-21 VIIRS-54234-0148Z",
       "label": "NOAA 21 (JPSS-2) pass",
       "notes": "Highest 65\u00b0 at 0148Z (sun -60\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 54234, epoch 2026-10-31 03:21Z, fetched 2026-10-31T10:54:38Z."
@@ -138,6 +140,7 @@
       "start": "2026-11-02T02:21:59Z",
       "end": "2026-11-02T02:28:02Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "id": "S-NPP VIIRS-37849-0225Z",
       "label": "SUOMI NPP pass",
       "notes": "Highest 35\u00b0 at 0225Z (sun -51\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 37849, epoch 2026-10-31 03:59Z, fetched 2026-10-31T10:54:38Z."
@@ -147,6 +150,7 @@
       "start": "2026-11-02T03:58:08Z",
       "end": "2026-11-02T04:03:35Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "id": "Aqua MODIS-27424-0400Z",
       "label": "AQUA pass",
       "notes": "Highest 82\u00b0 at 0400Z (sun -28\u00b0). Threshold 25\u00b0. Orbit: Celestrak NORAD 27424, epoch 2026-10-31 05:32Z, fetched 2026-10-31T10:54:38Z."
@@ -156,6 +160,7 @@
       "start": "2026-11-02T08:46:01Z",
       "end": "2026-11-02T08:51:28Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "id": "Terra MODIS-25994-0848Z",
       "label": "TERRA pass",
       "notes": "Highest 79\u00b0 at 0848Z (sun 37\u00b0). Threshold 25\u00b0. Orbit: Celestrak NORAD 25994, epoch 2026-10-31 03:46Z, fetched 2026-10-31T10:54:38Z."
@@ -165,6 +170,7 @@
       "start": "2026-11-02T12:53:55Z",
       "end": "2026-11-02T13:01:12Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "id": "NOAA-21 VIIRS-54234-1257Z",
       "label": "NOAA 21 (JPSS-2) pass",
       "notes": "Highest 57\u00b0 at 1257Z (sun 54\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 54234, epoch 2026-10-31 03:21Z, fetched 2026-10-31T10:54:38Z."
@@ -174,6 +180,7 @@
       "start": "2026-11-02T13:30:45Z",
       "end": "2026-11-02T13:38:21Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "id": "S-NPP VIIRS-37849-1334Z",
       "label": "SUOMI NPP pass",
       "notes": "Highest 78\u00b0 at 1334Z (sun 49\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 37849, epoch 2026-10-31 03:59Z, fetched 2026-10-31T10:54:38Z."
@@ -183,6 +190,7 @@
       "start": "2026-11-02T13:51:05Z",
       "end": "2026-11-02T13:57:27Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "id": "NOAA-20 VIIRS-43013-1354Z",
       "label": "NOAA 20 (JPSS-1) pass",
       "notes": "Highest 38\u00b0 at 1354Z (sun 45\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 43013, epoch 2026-10-31 02:37Z, fetched 2026-10-31T10:54:38Z."
@@ -192,6 +200,7 @@
       "start": "2026-11-02T21:48:19Z",
       "end": "2026-11-02T21:51:42Z",
       "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
       "id": "Sentinel-3 SLSTR-43437-2150Z",
       "label": "SENTINEL-3B pass",
       "notes": "Highest 88\u00b0 at 2150Z (sun -63\u00b0). Threshold 45\u00b0. Orbit: Celestrak NORAD 43437, epoch 2026-10-31 04:06Z, fetched 2026-10-31T10:54:38Z."
@@ -220,6 +229,21 @@
   "icod_ageing": {
     "ageing_after_hours": 30,
     "stale_after_hours": 54
+  },
+  "seclabs": {
+    "labels": [
+      {
+        "name": "UNCLASSIFIED",
+        "color": "#1a9850",
+        "text_color": "#ffffff"
+      },
+      {
+        "name": "RESTRICTED",
+        "color": "#f46d43",
+        "text_color": "#000000"
+      }
+    ],
+    "ceiling": "UNCLASSIFIED"
   },
   "daylight": {
     "step_minutes": 10,

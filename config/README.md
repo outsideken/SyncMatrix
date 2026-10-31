@@ -42,6 +42,10 @@ One matrix draws every view. Shortened:
   "show_daylight": true,
   "show_end_of_local_day": false,
   "icod_ageing": {"ageing_after_hours": 30, "stale_after_hours": 54},
+  "seclabs": [
+    {"name": "UNCLASSIFIED", "color": "#1a9850", "text_color": "#ffffff"},
+    {"name": "RESTRICTED", "color": "#f46d43", "text_color": "#000000"}
+  ],
   "status_styles": {"Predicted": {"fill": "tint"}, "High": {"fill": "tint"}, "Low": {"fill": "tint"}},
   "grouping": "Phenomenology",
   "groups": [
@@ -72,13 +76,15 @@ One matrix draws every view. Shortened:
 | `show_daylight` | | Day/night shading for the payload's locality |
 | `show_end_of_local_day` | | Dashed line at local midnight |
 | `icod_ageing` | | Colours the ICOD badge by the data's age (ColorBrewer RdYlGn): fresh (green) under `ageing_after_hours`, ageing (amber) from it, stale (red) from `stale_after_hours`. 30 and 54 h fit the daily refresh at 05:17 UTC: amber after one missed run, red after two. Demo data stays grey; without this key the badge is the plain ICOD colour |
+| `seclabs` | yes | Security labels, **lowest first**, each with `name`, `color` and optional `text_color`. A label's rank is its position in this list, never its spelling (`RESTRICTED` sorts before `UNCLASSIFIED` as text). Every window carries one of these (see [Security labels](#security-labels)); a new label is a config edit. The colours here are placeholders until marking policy sets them |
 | `status_styles` | | How a window's `status` is drawn. Colour is always the row's group colour; the status sets the style: `fill` is `solid` (the colour), `tint` (the group's `tint`, the default) or `none` (outline only), and optional `dash` is an SVG dash pattern, e.g. `"4 3"`. The current matrix uses `{"fill": "tint"}` for every status; every window, live and demo, is `Predicted` today. The chart's status legend appears only when a chart has more than one status |
 | `banners` | | Optional bars under the plot; `start`/`end` are UTC times of day (`HH:MM`, up to `24:00`); `level` 0 is nearest the plot. Not used now: the legacy banners carried each phenomenology's provenance, which now comes from the data |
 
 The exporter refuses a matrix with missing `groups`, a view without a title,
 a duplicate group or row, an alternative grouping whose rows differ from
 `groups` (windows must land on the same row in every grouping), an unknown
-status fill, or a banner that ends before it starts.
+status fill, a banner that ends before it starts, or a `seclabs` list that is
+empty, repeats a name or lacks a colour.
 
 ### Colours
 
@@ -104,6 +110,7 @@ drawing.
 
 ```json
 {
+  "seclab": "UNCLASSIFIED",
   "satellites": {
     "Sentinel-2": {"norad": [40697, 42063, 60989], "min_elevation": 78, "needs_daylight": true},
     "Sentinel-1": {"norad": [39634, 62261, 66315], "min_elevation": 44, "max_elevation": 61}
@@ -115,7 +122,9 @@ drawing.
 each spacecraft); `min_elevation` is degrees above the locality's horizon for
 a pass to count; optional `max_elevation` is for side-looking SAR (the highest
 point must stay at or below it, so the locality is in the swath);
-`needs_daylight` is for optical rows (sun up at the locality). Every row here
+`needs_daylight` is for optical rows (sun up at the locality). `seclab` is
+the security label written on every predicted window; a row may set its own
+`seclab` instead. Every row here
 must be a row of `matrix.json`. `scripts/fetch_tles.py` downloads orbits for
 every NORAD number listed.
 
@@ -159,11 +168,12 @@ while its operational status is unclear.
     {"name": "London", "point": "POINT(-0.1278 51.5074)", "kind": "city"}
   ],
   "folder": "web/live",
+  "max_seclab": "UNCLASSIFIED",
   "libraries": {
     "predicted": {"store": "data/predicted", "days": 3, "keep_snapshots": 14},
     "demo": {"store": "data/demo", "locality": {"name": "Demo", "point": "POINT(-100 40)"},
              "days": [{"date": "2026-10-28", "icod": "2026-10-28T12:00:00Z"}],
-             "events_per_day": 20}
+             "events_per_day": 20, "seclab": "UNCLASSIFIED"}
   }
 }
 ```
@@ -179,6 +189,10 @@ while its operational status is unclear.
   data file evaluated, so that place's charts show just those rows.
 - **`folder`** is the one library the page reads: every view of every data
   file in every store is drawn there.
+- **`max_seclab`** is the highest security label the folder may publish.
+  `web/live` is a public site, so it is `UNCLASSIFIED`. It is checked on what
+  is published, whichever store a window came from: a window above it fails
+  the build and is never dropped quietly.
 - **Each source of data files** in `libraries` has a `store` under `data/`.
 - **`libraries.predicted`**: `days` from the orbit snapshot's date and
   `keep_snapshots` kept in `data/tle`. The daily refresh overwrites this
@@ -186,11 +200,14 @@ while its operational status is unclear.
 - **`libraries.demo`**: one extra `locality` (the **Demo** entry, always last
   in the page's Locality list; its point sets the day/night shading), the
   demo `days` (each with its demo ICOD) and `events_per_day` sample windows
-  on the matrix's satellite rows, all `Predicted` like the live data.
+  on the matrix's satellite rows, all `Predicted` like the live data, each
+  with the label in `seclab`.
 
 `load_workflow` (`python/workflow.py`) checks it first: unique names, a valid
 point on the globe, a timezone for every locality (the Demo one too), a
-folder, a store for each source, and every catalogue row in the matrix. `POINT` takes longitude
+folder, a store for each source, every catalogue row in the matrix, and
+that `max_seclab`, the catalogue's labels and the demo label are labels of
+the matrix, none above `max_seclab`. `POINT` takes longitude
 first. A latitude-first point is caught only when it lands off the globe (its
 longitude is above 90° either way, e.g. `POINT(51.5 -120)`); one that stays
 on the globe, like London as `POINT(51.5074 -0.1278)`, is accepted, so check
@@ -213,7 +230,7 @@ view: every view is drawn from it.
   "windows": [
     {"id": "Sentinel-1-39634-0612Z", "satellite": "Sentinel-1", "norad": 39634,
      "start": "2026-10-30T06:10:41Z", "end": "2026-10-30T06:13:02Z", "status": "Predicted",
-     "label": "SENTINEL-1A pass", "notes": "Highest 52° at 0612Z (sun -9°)."}
+     "seclab": "UNCLASSIFIED", "label": "SENTINEL-1A pass", "notes": "Highest 52° at 0612Z (sun -9°)."}
   ]
 }
 ```
@@ -226,4 +243,32 @@ view: every view is drawn from it.
 | `icod_source` | | Where the ICOD came from (`celestrak`; `demo` marks demo data) |
 | `source` | | One line on where the windows came from, shown on exports |
 | `evaluated` | | Per row, the spacecraft checked, so "no passes" is told apart from "not checked". **The chart draws exactly these rows** (in every view and grouping; empty groups are dropped), and each group's provenance notes count them. Without it, the groups that have windows are drawn |
-| `windows` | yes | Access windows: `satellite` (a matrix row), `start`, `end` (ISO 8601 UTC), `status` (a `status_styles` key), plus `norad` when the window comes from the catalogue, and optional `id`, `label`, `notes` shown in popups |
+| `windows` | yes | Access windows: `satellite` (a matrix row), `start`, `end` (ISO 8601 UTC), `status` (a `status_styles` key), `seclab` (a `seclabs` name; required, never defaulted), plus `norad` when the window comes from the catalogue, and optional `id`, `label`, `notes` shown in popups |
+
+## Security labels
+
+Every access window carries a security label (`seclab`), written by the step
+that makes the data file: prediction from `catalogue.json`, the demo from
+`libraries.demo.seclab`, later a real feed. Everything is `UNCLASSIFIED`
+today, but nothing assumes it:
+
+- **Required, never defaulted.** A window without a label, or with one that is
+  not in `matrix.json` `seclabs`, fails the build, like a missing ICOD.
+- **Ranked by position.** `seclabs` is lowest first; nothing compares labels
+  as text.
+- **A ceiling on what is published.** `workflow.json` `max_seclab` is the
+  highest label the page's library may hold. The build refuses a window above
+  it, and `scripts/check_data.py` checks every published event against it
+  (ranked from `matrix.json`, not from the payloads).
+- **Rolled-up bars take the highest label** of the windows merged into them.
+  Unlike status, mixed labels are allowed.
+- **The page draws** each access's own label in its popup, and a full-width
+  banner at the very top and bottom of the chart with the highest label among
+  the accesses shown (a chart with none shows the library's ceiling). The
+  banner is part of the SVG, so PNG and SVG exports carry it at their top and
+  bottom edges, and their provenance line names it.
+
+The payload carries `"seclabs": {"labels": [...], "ceiling": ...}`. The tests
+draw `RESTRICTED` windows from temporary files only; none is ever written
+under `data/` or `web/`. The exact marking wording and colours belong to
+marking policy; they are one edit in `seclabs`.

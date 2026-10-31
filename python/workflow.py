@@ -25,11 +25,14 @@ workflow.json, checked by load_workflow():
   provider (["HawkEye 360"]); without it, every row in the catalogue. A
   chart draws only what its data file evaluated.
 - folder: the library the page reads (web/live).
+- max_seclab: the highest security label the folder may publish (a label in
+  matrix.json "seclabs"). web/live is a public site, so UNCLASSIFIED; a
+  window above it fails the build.
 - libraries.predicted: store, days (from the orbit snapshot's date),
   keep_snapshots.
 - libraries.demo: store, locality (the one "Demo" entry in the page's
   Locality list, and the point its daylight is drawn for), days
-  ({date, icod}), events_per_day.
+  ({date, icod}), events_per_day, seclab (the label on every demo window).
 """
 
 import json
@@ -103,7 +106,17 @@ def load_workflow(path=CONFIG / "workflow.json") -> dict:
         if finder.timezone_at(lat=lat, lng=lon) is None:
             fail("%s: no timezone found for %s" % (name, point))
 
-    groups = named_groups(load_matrix())
+    matrix = load_matrix()
+    rank = ep.seclab_rank(matrix)
+
+    def check_label(label, what):
+        if label not in rank:
+            fail("%s must be a security label from matrix.json seclabs (%s); got %r" % (what, ", ".join(rank), label))
+        if "max_seclab" in workflow and rank[label] > rank.get(workflow["max_seclab"], -1):
+            fail("%s is %s, above max_seclab %s" % (what, label, workflow["max_seclab"]))
+
+    check_label(workflow.get("max_seclab"), "max_seclab")
+    groups = named_groups(matrix)
     for loc in localities:
         unknown = sorted(set(loc.get("evaluate", groups)) - set(groups))
         if unknown or loc.get("evaluate") == []:
@@ -120,11 +133,14 @@ def load_workflow(path=CONFIG / "workflow.json") -> dict:
     if predicted:
         if int(predicted.get("days", 0)) < 1 or int(predicted.get("keep_snapshots", 0)) < 1:
             fail("libraries.predicted needs days >= 1 and keep_snapshots >= 1")
-        rows = set(ep.row_groups(load_matrix()))
-        catalogue = json.loads((CONFIG / "catalogue.json").read_text()).get("satellites") or fail("catalogue.json has no satellites")
-        unknown = sorted(set(catalogue) - rows)
+        rows = set(ep.row_groups(matrix))
+        catalogue = json.loads((CONFIG / "catalogue.json").read_text())
+        satellites = catalogue.get("satellites") or fail("catalogue.json has no satellites")
+        unknown = sorted(set(satellites) - rows)
         if unknown:
             fail("catalogue.json rows not in matrix.json: %s" % ", ".join(unknown))
+        for row, spec in satellites.items():
+            check_label(spec.get("seclab", catalogue.get("seclab")), "catalogue.json %s seclab" % row)
 
     if demo:
         for day in demo.get("days") or fail("libraries.demo needs days"):
@@ -132,6 +148,7 @@ def load_workflow(path=CONFIG / "workflow.json") -> dict:
             ep.parse_iso(day["icod"])
         if int(demo.get("events_per_day", -1)) < 0:
             fail("libraries.demo needs events_per_day >= 0")
+        check_label(demo.get("seclab"), "libraries.demo seclab")
     return workflow
 
 ################################################################################
@@ -176,7 +193,7 @@ def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
         lon, lat = ep.parse_wkt_point(point)
         # Only the rows this place evaluates (all by default): its data file covers those, and the chart shows them.
         wanted = evaluated_rows(matrix, loc)
-        here = {"satellites": {row: spec for row, spec in catalogue["satellites"].items() if row in wanted}}
+        here = dict(catalogue, satellites={row: spec for row, spec in catalogue["satellites"].items() if row in wanted})
         evaluated = {row: spec["norad"] for row, spec in here["satellites"].items()}
         for offset in range(int(predicted["days"])):
             day = first_day + timedelta(days=offset)
@@ -207,7 +224,7 @@ def demo_data(workflow: dict, matrix: dict) -> list:
     out = []
     for day in demo["days"]:
         start = ep.parse_iso("%sT00:00:00Z" % day["date"])
-        events = ep.demo_events(groups, start, tick, int(demo["events_per_day"]), seed_for(day["date"]))
+        events = ep.demo_events(groups, start, tick, int(demo["events_per_day"]), seed_for(day["date"]), demo["seclab"])
         out.append({"locality": dict(demo["locality"]),
                     "evaluation_date": day["date"],
                     "icod": day["icod"],
@@ -216,7 +233,8 @@ def demo_data(workflow: dict, matrix: dict) -> list:
                     # Demo covers every row, so its charts show every group.
                     "evaluated": {ep.row_id(r): [] for g in matrix["groups"] for r in g["rows"]},
                     "windows": [{"id": e["id"], "satellite": e["row"], "start": e["start"], "end": e["end"],
-                                 "status": e["status"], "label": e["label"], "notes": e["notes"]}
+                                 "status": e["status"], "seclab": e["seclab"], "label": e["label"],
+                                 "notes": e["notes"]}
                                 for e in events]})
     return out
 
@@ -225,14 +243,16 @@ def stores(workflow: dict) -> list:
     return [REPO / library["store"] for library in workflow["libraries"].values()]
 
 
-def draw_library(matrix: dict, store_dirs: list, folder) -> int:
+def draw_library(matrix: dict, store_dirs: list, folder, ceiling: str) -> int:
     """Redraw every view of every data file in the stores into the library folder.
 
     The folder's view folders are replaced whole, so a day dropped from a
-    store (or a view dropped from the matrix) leaves the page too.
+    store (or a view dropped from the matrix) leaves the page too. ceiling
+    is the folder's max_seclab: the check is on what is published, whichever
+    store a window came from.
     """
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
     for old in (p for p in folder.iterdir() if p.is_dir() and not p.name.startswith(".")):
         shutil.rmtree(old)
-    return ep.write_views(matrix, store_files(*store_dirs), folder)
+    return ep.write_views(matrix, store_files(*store_dirs), folder, ceiling)

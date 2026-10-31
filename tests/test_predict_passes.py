@@ -104,11 +104,11 @@ def test_unknown_norad_is_an_error():
 
 
 def test_roll_up_merges_overlapping_passes():
-    events = [{"row": "WorldView-1", "label": "WV-1 pass", "start": "2026-10-29T10:00:00Z", "end": "2026-10-29T10:05:00Z", "status": "Predicted"},
-              {"row": "Legion-1", "label": "LEGION 1 pass", "start": "2026-10-29T10:03:00Z", "end": "2026-10-29T10:08:00Z", "status": "Predicted"},
-              {"row": "Sentinel-1", "label": "S1A pass", "start": "2026-10-29T10:04:00Z", "end": "2026-10-29T10:06:00Z", "status": "Predicted"},
-              {"row": "Legion-2", "label": "LEGION 2 pass", "start": "2026-10-29T12:00:00Z", "end": "2026-10-29T12:02:00Z", "status": "Predicted"}]
-    rolled = ep.roll_up(events, GROUP)
+    events = [{"row": "WorldView-1", "label": "WV-1 pass", "start": "2026-10-29T10:00:00Z", "end": "2026-10-29T10:05:00Z", "status": "Predicted", "seclab": "UNCLASSIFIED"},
+              {"row": "Legion-1", "label": "LEGION 1 pass", "start": "2026-10-29T10:03:00Z", "end": "2026-10-29T10:08:00Z", "status": "Predicted", "seclab": "UNCLASSIFIED"},
+              {"row": "Sentinel-1", "label": "S1A pass", "start": "2026-10-29T10:04:00Z", "end": "2026-10-29T10:06:00Z", "status": "Predicted", "seclab": "UNCLASSIFIED"},
+              {"row": "Legion-2", "label": "LEGION 2 pass", "start": "2026-10-29T12:00:00Z", "end": "2026-10-29T12:02:00Z", "status": "Predicted", "seclab": "UNCLASSIFIED"}]
+    rolled = ep.roll_up(events, GROUP, ep.seclab_rank(MATRIX))
     eo = [r for r in rolled if r["row"] == "EO"]
     assert [(r["start"][11:16], r["end"][11:16], r["label"]) for r in eo] == [
         ("10:00", "10:08", "2 EO passes"), ("12:00", "12:02", "1 EO pass")]
@@ -125,6 +125,16 @@ def test_catalogue_entries_need_norad_and_threshold(tmp_path):
     path.write_text(json.dumps({"satellites": {"Legion-1": {"norad": [59625]}}}))
     with pytest.raises(ValueError, match="needs \"norad\" and \"min_elevation\""):
         pp.load_catalogue(path)
+    path.write_text(json.dumps({"satellites": {"Legion-1": {"norad": [59625], "min_elevation": 40}}}))
+    with pytest.raises(ValueError, match="has no \"seclab\""):
+        pp.load_catalogue(path)
+
+
+def test_predicted_windows_carry_the_catalogue_label():
+    catalogue = dict(CONFIG, satellites={"Legion-1": dict(CONFIG["satellites"]["Legion-1"], seclab="RESTRICTED"),
+                                         "Legion-2": CONFIG["satellites"]["Legion-2"]})
+    labels = {(e["satellite"], e["seclab"]) for e in pp.predict_windows(catalogue, SNAPSHOT, 0, 25, DAY, DAY + timedelta(days=3))}
+    assert labels <= {("Legion-1", "RESTRICTED"), ("Legion-2", CONFIG["seclab"])} and labels
 
 
 def test_live_simplified_provenance():

@@ -190,6 +190,8 @@ body {
 .sm-event:focus      { outline: none; }
 
 .sm-banner text  { font-size: 12px; font-weight: 700; }
+/* Security label banner, top and bottom: colours come from the payload. */
+.sm-seclab text  { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
 .sm-legend text  { font-size: 11px; fill: var(--sm-ink); }
 
 .sm-status {
@@ -233,4 +235,15 @@ body {
   padding: 4px 0 2px 7px;
   border-left: 3px solid #525252;
   opacity: 0.9;
+}
+
+/* Popup: this access's own security label, in its payload colour. */
+.sm-tooltip-seclab {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 0 5px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }

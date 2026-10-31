@@ -155,3 +155,53 @@ def test_new_locality_is_picked_up(workflow_copy, monkeypatch):
     path, data = workflow_copy
     data["localities"].append({"name": "Nairobi", "point": "POINT(36.8219 -1.2921)", "kind": "city"})
     assert ("Nairobi", "POINT(36.8219 -1.2921)") in wf.sites(load(path, data, monkeypatch))
+
+
+def test_published_windows_are_at_or_under_the_ceiling():
+    # Every event in the public library, checked by its field and ranked by the matrix (not by text).
+    workflow, matrix = wf.load_workflow(), wf.load_matrix()
+    rank = ep.seclab_rank(matrix)
+    ceiling = workflow["max_seclab"]
+    payloads = list((REPO / workflow["folder"]).glob("*/*/*.json"))
+    assert payloads
+    for path in payloads:
+        payload = json.loads(path.read_text())
+        assert payload["seclabs"]["ceiling"] == ceiling, path
+        for event in payload["events"]:
+            assert rank[event["seclab"]] <= rank[ceiling], (path, event.get("label"))
+
+
+def test_max_seclab_must_be_a_label(workflow_copy, monkeypatch):
+    path, data = workflow_copy
+    data["max_seclab"] = "Unclassified"
+    with pytest.raises(ValueError, match="max_seclab must be a security label"):
+        load(path, data, monkeypatch)
+    del data["max_seclab"]
+    with pytest.raises(ValueError, match="max_seclab must be a security label"):
+        load(path, data, monkeypatch)
+
+
+def test_labels_written_above_the_ceiling_are_refused(workflow_copy, monkeypatch):
+    path, data = workflow_copy
+    data["libraries"]["demo"]["seclab"] = "RESTRICTED"
+    with pytest.raises(ValueError, match="libraries.demo seclab is RESTRICTED, above max_seclab UNCLASSIFIED"):
+        load(path, data, monkeypatch)
+    data["libraries"]["demo"]["seclab"] = "UNCLASSIFIED"
+    catalogue = path.parent / "catalogue.json"
+    entries = json.loads(catalogue.read_text())
+    entries["satellites"]["Legion-1"]["seclab"] = "RESTRICTED"
+    catalogue.write_text(json.dumps(entries))
+    with pytest.raises(ValueError, match="catalogue.json Legion-1 seclab is RESTRICTED, above max_seclab"):
+        load(path, data, monkeypatch)
+
+
+def test_the_folder_ceiling_applies_to_every_store(tmp_path):
+    # A store of its own cannot publish above the folder's ceiling: the check is on what is drawn.
+    workflow, matrix = wf.load_workflow(), wf.load_matrix()
+    [data] = wf.demo_data(dict(workflow, libraries=dict(workflow["libraries"], demo=dict(
+        workflow["libraries"]["demo"], days=workflow["libraries"]["demo"]["days"][:1]))), matrix)
+    data["windows"][0]["seclab"] = "RESTRICTED"
+    wf.write_store(tmp_path / "other", [data])
+    with pytest.raises(ValueError, match="above this library's ceiling UNCLASSIFIED"):
+        wf.draw_library(matrix, [tmp_path / "other"], tmp_path / "web", workflow["max_seclab"])
+    assert wf.draw_library(matrix, [tmp_path / "other"], tmp_path / "web", "RESTRICTED") == len(matrix["views"])

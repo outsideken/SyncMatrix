@@ -74,6 +74,7 @@
     footerHeight: 26,
     hourLabelGap: 6,
     nowTagHeight: 20, // the NOW tag's slot above the hour labels (only on today's chart)
+    seclabHeight: 18, // the security label banner, at the very top and bottom
   };
   // Event boxes: colour = the group the row is shown in (phenomenology, or e.g.
   // provider under Group by Provider), so a strip and its boxes always match;
@@ -331,7 +332,10 @@
     const left = stripWidth + LAYOUT.labelGap +
       (groupOnly ? 0 : measureLabelWidth(rows.map((r) => r.label)) + LAYOUT.labelGap);
     const right = LAYOUT.marginRight;
-    const bottom = bannerLevels * LAYOUT.bannerHeight + LAYOUT.footerHeight;
+    // The security label banner: the highest label drawn, top and bottom (payloads without labels have none).
+    const seclab = highestSeclab(p);
+    const seclabSlot = seclab ? LAYOUT.seclabHeight : 0;
+    const bottom = bannerLevels * LAYOUT.bannerHeight + LAYOUT.footerHeight + seclabSlot;
     const plotWidth = Math.max(100, width - left - right);
 
     // Every hour is labelled ("0000Z", "0100Z", ...). When the frame is too narrow
@@ -345,11 +349,11 @@
     const now = new Date();
     const showNow = now >= p.window.start && now <= p.window.end;
     const nowSlot = showNow ? LAYOUT.nowTagHeight : 0;
-    const top = (options.showTitle ? LAYOUT.titleHeight : 6) + nowSlot + axisHeight;
+    const top = seclabSlot + (options.showTitle ? LAYOUT.titleHeight : 6) + nowSlot + axisHeight;
     const rowHeight = Math.max(LAYOUT.rowMin,
       Math.min(LAYOUT.rowMax, (height - top - bottom) / Math.max(rows.length, 1)));
     const plotHeight = rowHeight * rows.length;
-    const svgHeight = top + plotHeight + bottom;
+    let svgHeight = top + plotHeight + bottom;
 
     const x = d3.scaleUtc().domain([p.window.start, p.window.end]).range([0, plotWidth]);
     const rowY = new Map(rows.map((r, i) => [r.id, i * rowHeight]));
@@ -366,7 +370,7 @@
     //--------------------------------------------------------------------------
 
     if (options.showTitle) {
-      const title = svg.append("g").attr("transform", `translate(${left + plotWidth / 2},0)`);
+      const title = svg.append("g").attr("transform", `translate(${left + plotWidth / 2},${seclabSlot})`);
       title.append("text").attr("class", "sm-title").attr("text-anchor", "middle").attr("y", 17).text(p.title || "");
       title.append("text").attr("class", "sm-subtitle").attr("text-anchor", "middle").attr("y", 33).text(p.subtitle || "");
     }
@@ -622,8 +626,50 @@
     // Narrow frames: drop the legend to its own line instead of overlapping the ICOD.
     if (icodWidth && plotWidth + lx < icodWidth + 16) {
       legend.attr("transform", `translate(${plotWidth},${footerY + 18})`);
-      svg.attr("height", svgHeight + 18);
+      svgHeight += 18;
+      svg.attr("height", svgHeight);
     }
+
+    if (seclab) {
+      drawSeclabBanner(svg, seclab, width, 0, "top");
+      drawSeclabBanner(svg, seclab, width, svgHeight - seclabSlot, "bottom");
+    }
+  }
+
+  //============================================================================
+  // SECURITY LABEL
+  //============================================================================
+
+  // Each event carries its own label ("seclab"); a rolled-up bar already has the
+  // highest of its windows. The payload lists the labels lowest first: rank is
+  // the position in that list, never the spelling ("RESTRICTED" < "UNCLASSIFIED"
+  // as text). The chart is marked with the highest label among the events
+  // drawn; a chart with none is marked with the library's ceiling.
+  function highestSeclab(p) {
+    const labels = p.seclabs && p.seclabs.labels;
+    if (!labels || !labels.length) return null;
+    const rank = new Map(labels.map((l, i) => [l.name, i]));
+    const drawn = p.events.map((e) => e.seclab).filter((name) => rank.has(name));
+    const name = drawn.length ? drawn.reduce((a, b) => (rank.get(b) > rank.get(a) ? b : a)) : p.seclabs.ceiling;
+    const label = labels[rank.get(name)];
+    return label ? { ...label, empty: !drawn.length } : null;
+  }
+
+  function seclabFor(p, name) {
+    return ((p.seclabs && p.seclabs.labels) || []).find((l) => l.name === name);
+  }
+
+  function drawSeclabBanner(svg, label, width, y, where) {
+    const banner = svg.append("g").attr("class", "sm-seclab sm-seclab-" + where)
+      .attr("transform", `translate(0,${y})`);
+    banner.append("rect").attr("width", width).attr("height", LAYOUT.seclabHeight).attr("fill", label.color);
+    banner.append("text").attr("x", width / 2).attr("y", LAYOUT.seclabHeight / 2)
+      .attr("text-anchor", "middle").attr("dominant-baseline", "central")
+      .attr("fill", label.text_color || readableInk(label.color))
+      .text(label.name);
+    banner.append("title").text(label.empty
+      ? `Security label: ${label.name}, this library's ceiling (no accesses shown).`
+      : `Security label: ${label.name}, the highest label among the accesses shown. Each access's own label is in its popup.`);
   }
 
   //============================================================================
@@ -739,6 +785,12 @@
       `<span class="muted">${formatFull(e.start)} – ${formatTick(e.end)}</span>`,
     ];
     if (e.notes) parts.push(`<span class="muted">${escapeHtml(e.notes)}</span>`);
+    const label = current && seclabFor(current, e.seclab);
+    if (e.seclab) {
+      // This access's own label (the chart banner shows the highest drawn).
+      parts.push(`<span class="sm-tooltip-seclab"${label ? ` style="background:${label.color};color:${label.text_color || readableInk(label.color)}"` : ""}>` +
+                 `${escapeHtml(e.seclab)}</span>`);
+    }
     let html = parts.join("<br>");
     const g = e.phenomenology;
     const prov = g && current && current.provenance && current.provenance[g.id];
@@ -907,29 +959,35 @@
 
     const width = +live.getAttribute("width");
     const height = +live.getAttribute("height");
-    const header = options.showTitle ? 0 : 44;
+    // The chart's security banners move to the image's very top and bottom, outside the
+    // title and provenance added here; their old places in the chart are cut out.
+    const seclab = highestSeclab(p);
+    const cut = seclab ? LAYOUT.seclabHeight : 0;
+    clone.querySelectorAll(".sm-seclab").forEach((el) => el.remove());
+    const header = cut + (options.showTitle ? 0 : 44);
     const phenomenologyLines = exportProvenanceLines(p);
-    const footer = 44 + phenomenologyLines.length * 15;
+    const footer = 44 + phenomenologyLines.length * 15 + cut;
     const ink = getComputedStyle(document.body).color;
     const font = getComputedStyle(document.body).fontFamily;
 
     const chart = document.createElementNS(SVG_NS, "g");
-    chart.setAttribute("transform", `translate(0,${header})`);
+    chart.setAttribute("transform", `translate(0,${header - cut})`);
     while (clone.firstChild) chart.appendChild(clone.firstChild);
 
+    const total = height - 2 * cut + header + footer;
     const out = d3.select(clone)
       .attr("xmlns", SVG_NS)
-      .attr("width", width).attr("height", height + header + footer)
-      .attr("viewBox", `0 0 ${width} ${height + header + footer}`)
+      .attr("width", width).attr("height", total)
+      .attr("viewBox", `0 0 ${width} ${total}`)
       .attr("style", `font-family:${font}`);
     out.append("rect").attr("width", "100%").attr("height", "100%")
       .attr("fill", getComputedStyle(document.body).backgroundColor);
     out.node().appendChild(chart);
 
-    if (header) {
-      out.append("text").attr("x", width / 2).attr("y", 18).attr("text-anchor", "middle")
+    if (!options.showTitle) {
+      out.append("text").attr("x", width / 2).attr("y", cut + 18).attr("text-anchor", "middle")
         .attr("style", `fill:${ink};font-size:15px;font-weight:700`).text(p.title || "");
-      out.append("text").attr("x", width / 2).attr("y", 34).attr("text-anchor", "middle")
+      out.append("text").attr("x", width / 2).attr("y", cut + 34).attr("text-anchor", "middle")
         .attr("style", `fill:${ink};font-size:12px;font-weight:600;opacity:0.7`).text(p.subtitle || "");
     }
 
@@ -939,17 +997,19 @@
       [p.source ? "Source: " + p.source : null,
        dataSource ? "Data: " + dataSource : null,
        (p.alt_groupings || []).length ? "Y-axis: " + grouping : null,
+       seclab ? "Security label: " + seclab.name + (seclab.empty ? " (library ceiling; no accesses shown)"
+                                                                 : " (highest among accesses shown)") : null,
        "Exported " + formatExportTime(new Date())].filter(Boolean).join(" · "),
     ];
     out.selectAll("text.sm-export-provenance").data(provenance).join("text")
       .attr("class", "sm-export-provenance")
-      .attr("x", 8).attr("y", (_, i) => height + header + 18 + i * 15)
+      .attr("x", 8).attr("y", (_, i) => height - 2 * cut + header + 18 + i * 15)
       .attr("style", (_, i) => `fill:${i === 0 ? (EXPORT_ICOD_INK[icodState(p, oldestIcod(p))] || ink) : ink};` +
         `font-size:11px;font-weight:${i === 0 ? 700 : 400}`)
       .text((d) => d);
 
     // Per-phenomenology provenance (what the legacy banners carried), colour-keyed.
-    const top = height + header + 18 + provenance.length * 15;
+    const top = height - 2 * cut + header + 18 + provenance.length * 15;
     const rows = out.selectAll("g.sm-export-phenomenology").data(phenomenologyLines).join("g")
       .attr("class", "sm-export-phenomenology")
       .attr("transform", (_, i) => `translate(8,${top + i * 15})`);
@@ -958,6 +1018,16 @@
       .attr("style", (c) => `fill:${c}`);
     rows.append("text").attr("x", (d) => d.colors.length * 12 + 4)
       .attr("style", `fill:${ink};font-size:11px`).text((d) => d.text);
+
+    if (seclab) {
+      [0, total - cut].forEach((y) => {
+        const banner = out.append("g").attr("class", "sm-seclab").attr("transform", `translate(0,${y})`);
+        banner.append("rect").attr("width", width).attr("height", cut).attr("style", `fill:${seclab.color}`);
+        banner.append("text").attr("x", width / 2).attr("y", cut / 2 + 4).attr("text-anchor", "middle")
+          .attr("style", `fill:${seclab.text_color || readableInk(seclab.color)};font-size:11px;font-weight:700;letter-spacing:0.08em`)
+          .text(seclab.name);
+      });
+    }
 
     return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone);
   }

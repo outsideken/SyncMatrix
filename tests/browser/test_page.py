@@ -468,3 +468,79 @@ def test_city_locality_quarter_hour_timezone(page, base_url, errors):
     assert "Kathmandu (Asia/Kathmandu)" in texts(page, "#sm-locality option")
     assert page.locator(".sm-event").count() > 0
     assert errors == []
+
+################################################################################
+## Security labels
+################################################################################
+
+def labelled_payload(*labels, ceiling="RESTRICTED") -> dict:
+    """One Legion-3 window per label, an hour apart (temporary fixture: never written under web/ or data/)."""
+    payload = dated_payload()
+    payload["events"] = [{"row": "Legion-3", "start": "2026-10-28T%02d:00:00Z" % (8 + i),
+                          "end": "2026-10-28T%02d:10:00Z" % (8 + i), "status": "Predicted", "seclab": label,
+                          "label": "%s pass" % label} for i, label in enumerate(labels)]
+    payload["seclabs"]["ceiling"] = ceiling
+    return payload
+
+
+def test_seclab_banner_is_at_the_very_top_and_bottom(page, base_url, errors):
+    open_page(page, base_url + ABSTRACTED)
+    assert texts(page, ".sm-seclab text") == ["UNCLASSIFIED", "UNCLASSIFIED"]
+    svg = page.locator("svg.sm-root").bounding_box()
+    top, bottom = (page.locator(".sm-seclab rect").nth(i).bounding_box() for i in (0, 1))
+    assert top["y"] == svg["y"] and top["width"] == svg["width"]
+    assert bottom["y"] + bottom["height"] == pytest.approx(svg["y"] + svg["height"])
+    assert top["y"] + top["height"] <= page.locator(".sm-title").bounding_box()["y"]
+    assert page.locator(".sm-seclab rect").first.get_attribute("fill") == "#1a9850"  # from the payload
+    page.locator(".sm-event").first.hover()
+    expect(page.locator(".sm-tooltip .sm-tooltip-seclab")).to_have_text("UNCLASSIFIED")
+    assert errors == []
+
+
+def test_banner_shows_the_highest_label_and_each_popup_its_own(page, base_url, errors):
+    open_payload(page, base_url, labelled_payload("UNCLASSIFIED", "RESTRICTED", "UNCLASSIFIED"))
+    assert texts(page, ".sm-seclab text") == ["RESTRICTED", "RESTRICTED"]
+    assert page.locator(".sm-seclab rect").first.get_attribute("fill") == "#f46d43"
+    expect(page.locator(".sm-seclab title").first).to_contain_text("highest label among the accesses shown")
+    for i, label in enumerate(["UNCLASSIFIED", "RESTRICTED", "UNCLASSIFIED"]):
+        page.locator(".sm-event").nth(i).hover()
+        expect(page.locator(".sm-tooltip .sm-tooltip-seclab")).to_have_text(label)
+    assert errors == []
+
+
+def test_banner_ranks_by_position_not_spelling(page, base_url, errors):
+    # Swap the order: with UNCLASSIFIED listed last, it is the higher label.
+    payload = labelled_payload("RESTRICTED", "UNCLASSIFIED", ceiling="UNCLASSIFIED")
+    payload["seclabs"]["labels"] = payload["seclabs"]["labels"][::-1]
+    open_payload(page, base_url, payload)
+    assert texts(page, ".sm-seclab text") == ["UNCLASSIFIED", "UNCLASSIFIED"]
+    assert errors == []
+
+
+def test_chart_without_accesses_shows_the_ceiling(page, base_url, errors):
+    payload = labelled_payload(ceiling="UNCLASSIFIED")
+    page.route(base_url + "/fixture.json", lambda route: route.fulfill(json=payload))
+    page.goto(base_url + "/index.html?data=fixture.json")
+    page.wait_for_selector("svg.sm-root .sm-seclab")
+    assert texts(page, ".sm-seclab text") == ["UNCLASSIFIED", "UNCLASSIFIED"]
+    expect(page.locator(".sm-seclab title").first).to_contain_text("ceiling (no accesses shown)")
+    assert errors == []
+
+
+@pytest.mark.parametrize("title", ["1", "0"], ids=["page-title", "export-title"])
+def test_export_is_marked_at_its_top_and_bottom(page, base_url, errors, tmp_path, title):
+    # With the page's title, and with title=0 (the export adds the title under the top banner).
+    open_payload(page, base_url, labelled_payload("UNCLASSIFIED", "RESTRICTED"), toolbar=True)
+    page.goto(page.url + "&title=" + title)
+    page.wait_for_selector("svg.sm-root .sm-event")
+    with page.expect_download() as info:
+        page.locator("#sm-export button[data-format=svg]").click()
+    path = tmp_path / "x.svg"
+    info.value.save_as(path)
+    svg = path.read_text()
+    assert svg.count(">RESTRICTED</text>") == 2 and ">UNCLASSIFIED</text>" not in svg
+    assert "Security label: RESTRICTED (highest among accesses shown)" in svg
+    height = float(re.search(r'<svg[^>]* height="([\d.]+)"', svg).group(1))
+    offsets = [float(y) for y in re.findall(r'class="sm-seclab" transform="translate\(0,([\d.]+)\)"', svg)]
+    assert offsets == [0, height - 18]
+    assert errors == []
