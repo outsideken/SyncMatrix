@@ -552,3 +552,140 @@ def test_export_is_marked_at_its_top_and_bottom(page, base_url, errors, tmp_path
     offsets = [float(y) for y in re.findall(r'class="sm-seclab" transform="translate\(0,([\d.]+)\)"', svg)]
     assert offsets == [0, height - 18]
     assert errors == []
+
+################################################################################
+## Collection request (demonstration)
+################################################################################
+
+PASS = {"peak": "2026-10-28T08:05:00Z", "elevation": 71.4, "azimuth": 192.3,
+        "sun_elevation": 18.2, "sun_azimuth": 141.7}
+BEFORE_PASS = "2026-10-28T07:00:00Z"
+
+
+def request_payload(**event) -> dict:
+    """dated_payload's Legion-3 window (08:00-08:10Z on 28 Oct) as a predicted pass of one satellite."""
+    payload = dated_payload()
+    payload["events"][0].update({"id": "Legion-3-58001-0805Z", "norad": 58001, "label": "LEGION-3 pass",
+                                 "seclab": "UNCLASSIFIED", "pass": PASS, **event})
+    return payload
+
+
+def open_in_parent(page: Page, base_url: str, payload: dict):
+    """The chart in an iframe whose parent records every message it is sent."""
+    page.route(base_url + "/fixture.json", lambda route: route.fulfill(json=payload))
+    parent = """<!doctype html><meta charset="utf-8"><body><script>
+      window.received = [];
+      window.addEventListener("message", (ev) => { if (ev.origin === location.origin) window.received.push(ev.data); });
+    </script><iframe id="matrix" style="width:1100px;height:700px"
+      src="index.html?data=fixture.json&origin=%s"></iframe></body>""" % base_url
+    page.route(base_url + "/parent.html", lambda route: route.fulfill(body=parent, content_type="text/html"))
+    page.goto(base_url + "/parent.html")
+    frame = page.frame_locator("#matrix")
+    frame.locator("svg.sm-root .sm-event").first.wait_for()
+    return frame
+
+
+def test_clicking_an_access_pins_its_popup_with_the_request_link(page, base_url, errors):
+    page.clock.set_fixed_time(BEFORE_PASS)
+    open_payload(page, base_url, request_payload())
+    tip = page.locator(".sm-tooltip")
+    page.locator(".sm-event").first.hover()
+    expect(tip.locator(".sm-request-hint")).to_have_text("Click to request collection")
+    expect(tip.locator(".sm-request-link")).to_have_count(0)  # a hovered popup moves with the pointer
+    page.locator(".sm-event").first.click()
+    expect(tip).to_have_class(re.compile(r"\bpinned\b"))
+    expect(tip.locator(".sm-request-link")).to_have_text("Submit Collection Request")
+    page.mouse.move(5, 5)  # leaving the access no longer closes it
+    expect(tip).to_be_visible()
+    page.keyboard.press("Escape")
+    expect(tip).to_be_hidden()
+    page.locator(".sm-event").first.click()
+    tip.locator(".sm-tooltip-close").click()
+    expect(tip).to_be_hidden()
+    page.locator(".sm-event").first.click()
+    page.locator(".sm-title").click()  # a click elsewhere closes it too
+    expect(tip).to_be_hidden()
+    assert errors == []
+
+
+def test_request_is_shown_not_sent_and_offered_to_the_dashboard(page, base_url, errors):
+    page.clock.set_fixed_time(BEFORE_PASS)
+    frame = open_in_parent(page, base_url, request_payload())
+    frame.locator(".sm-event").first.click()
+    frame.locator(".sm-request-link").click()
+    demo = frame.locator(".sm-request-demo")
+    expect(demo).to_be_visible()  # the popup stays open to show it
+    expect(demo.locator("strong")).to_have_text("Demonstration — request not sent")
+    shown = json.loads(demo.locator("pre").inner_text())
+    page.wait_for_function("window.received.some(m => m.type === 'sync-matrix:collection-request')")
+    [message] = [m for m in page.evaluate("window.received") if m["type"] == "sync-matrix:collection-request"]
+    assert message["demonstration"] is True and message["request"] == shown
+    assert shown["version"] == 1 and re.fullmatch(r"[0-9a-f-]{36}", shown["id"])
+    assert shown["requested_at"] == BEFORE_PASS  # minted at the click
+    assert "requester" not in shown
+    assert shown["seclab"] == "UNCLASSIFIED"
+    assert shown["access"] == {"id": "Legion-3-58001-0805Z", "satellite": "Legion-3", "norad": 58001,
+                               "label": "LEGION-3 pass", "start": "2026-10-28T08:00:00Z",
+                               "end": "2026-10-28T08:10:00Z", "status": "Predicted"}
+    assert shown["pass"] == PASS
+    assert shown["target"] == {"name": "London", "point": "POINT(-0.1278 51.5074)"}
+    assert shown["icod"] == ICOD and shown["icod_source"] == "celestrak"
+    assert errors == []
+
+
+def test_keyboard_pins_the_popup_and_escape_returns_to_the_access(page, base_url, errors):
+    page.clock.set_fixed_time(BEFORE_PASS)
+    open_payload(page, base_url, request_payload())
+    page.locator(".sm-event").first.focus()
+    page.keyboard.press("Enter")
+    expect(page.locator(".sm-tooltip")).to_have_class(re.compile(r"\bpinned\b"))
+    expect(page.locator(".sm-request-link")).to_be_focused()
+    page.keyboard.press("Escape")
+    expect(page.locator(".sm-event").first).to_be_focused()
+    expect(page.locator(".sm-tooltip")).not_to_have_class(re.compile(r"\bpinned\b"))
+    assert errors == []
+
+
+def test_request_without_pass_geometry_still_works(page, base_url, errors):
+    # Real feeds may not give the peak geometry: the request carries "pass": null.
+    page.clock.set_fixed_time(BEFORE_PASS)
+    payload = request_payload()
+    del payload["events"][0]["pass"]
+    open_payload(page, base_url, payload)
+    page.locator(".sm-event").first.click()
+    page.locator(".sm-request-link").click()
+    expect(page.locator(".sm-request-demo pre")).to_be_visible()
+    assert json.loads(page.locator(".sm-request-demo pre").inner_text())["pass"] is None
+    assert errors == []
+
+
+@pytest.mark.parametrize("now, payload", [
+    ("2026-10-28T08:05:00Z", request_payload()),                  # the access has started
+    (BEFORE_PASS, request_payload(norad=None)),                   # no single satellite (e.g. a Simplified bar)
+    (BEFORE_PASS, request_payload(seclab=None)),                  # no security label
+    (BEFORE_PASS, dict(request_payload(), icod_source="demo")),   # demo data
+], ids=["started", "no-norad", "no-seclab", "demo"])
+def test_no_request_link_when_the_access_cannot_be_requested(page, base_url, errors, now, payload):
+    page.clock.set_fixed_time(now)
+    open_payload(page, base_url, payload)
+    page.locator(".sm-event").first.hover()
+    expect(page.locator(".sm-tooltip")).to_be_visible()
+    expect(page.locator(".sm-tooltip .sm-request-hint")).to_have_count(0)
+    page.locator(".sm-event").first.click()
+    expect(page.locator(".sm-tooltip")).to_have_class(re.compile(r"\bpinned\b"))
+    expect(page.locator(".sm-tooltip .sm-request-link")).to_have_count(0)
+    assert errors == []
+
+
+def test_live_simplified_and_demo_offer_no_requests(page, base_url, errors):
+    page.clock.set_fixed_time("2026-10-01T00:00:00Z")  # before every committed day, so nothing has started
+    for query_string in ("matrix=simplified&locality=tokyo", "matrix=abstracted&locality=demo"):
+        open_page(page, base_url + "/index.html?manifest=live/index.json&" + query_string)
+        page.locator(".sm-event").first.click()
+        expect(page.locator(".sm-tooltip")).to_have_class(re.compile(r"\bpinned\b"))
+        expect(page.locator(".sm-tooltip .sm-request-link")).to_have_count(0)
+        page.keyboard.press("Escape")
+    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=abstracted&locality=tokyo")
+    page.locator(".sm-event").first.click()
+    expect(page.locator(".sm-tooltip .sm-request-link")).to_have_count(1)  # a predicted pass of one satellite
+    assert errors == []

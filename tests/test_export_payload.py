@@ -443,6 +443,23 @@ def restricted(tmp_path, **changes):
     return ep.load_data(path)
 
 
+def test_satellite_events_carry_norad_and_pass_geometry_but_roll_ups_do_not(tmp_path):
+    # What a collection request needs; a Simplified bar merges several passes, so it has neither.
+    path = write_data(tmp_path)
+    data = json.loads(path.read_text())
+    geometry = {"peak": "2026-10-27T06:04:00Z", "elevation": 81.2, "azimuth": 190.5,
+                "sun_elevation": 12.3, "sun_azimuth": 120.0}
+    data["windows"][0].update(norad=40697, **{"pass": geometry})
+    path.write_text(json.dumps(data))
+    matrix = ep.load_config(MATRIX)
+    abstracted = ep.build_view(matrix, "abstracted", ep.load_data(path))
+    first = next(e for e in abstracted["events"] if e.get("norad"))
+    assert first["norad"] == 40697 and first["pass"] == geometry
+    assert sum("pass" in e for e in abstracted["events"]) == 1  # optional: other windows have none
+    simplified = ep.build_view(matrix, "simplified", ep.load_data(path))
+    assert not any("norad" in e or "pass" in e for e in simplified["events"])
+
+
 def test_seclab_rank_is_the_list_position_not_the_spelling():
     rank = ep.seclab_rank(ep.load_config(MATRIX))
     assert rank == {"UNCLASSIFIED": 0, "RESTRICTED": 1}

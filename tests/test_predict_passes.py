@@ -163,3 +163,34 @@ def test_live_notes_count_the_spacecraft_that_pass():
                 assert " from %d of " % spacecraft in notes, (path.name, notes)
             else:
                 assert notes.startswith("No predicted passes"), (path.name, notes)
+
+
+def test_windows_carry_the_pass_geometry_at_the_peak(site):
+    # For a collection request: when the satellite is highest, where it is, and where the sun is.
+    lat, lon, events = site
+    observer = Observer(latitude=lat, longitude=lon)
+    for e in events:
+        g, spec = e["pass"], CONFIG["satellites"][e["satellite"]]
+        assert e["start"] <= g["peak"] <= e["end"], e["id"]
+        assert spec["min_elevation"] - 0.1 <= g["elevation"] <= spec.get("max_elevation", 90) + 0.1, e["id"]
+        assert 0 <= g["azimuth"] < 360 and 0 <= g["sun_azimuth"] < 360
+        assert g["sun_elevation"] == pytest.approx(sun_elevation(observer, ep.parse_iso(g["peak"])), abs=0.1)
+        if spec.get("needs_daylight"):
+            assert g["sun_elevation"] > 0
+        # Clipped only where the window is the day's edge, not a rise or set.
+        assert ("start" in g.get("clipped", [])) == (ep.parse_iso(e["start"]) == DAY), e["id"]
+        assert ("end" in g.get("clipped", [])) == (ep.parse_iso(e["end"]) == END), e["id"]
+
+
+def test_a_pass_cut_by_the_window_is_marked_clipped():
+    lat, lon = SITES["mid-north"]
+    e = next(e for e in pp.predict_windows(CONFIG, SNAPSHOT, lat, lon, DAY, END) if "clipped" not in e["pass"])
+    sat, peak = pp.satellite(SNAPSHOT, e["norad"]), ep.parse_iso(e["pass"]["peak"])
+    min_el = CONFIG["satellites"][e["satellite"]]["min_elevation"]
+    [whole] = pp.passes(sat, lat, lon, ep.parse_iso(e["start"]) - timedelta(minutes=1),
+                        ep.parse_iso(e["end"]) + timedelta(minutes=1), min_el)
+    assert whole[5] == []
+    [cut] = pp.passes(sat, lat, lon, peak - timedelta(seconds=30), peak + timedelta(seconds=30), min_el)
+    assert cut[5] == ["start", "end"]
+    assert cut[0] == peak - timedelta(seconds=30) and cut[2] == peak + timedelta(seconds=30)
+    assert abs((cut[1] - peak).total_seconds()) < 1

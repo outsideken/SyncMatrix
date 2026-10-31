@@ -179,7 +179,7 @@ body {
 .sm-daylight { opacity: var(--sm-night-opacity); }
 .sm-plot-bg  { fill: var(--sm-plot-bg); }
 
-.sm-now     { stroke: var(--sm-now); stroke-width: 2; }
+.sm-now     { stroke: var(--sm-now); stroke-width: 2; pointer-events: none; } /* never blocks the access under it */
 .sm-now-tag    { font-size: 10px; font-weight: 700; fill: var(--sm-bg); }
 .sm-now-tag-bg { fill: var(--sm-now); }
 .sm-eod     { stroke: var(--sm-eod); stroke-width: 2.5; stroke-dasharray: 6 4; }
@@ -235,6 +235,22 @@ body {
   padding: 4px 0 2px 7px;
   border-left: 3px solid #525252;
   opacity: 0.9;
+}
+
+/* A clicked popup is pinned: it takes the pointer and holds the request link. */
+.sm-tooltip.pinned { pointer-events: auto; max-width: 340px; padding-top: 7px; }
+.sm-tooltip-close {
+  position: absolute; top: 0; right: 2px;
+  border: 0; background: none; color: inherit;
+  font-size: 15px; line-height: 18px; cursor: pointer; padding: 0 4px;
+}
+.sm-request { margin-top: 7px; }
+.sm-request-link { color: inherit; font-weight: 700; }
+.sm-request-hint { margin-top: 5px; font-style: italic; }
+.sm-request-demo strong { color: #d73027; }
+.sm-request-demo pre {
+  margin: 4px 0 0; max-height: 220px; overflow: auto;
+  font-size: 10.5px; line-height: 1.3; white-space: pre;
 }
 
 /* Popup: this access's own security label, a centred band across the top in its payload colour. */
