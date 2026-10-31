@@ -301,7 +301,7 @@ def test_locality_is_required():
 def test_locality_from_events_file_gets_a_timezone():
     loc = ep.resolve_locality({"name": "Mid-north 40°N", "point": "POINT(-100 40)"})
     assert loc == {"id": "mid-north-40-n", "name": "Mid-north 40°N", "lon": -100.0, "lat": 40.0,
-                   "timezone": "America/Chicago"}
+                   "timezone": "America/Chicago", "point": "POINT(-100 40)"}
 
 ################################################################################
 ## Day/night shading across latitudes
@@ -441,6 +441,30 @@ def restricted(tmp_path, **changes):
     data["windows"][1]["seclab"] = "RESTRICTED"
     path.write_text(json.dumps(data))
     return ep.load_data(path)
+
+
+def test_locality_keeps_the_data_files_point_string():
+    # A collection request names the place as written: 85.3240, not the float's 85.324.
+    loc = ep.resolve_locality({"name": "Kathmandu", "point": "POINT(85.3240 27.7172)"})
+    assert loc["point"] == "POINT(85.3240 27.7172)" and loc["lon"] == 85.324
+    assert "point" not in ep.resolve_locality({"name": "Kathmandu", "lon": 85.324, "lat": 27.7172})
+
+
+def test_satellite_events_carry_norad_and_pass_geometry_but_roll_ups_do_not(tmp_path):
+    # What a collection request needs; a Simplified bar merges several passes, so it has neither.
+    path = write_data(tmp_path)
+    data = json.loads(path.read_text())
+    geometry = {"peak": "2026-10-27T06:04:00Z", "elevation": 81.2, "azimuth": 190.5,
+                "sun_elevation": 12.3, "sun_azimuth": 120.0}
+    data["windows"][0].update(norad=40697, **{"pass": geometry})
+    path.write_text(json.dumps(data))
+    matrix = ep.load_config(MATRIX)
+    abstracted = ep.build_view(matrix, "abstracted", ep.load_data(path))
+    first = next(e for e in abstracted["events"] if e.get("norad"))
+    assert first["norad"] == 40697 and first["pass"] == geometry
+    assert sum("pass" in e for e in abstracted["events"]) == 1  # optional: other windows have none
+    simplified = ep.build_view(matrix, "simplified", ep.load_data(path))
+    assert not any("norad" in e or "pass" in e for e in simplified["events"])
 
 
 def test_seclab_rank_is_the_list_position_not_the_spelling():

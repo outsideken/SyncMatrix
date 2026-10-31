@@ -243,7 +243,7 @@ view: every view is drawn from it.
 | `icod_source` | | Where the ICOD came from (`celestrak`; `demo` marks demo data) |
 | `source` | | One line on where the windows came from, shown on exports |
 | `evaluated` | | Per row, the spacecraft checked, so "no passes" is told apart from "not checked". **The chart draws exactly these rows** (in every view and grouping; empty groups are dropped), and each group's provenance notes count them. Without it, the groups that have windows are drawn |
-| `windows` | yes | Access windows: `satellite` (a matrix row), `start`, `end` (ISO 8601 UTC), `status` (a `status_styles` key), `seclab` (a `seclabs` name; required, never defaulted), plus `norad` when the window comes from the catalogue, and optional `id`, `label`, `notes` shown in popups |
+| `windows` | yes | Access windows: `satellite` (a matrix row), `start`, `end` (ISO 8601 UTC), `status` (a `status_styles` key), `seclab` (a `seclabs` name; required, never defaulted), plus `norad` when the window comes from the catalogue, and optional `id`, `label`, `notes` shown in popups, and `pass` (geometry at the pass peak: `peak`, `elevation`, `azimuth`, `sun_elevation`, `sun_azimuth`, degrees; `clipped` lists `start`/`end` when the day's edge cuts the pass) for a collection request |
 
 ## Security labels
 

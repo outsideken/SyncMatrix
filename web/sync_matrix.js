@@ -39,6 +39,11 @@
  *   out: {type: "sync-matrix:ready"}                       sent once on load
  *   out: {type: "sync-matrix:selection", matrix, locality, date}  selection changed
  *   out: {type: "sync-matrix:event-click", event: {...}}  user clicked an event
+ *   out: {type: "sync-matrix:collection-request", demonstration: true, request: {...}}
+ *        "Submit Collection Request" in a pinned popup (a demonstration:
+ *        nothing is sent anywhere else; see COLLECTION REQUEST below)
+ *
+ * Clicking an access pins its popup (Esc, × or a click elsewhere closes it).
  */
 
 (function () {
@@ -144,6 +149,7 @@
   }
 
   function setPayload(raw) {
+    unpinTooltip();
     try {
       current = parsePayload(raw);
       setStatus("");
@@ -509,8 +515,10 @@
       .on("mouseenter focus", (ev, e) => showTooltip(ev, e))
       .on("mousemove", (ev) => moveTooltip(ev))
       .on("mouseleave blur", hideTooltip)
-      .on("click", (ev, e) => notifyClick(e))
-      .on("keydown", (ev, e) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); notifyClick(e); } });
+      .on("click", (ev, e) => { notifyClick(e); pinTooltip(ev, e); })
+      .on("keydown", (ev, e) => {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); notifyClick(e); pinTooltip(ev, e); }
+      });
 
     //--------------------------------------------------------------------------
     // Markers: end of local day, now
@@ -778,7 +786,11 @@
   // TOOLTIP
   //============================================================================
 
-  function showTooltip(ev, e) {
+  // A hovered popup follows the pointer; a clicked one is pinned until closed,
+  // so its "Submit Collection Request" link can be reached.
+  let pinned = null; // {event, element, anchor: {clientX, clientY}, byKeyboard}
+
+  function tooltipHtml(e, { pinnedView = false } = {}) {
     const parts = [
       `<strong>${escapeHtml(e.label || "Event")}</strong>`,
       `${escapeHtml(e.where || e.row)}${e.status ? " · " + escapeHtml(e.status) : ""}`,
@@ -802,11 +814,61 @@
       if (prov.notes) lines.push(escapeHtml(prov.notes));
       html += `<div class="sm-tooltip-provenance" style="border-left-color:${g.color || "#525252"}">${lines.join("<br>")}</div>`;
     }
-    tooltip.html(html).attr("hidden", null);
+    if (pinnedView) {
+      html = `<button type="button" class="sm-tooltip-close" aria-label="Close">×</button>` + html;
+      if (requestable(e)) {
+        html += `<div class="sm-request"><a href="#" class="sm-request-link" role="button">Submit Collection Request</a></div>`;
+      }
+    } else if (requestable(e)) {
+      html += `<div class="sm-request-hint muted">Click to request collection</div>`;
+    }
+    return html;
+  }
+
+  function showTooltip(ev, e) {
+    if (pinned) return; // a pinned popup stays until it is closed
+    tooltip.html(tooltipHtml(e)).attr("hidden", null);
     moveTooltip(ev);
   }
 
+  function pinTooltip(ev, e) {
+    const box = ev.currentTarget.getBoundingClientRect();
+    const anchor = ev.clientX === undefined || ev.type === "keydown"
+      ? { clientX: box.right, clientY: box.top } : { clientX: ev.clientX, clientY: ev.clientY };
+    pinned = { event: e, element: ev.currentTarget, anchor, byKeyboard: ev.type === "keydown" };
+    tooltip.html(tooltipHtml(e, { pinnedView: true })).attr("hidden", null)
+      .classed("pinned", true).attr("role", "dialog").attr("aria-label", (e.label || "Access") + " details");
+    placeTooltip(anchor);
+    tooltip.select(".sm-tooltip-close").on("click", () => unpinTooltip({ restoreFocus: true }));
+    tooltip.select(".sm-request-link").on("click", (clickEv) => { clickEv.preventDefault(); submitRequest(e); });
+    if (ev.type === "keydown") (tooltip.select(".sm-request-link").node() || tooltip.select(".sm-tooltip-close").node()).focus();
+  }
+
+  function unpinTooltip({ restoreFocus = false } = {}) {
+    if (!pinned) return;
+    const { element, byKeyboard } = pinned;
+    pinned = null;
+    tooltip.classed("pinned", false).attr("role", null).attr("aria-label", null).attr("hidden", true);
+    // Back to the access for keyboard users (which shows its hover popup again).
+    if (restoreFocus && byKeyboard && element && element.isConnected) element.focus();
+  }
+
+  document.addEventListener("keydown", (ev) => { if (ev.key === "Escape") unpinTooltip({ restoreFocus: true }); });
+  document.addEventListener("click", (ev) => {
+    // composedPath(): the request link is replaced while its click is handled,
+    // so by now ev.target is no longer inside the popup.
+    const path = ev.composedPath();
+    if (pinned && !path.includes(tooltip.node()) && !path.some((n) => n.classList && n.classList.contains("sm-event"))) {
+      unpinTooltip();
+    }
+  });
+
   function moveTooltip(ev) {
+    if (pinned) return;
+    placeTooltip(ev);
+  }
+
+  function placeTooltip(ev) {
     const tip = tooltip.node();
     // Keyboard focus has no pointer position; anchor to the element instead.
     let cx = ev.clientX, cy = ev.clientY;
@@ -823,7 +885,81 @@
   }
 
   function hideTooltip() {
+    if (pinned) return;
     tooltip.attr("hidden", true);
+  }
+
+  //============================================================================
+  // COLLECTION REQUEST (demonstration)
+  //============================================================================
+  // The vision is an abstracted workflow: the page hands over one request
+  // object (which satellite, which pass, where, and the geometry at the pass
+  // peak) and a downstream service turns it into a real tasking. Here nothing
+  // is sent: the request is shown in the popup, marked "Demonstration —
+  // request not sent", and offered to the dashboard by postMessage (to the
+  // trusted origin only, never "*"). The requester is left out on purpose:
+  // the downstream service knows who is signed in.
+  //
+  // Offered only for a predicted pass of one satellite (a catalogue NORAD
+  // number; Simplified bars and Demo windows have none), that has a
+  // security label, has not started, and is not demo data.
+
+  const REQUEST_VERSION = 1;
+
+  function requestable(e) {
+    return Boolean(current && current.icod_source !== "demo" && e.norad && e.seclab && e.start > new Date());
+  }
+
+  function newRequestId() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return "req-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+  }
+
+  // The row's group in a grouping, whichever grouping is on screen.
+  function groupOfRow(groups, row) {
+    const group = (groups || []).find((g) => g.rows.some((r) => r.id === row));
+    return group ? group.label : null;
+  }
+
+  function collectionRequest(e) {
+    const loc = current.locality || {};
+    const providers = (current.alt_groupings || []).find((g) => g.id === "provider");
+    return {
+      version: REQUEST_VERSION,
+      id: newRequestId(),
+      requested_at: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
+      seclab: e.seclab,
+      access: {
+        id: e.id || null,
+        satellite: e.row,
+        norad: e.norad,
+        label: e.label || null,
+        start: e.start.toISOString().replace(/\.\d{3}Z$/, "Z"),
+        end: e.end.toISOString().replace(/\.\d{3}Z$/, "Z"),
+        status: e.status,
+        phenomenology: groupOfRow(current.groups, e.row),
+        provider: providers ? groupOfRow(providers.groups, e.row) : null,
+      },
+      pass: e.pass || null, // peak time, look and sun angles at the peak (optional in real feeds)
+      // The data file's own "point" string; rebuilt from the numbers only for an older payload.
+      target: { name: loc.name || null,
+                point: loc.point || (loc.lon !== undefined ? `POINT(${loc.lon} ${loc.lat})` : null) },
+      icod: current.icod ? current.icod.toISOString().replace(/\.\d{3}Z$/, "Z") : null,
+      icod_source: current.icod_source || null,
+    };
+  }
+
+  function submitRequest(e) {
+    const section = tooltip.select(".sm-request");
+    if (!requestable(e)) {
+      section.html(`<span class="muted">This access has started; it can no longer be requested.</span>`);
+      return;
+    }
+    const request = collectionRequest(e);
+    section.html(`<div class="sm-request-demo"><strong>Demonstration — request not sent</strong>` +
+                 `<pre>${escapeHtml(JSON.stringify(request, null, 2))}</pre></div>`);
+    postToParent({ type: "sync-matrix:collection-request", demonstration: true, request });
+    if (pinned) placeTooltip(pinned.anchor); // it grew; keep it inside the frame
   }
 
   //============================================================================

@@ -248,12 +248,14 @@ def load_data(path) -> dict:
      "windows": [{"satellite": "Sentinel-2", "start": ..., "end": ...,
                   "status": "Predicted", "seclab": "UNCLASSIFIED",
                   "norad": 40697,                            (norad: from the catalogue)
-                  "id": ..., "label": ..., "notes": ...}]}   (optional)
+                  "id": ..., "label": ..., "notes": ...,     (optional)
+                  "pass": {"peak": ..., "elevation": ..., ...}}]}  (optional: geometry at the peak)
 
     It names no matrix: build_view() draws it in every view. "evaluated"
     lists the catalogue's spacecraft per row, so a row that was checked and
     had no passes is told apart from one that was not checked. "seclab" is
-    the window's security label; it is required and never defaulted.
+    the window's security label; it is required and never defaulted. "pass"
+    (predict_passes.py) is copied to the event as is, for a collection request.
     """
     with open(path, "r") as f:
         data = json.load(f)
@@ -278,7 +280,7 @@ def window_events(matrix: dict, data: dict) -> list:
             raise ValueError("Window %d: %r is not a row of the matrix" % (i, w["satellite"]))
         event = {"row": w["satellite"], "start": w["start"], "end": w["end"], "status": w["status"],
                  "seclab": w["seclab"]}
-        event.update({k: w[k] for k in ("id", "label", "notes") if k in w})
+        event.update({k: w[k] for k in ("id", "norad", "label", "notes", "pass") if k in w})
         events.append(event)
     return events
 
@@ -497,7 +499,9 @@ def resolve_locality(locality: dict = None) -> dict:
 
     Each payload is one locality and one day. The locality comes from the
     data file ({"name": ..., "point": "POINT(lon lat)"} or name/lon/lat);
-    there is no default.
+    there is no default. The "point" string is kept as written (a collection
+    request names the place exactly as the data file does: "85.3240", not
+    "85.324").
     """
     if not locality:
         raise ValueError("No locality: give it as \"locality\" in the data file.")
@@ -510,7 +514,10 @@ def resolve_locality(locality: dict = None) -> dict:
     tz_name = TimezoneFinder().timezone_at(lat=lat, lng=lon)
     if tz_name is None:
         raise ValueError("No timezone found for %s (%f, %f)" % (name, lat, lon))
-    return {"id": slugify(name), "name": name, "lon": lon, "lat": lat, "timezone": tz_name}
+    out = {"id": slugify(name), "name": name, "lon": lon, "lat": lat, "timezone": tz_name}
+    if "point" in locality:
+        out["point"] = locality["point"]
+    return out
 
 
 def build_end_of_local_day(tz_name: str, window_start: datetime, window_end: datetime) -> list:
