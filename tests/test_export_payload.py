@@ -489,6 +489,16 @@ def test_labels_reach_the_payload_and_a_rolled_up_bar_takes_the_highest(tmp_path
         ("2 EO passes", "RESTRICTED"), ("1 SAR pass", "UNCLASSIFIED")]
 
 
+def test_payload_lists_only_labels_at_or_under_its_ceiling():
+    # web/live is public: an UNCLASSIFIED build never names RESTRICTED, even in its list of labels.
+    matrix = ep.load_config(MATRIX)
+    assert ep.published_seclabs(matrix, "UNCLASSIFIED") == {"labels": matrix["seclabs"][:1], "ceiling": "UNCLASSIFIED"}
+    assert ep.published_seclabs(matrix) == ep.published_seclabs(matrix, "UNCLASSIFIED")
+    assert ep.published_seclabs(matrix, "RESTRICTED")["labels"] == matrix["seclabs"]
+    with pytest.raises(ValueError, match="Ceiling 'SECRET' is not a security label"):
+        ep.published_seclabs(matrix, "SECRET")
+
+
 def test_roll_up_merges_mixed_labels():
     # Unlike status, mixed labels are allowed: the bar takes the higher one, in either order.
     matrix = ep.load_config(MATRIX)

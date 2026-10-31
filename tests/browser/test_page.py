@@ -19,6 +19,8 @@ from conftest import WEB
 sys.path.insert(0, str(WEB.parent / "python"))
 import export_payload as ep  # noqa: E402
 
+MATRIX_CONFIG = WEB.parent / "config" / "matrix.json"
+
 DAY = "2026-10-28"
 ABSTRACTED = "/index.html?matrix=abstracted&locality=demo&date=%s" % DAY
 SIMPLIFIED = "/index.html?matrix=simplified&locality=demo&date=%s" % DAY
@@ -169,7 +171,7 @@ def open_payload(page: Page, base_url: str, payload: dict, toolbar: bool = False
 
 
 def high_arctic(day: str) -> dict:
-    config = ep.load_config(WEB.parent / "config" / "matrix.json", "abstracted")
+    config = ep.load_config(MATRIX_CONFIG, "abstracted")
     return ep.build_payload(config, day=date.fromisoformat(day), demo_count=1, icod=day + "T12:00:00Z",
                             locality={"name": "High Arctic 78°N", "point": "POINT(16 78)"})
 
@@ -194,7 +196,7 @@ ICOD = "2026-10-28T06:00:00Z"
 
 def dated_payload(**changes) -> dict:
     """A real-data (not demo) payload with ICOD 28 Oct 0600Z and the committed matrix's ageing thresholds."""
-    config = ep.load_config(WEB.parent / "config" / "matrix.json", "abstracted")
+    config = ep.load_config(MATRIX_CONFIG, "abstracted")
     payload = ep.build_payload(config, [{"row": "Legion-3", "start": "2026-10-28T08:00:00Z",
                                          "end": "2026-10-28T08:10:00Z", "status": "Predicted"}],
                                day=date(2026, 10, 28), icod=ICOD, icod_source="celestrak",
@@ -479,7 +481,7 @@ def labelled_payload(*labels, ceiling="RESTRICTED") -> dict:
     payload["events"] = [{"row": "Legion-3", "start": "2026-10-28T%02d:00:00Z" % (8 + i),
                           "end": "2026-10-28T%02d:10:00Z" % (8 + i), "status": "Predicted", "seclab": label,
                           "label": "%s pass" % label} for i, label in enumerate(labels)]
-    payload["seclabs"]["ceiling"] = ceiling
+    payload["seclabs"] = ep.published_seclabs(ep.load_config(MATRIX_CONFIG), ceiling)
     return payload
 
 
@@ -517,7 +519,7 @@ def test_banner_shows_the_highest_label_and_each_popup_its_own(page, base_url, e
 def test_banner_ranks_by_position_not_spelling(page, base_url, errors):
     # Swap the order: with UNCLASSIFIED listed last, it is the higher label.
     payload = labelled_payload("RESTRICTED", "UNCLASSIFIED", ceiling="UNCLASSIFIED")
-    payload["seclabs"]["labels"] = payload["seclabs"]["labels"][::-1]
+    payload["seclabs"]["labels"] = ep.load_config(MATRIX_CONFIG)["seclabs"][::-1]
     open_payload(page, base_url, payload)
     assert texts(page, ".sm-seclab text") == ["UNCLASSIFIED", "UNCLASSIFIED"]
     assert errors == []

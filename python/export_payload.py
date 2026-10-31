@@ -166,6 +166,19 @@ def highest_seclab(labels, rank: dict) -> str:
     return max(labels, key=rank.__getitem__)
 
 
+def published_seclabs(matrix: dict, ceiling: str = None) -> dict:
+    """The payload's "seclabs": the labels at or under the ceiling, lowest first, and the ceiling.
+
+    A label above the ceiling is never named in what the library publishes:
+    web/live is public, so an UNCLASSIFIED build lists only UNCLASSIFIED.
+    """
+    ceiling = ceiling or matrix["seclabs"][0]["name"]
+    rank = seclab_rank(matrix)
+    if ceiling not in rank:
+        raise ValueError("Ceiling %r is not a security label (%s)" % (ceiling, ", ".join(rank)))
+    return {"labels": matrix["seclabs"][:rank[ceiling] + 1], "ceiling": ceiling}
+
+
 def check_seclabs(matrix: dict, data: dict, ceiling: str) -> None:
     """Every window has a known label at or under the library's ceiling.
 
@@ -640,8 +653,8 @@ def build_payload(config: dict, events: list = None, day: date = None,
             "events": events,
             "status_styles": config.get("status_styles", {}),
             "icod_ageing": config.get("icod_ageing"),
-            # Labels lowest first, and the library's ceiling: the page banners the highest label drawn.
-            "seclabs": {"labels": config["seclabs"], "ceiling": ceiling or config["seclabs"][0]["name"]},
+            # Labels lowest first, up to the library's ceiling: the page banners the highest label drawn.
+            "seclabs": published_seclabs(config, ceiling),
             "daylight": daylight,
             "markers": markers,
             "banners": build_banners(config, window_start),

@@ -214,7 +214,9 @@ several labels:
   rank is its position there, never its spelling.
 - `config/workflow.json` `max_seclab` is the ceiling for `web/live`. A window
   above it fails the build (it is never dropped quietly), and
-  `scripts/check_data.py` checks every published event against it.
+  `scripts/check_data.py` checks every published event against it. A payload
+  lists only the labels at or under the ceiling, so the public site never names
+  a higher one.
 - The page shows each access's own label in a centred band at the top of its popup, and a full-width banner
   at the very top and bottom of the chart with the **highest** label among the
   accesses shown (a chart with none shows the ceiling). A Simplified bar takes
@@ -330,7 +332,7 @@ same checks locally before pushing:
 
 | Check | What it catches |
 |---|---|
-| `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the High Arctic when the sun never rises, Sentinel-1 stays in its swath, Simplified roll-up merges overlaps), config checks (a view without a title, duplicate rows, a grouping with different rows, bad banner times, a catalogue row not in the matrix, a library without a store), data files (required fields, unknown satellites, both views drawn from one file, no matrix named in it, demo data reproducible), ICOD rules (missing or future ICOD fails, demo is labelled), security labels (missing or unknown label fails, rank by position not spelling, a window above the ceiling fails from any store, roll-ups take the highest, every published event at or under the ceiling), the `<view>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
+| `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the High Arctic when the sun never rises, Sentinel-1 stays in its swath, Simplified roll-up merges overlaps), config checks (a view without a title, duplicate rows, a grouping with different rows, bad banner times, a catalogue row not in the matrix, a library without a store), data files (required fields, unknown satellites, both views drawn from one file, no matrix named in it, demo data reproducible), ICOD rules (missing or future ICOD fails, demo is labelled), security labels (missing or unknown label fails, rank by position not spelling, a window above the ceiling fails from any store, roll-ups take the highest, every published event at or under the ceiling, a payload lists no label above it), the `<view>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
 | `check_data.py` | A `web/live` file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, has events on unknown rows, or has an event without a known security label or above `max_seclab` |
 | `check_build.py` | `data/demo`, `data/predicted` or `web/live` out of date with `config/`, the exporter, the newest committed TLE snapshot or the pass prediction (rebuilds everything into a temp folder and compares, ignoring timestamps) |
 | `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |

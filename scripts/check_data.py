@@ -6,7 +6,8 @@
   point at rows that exist;
 - every event has a security label at or under the library's ceiling
   (workflow.json max_seclab), ranked by config/matrix.json "seclabs", never
-  by spelling. The payloads' own copy of the ceiling is not trusted for this.
+  by spelling. The payloads' own copy of the ceiling is not trusted for this,
+  and a payload may not list a label above the ceiling.
 
 Exit code 1 with a list of problems if anything is wrong.
 """
@@ -82,6 +83,11 @@ def main() -> int:
             elif rank[label] > rank[ceiling]:
                 problems.append("%s: event %r is %s, above the library's ceiling %s"
                                 % (name, event.get("label"), label, ceiling))
+        listed = [l.get("name") for l in payload["seclabs"].get("labels", [])]
+        above = [l for l in listed if l not in rank or rank[l] > rank[ceiling]]
+        if above:
+            problems.append("%s: payload lists security label(s) %s above the library's ceiling %s"
+                            % (name, ", ".join(map(str, above)), ceiling))
         if payload["seclabs"].get("ceiling") != ceiling:
             problems.append("%s: payload ceiling %r is not workflow.json max_seclab %r"
                             % (name, payload["seclabs"].get("ceiling"), ceiling))

@@ -268,7 +268,9 @@ today, but nothing assumes it:
   banner is part of the SVG, so PNG and SVG exports carry it at their top and
   bottom edges, and their provenance line names it.
 
-The payload carries `"seclabs": {"labels": [...], "ceiling": ...}`. The tests
+The payload carries `"seclabs": {"labels": [...], "ceiling": ...}`, listing
+only the labels at or under the ceiling: an `UNCLASSIFIED` build never names a
+higher label, and `scripts/check_data.py` fails one that does. The tests
 draw `RESTRICTED` windows from temporary files only; none is ever written
 under `data/` or `web/`. The exact marking wording and colours belong to
 marking policy; they are one edit in `seclabs`.
