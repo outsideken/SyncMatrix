@@ -499,7 +499,9 @@ def resolve_locality(locality: dict = None) -> dict:
 
     Each payload is one locality and one day. The locality comes from the
     data file ({"name": ..., "point": "POINT(lon lat)"} or name/lon/lat);
-    there is no default.
+    there is no default. The "point" string is kept as written (a collection
+    request names the place exactly as the data file does: "85.3240", not
+    "85.324").
     """
     if not locality:
         raise ValueError("No locality: give it as \"locality\" in the data file.")
@@ -512,7 +514,10 @@ def resolve_locality(locality: dict = None) -> dict:
     tz_name = TimezoneFinder().timezone_at(lat=lat, lng=lon)
     if tz_name is None:
         raise ValueError("No timezone found for %s (%f, %f)" % (name, lat, lon))
-    return {"id": slugify(name), "name": name, "lon": lon, "lat": lat, "timezone": tz_name}
+    out = {"id": slugify(name), "name": name, "lon": lon, "lat": lat, "timezone": tz_name}
+    if "point" in locality:
+        out["point"] = locality["point"]
+    return out
 
 
 def build_end_of_local_day(tz_name: str, window_start: datetime, window_end: datetime) -> list:

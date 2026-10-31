@@ -626,7 +626,8 @@ def test_request_is_shown_not_sent_and_offered_to_the_dashboard(page, base_url, 
     assert shown["seclab"] == "UNCLASSIFIED"
     assert shown["access"] == {"id": "Legion-3-58001-0805Z", "satellite": "Legion-3", "norad": 58001,
                                "label": "LEGION-3 pass", "start": "2026-10-28T08:00:00Z",
-                               "end": "2026-10-28T08:10:00Z", "status": "Predicted"}
+                               "end": "2026-10-28T08:10:00Z", "status": "Predicted",
+                               "phenomenology": "EO", "provider": "Vantor"}
     assert shown["pass"] == PASS
     assert shown["target"] == {"name": "London", "point": "POINT(-0.1278 51.5074)"}
     assert shown["icod"] == ICOD and shown["icod_source"] == "celestrak"
@@ -643,6 +644,31 @@ def test_keyboard_pins_the_popup_and_escape_returns_to_the_access(page, base_url
     page.keyboard.press("Escape")
     expect(page.locator(".sm-event").first).to_be_focused()
     expect(page.locator(".sm-tooltip")).not_to_have_class(re.compile(r"\bpinned\b"))
+    assert errors == []
+
+
+def test_request_names_the_row_groups_whichever_grouping_is_shown(page, base_url, errors):
+    page.clock.set_fixed_time(BEFORE_PASS)
+    open_payload(page, base_url, request_payload())
+    page.goto(page.url + "&group=provider")
+    page.wait_for_selector("svg.sm-root .sm-event")
+    page.locator(".sm-event").first.click()
+    page.locator(".sm-request-link").click()
+    access = json.loads(page.locator(".sm-request-demo pre").inner_text())["access"]
+    assert (access["phenomenology"], access["provider"]) == ("EO", "Vantor")
+    assert errors == []
+
+
+def test_request_keeps_the_data_files_point_string(page, base_url, errors):
+    # Rebuilt from the numbers, Kathmandu's 85.3240 would become 85.324.
+    page.clock.set_fixed_time(BEFORE_PASS)
+    payload = request_payload()
+    payload["locality"] = ep.resolve_locality({"name": "Kathmandu", "point": "POINT(85.3240 27.7172)"})
+    open_payload(page, base_url, payload)
+    page.locator(".sm-event").first.click()
+    page.locator(".sm-request-link").click()
+    target = json.loads(page.locator(".sm-request-demo pre").inner_text())["target"]
+    assert target == {"name": "Kathmandu", "point": "POINT(85.3240 27.7172)"}
     assert errors == []
 
 

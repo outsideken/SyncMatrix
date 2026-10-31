@@ -301,7 +301,7 @@ def test_locality_is_required():
 def test_locality_from_events_file_gets_a_timezone():
     loc = ep.resolve_locality({"name": "Mid-north 40°N", "point": "POINT(-100 40)"})
     assert loc == {"id": "mid-north-40-n", "name": "Mid-north 40°N", "lon": -100.0, "lat": 40.0,
-                   "timezone": "America/Chicago"}
+                   "timezone": "America/Chicago", "point": "POINT(-100 40)"}
 
 ################################################################################
 ## Day/night shading across latitudes
@@ -441,6 +441,13 @@ def restricted(tmp_path, **changes):
     data["windows"][1]["seclab"] = "RESTRICTED"
     path.write_text(json.dumps(data))
     return ep.load_data(path)
+
+
+def test_locality_keeps_the_data_files_point_string():
+    # A collection request names the place as written: 85.3240, not the float's 85.324.
+    loc = ep.resolve_locality({"name": "Kathmandu", "point": "POINT(85.3240 27.7172)"})
+    assert loc["point"] == "POINT(85.3240 27.7172)" and loc["lon"] == 85.324
+    assert "point" not in ep.resolve_locality({"name": "Kathmandu", "lon": 85.324, "lat": 27.7172})
 
 
 def test_satellite_events_carry_norad_and_pass_geometry_but_roll_ups_do_not(tmp_path):

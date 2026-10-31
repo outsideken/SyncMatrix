@@ -915,8 +915,15 @@
     return "req-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
   }
 
+  // The row's group in a grouping, whichever grouping is on screen.
+  function groupOfRow(groups, row) {
+    const group = (groups || []).find((g) => g.rows.some((r) => r.id === row));
+    return group ? group.label : null;
+  }
+
   function collectionRequest(e) {
     const loc = current.locality || {};
+    const providers = (current.alt_groupings || []).find((g) => g.id === "provider");
     return {
       version: REQUEST_VERSION,
       id: newRequestId(),
@@ -930,9 +937,13 @@
         start: e.start.toISOString().replace(/\.\d{3}Z$/, "Z"),
         end: e.end.toISOString().replace(/\.\d{3}Z$/, "Z"),
         status: e.status,
+        phenomenology: groupOfRow(current.groups, e.row),
+        provider: providers ? groupOfRow(providers.groups, e.row) : null,
       },
       pass: e.pass || null, // peak time, look and sun angles at the peak (optional in real feeds)
-      target: { name: loc.name || null, point: loc.lon !== undefined ? `POINT(${loc.lon} ${loc.lat})` : null },
+      // The data file's own "point" string; rebuilt from the numbers only for an older payload.
+      target: { name: loc.name || null,
+                point: loc.point || (loc.lon !== undefined ? `POINT(${loc.lon} ${loc.lat})` : null) },
       icod: current.icod ? current.icod.toISOString().replace(/\.\d{3}Z$/, "Z") : null,
       icod_source: current.icod_source || null,
     };

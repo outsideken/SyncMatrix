@@ -247,7 +247,8 @@ demonstration: true, request}`, to the trusted `origin` only (never `*`).
  "seclab": "UNCLASSIFIED",
  "access": {"id": "WorldView-2-35946-0134Z", "satellite": "WorldView-2", "norad": 35946,
             "label": "WORLDVIEW-2 (WV-2) pass", "start": "2026-11-01T01:32:48Z",
-            "end": "2026-11-01T01:36:33Z", "status": "Predicted"},
+            "end": "2026-11-01T01:36:33Z", "status": "Predicted",
+            "phenomenology": "EO", "provider": "Vantor"},
  "pass": {"peak": "2026-11-01T01:34:40Z", "elevation": 82.6, "azimuth": 284.1,
           "sun_elevation": 38.6, "sun_azimuth": 164.4},
  "target": {"name": "Tokyo", "point": "POINT(139.6917 35.6895)"},
@@ -259,6 +260,11 @@ demonstration: true, request}`, to the trusted `origin` only (never `*`).
   data. Simplified bars (several passes merged) and Demo windows get no link.
 - **`pass`** is optional so real feeds without peak geometry still work
   (`"pass": null`); the page cannot compute the sun's azimuth itself.
+- **`phenomenology` and `provider`** are the row's groups in the payload's
+  groupings (the main groups and the `provider` grouping), whichever one is
+  on screen.
+- **`target.point`** is the data file's own `point` string, kept on the
+  payload's `locality`, so the request names the place exactly as written.
 - **No requester**: the downstream service knows who is signed in.
 
 ## Embed
@@ -370,4 +376,4 @@ same checks locally before pushing:
 | `check_data.py` | A `web/live` file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, has events on unknown rows, or has an event without a known security label or above `max_seclab` |
 | `check_build.py` | `data/demo`, `data/predicted` or `web/live` out of date with `config/`, the exporter, the newest committed TLE snapshot or the pass prediction (rebuilds everything into a temp folder and compares, ignoring timestamps) |
 | `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |
-| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed library: default view (predicted, no Data switch), Demo as the last locality (DEMO DATA badge, keeps the matrix, lands on the right demo day, also with the clock frozen on a demo day), layout (groups, 61 rows, 24 hour labels), localities north to south, each place shows only the groups it evaluates (RF only at sea, EO/SAR, EO/SAR/RF, IR only, all), ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, security banners at the very top and bottom (highest label shown, each popup its own label, ranked by position, the ceiling when nothing is shown, exports marked top and bottom), collection request demonstration (click pins the popup; Esc, × and a click elsewhere close it; keyboard focus; the request shown and posted to the dashboard with demonstration: true; pass optional; no link once started, without NORAD or label, on demo data, Simplified or Demo), single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |
+| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed library: default view (predicted, no Data switch), Demo as the last locality (DEMO DATA badge, keeps the matrix, lands on the right demo day, also with the clock frozen on a demo day), layout (groups, 61 rows, 24 hour labels), localities north to south, each place shows only the groups it evaluates (RF only at sea, EO/SAR, EO/SAR/RF, IR only, all), ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, security banners at the very top and bottom (highest label shown, each popup its own label, ranked by position, the ceiling when nothing is shown, exports marked top and bottom), collection request demonstration (click pins the popup; Esc, × and a click elsewhere close it; keyboard focus; the request shown and posted to the dashboard with demonstration: true; phenomenology and provider whichever grouping is shown; the data file's point string; pass optional; no link once started, without NORAD or label, on demo data, Simplified or Demo), single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |
