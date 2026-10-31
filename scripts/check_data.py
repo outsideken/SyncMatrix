@@ -83,8 +83,8 @@ def main() -> int:
             elif rank[label] > rank[ceiling]:
                 problems.append("%s: event %r is %s, above the library's ceiling %s"
                                 % (name, event.get("label"), label, ceiling))
-        listed = [l.get("name") for l in payload["seclabs"].get("labels", [])]
-        above = [l for l in listed if l not in rank or rank[l] > rank[ceiling]]
+        names = [l.get("name") for l in payload["seclabs"].get("labels", [])]
+        above = [l for l in names if l not in rank or rank[l] > rank[ceiling]]
         if above:
             problems.append("%s: payload lists security label(s) %s above the library's ceiling %s"
                             % (name, ", ".join(map(str, above)), ceiling))
