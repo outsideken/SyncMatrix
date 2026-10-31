@@ -24,7 +24,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", default=str(REPO / workflow["folder"]), help="Library folder to write")
     args = parser.parse_args()
-    wf.draw_library(wf.load_matrix(), wf.stores(workflow), args.out)
+    wf.draw_library(wf.load_matrix(), wf.stores(workflow), args.out, workflow["max_seclab"])
     return 0
 
 

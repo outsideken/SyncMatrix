@@ -203,6 +203,31 @@ reflected in the matrix. It is provenance, so:
   after it hatched ("After ICOD").
 - Click messages to the dashboard carry the payload's `icod` and `icod_source`.
 
+## Security labels (SECLAB)
+
+Every access window carries a security label (`seclab`), required in every
+data file and never defaulted. Everything is `UNCLASSIFIED` today, and the
+public library can only ever hold `UNCLASSIFIED`, but the design handles
+several labels:
+
+- `config/matrix.json` `seclabs` lists the labels **lowest first**; a label's
+  rank is its position there, never its spelling.
+- `config/workflow.json` `max_seclab` is the ceiling for `web/live`. A window
+  above it fails the build (it is never dropped quietly), and
+  `scripts/check_data.py` checks every published event against it. A payload
+  lists only the labels at or under the ceiling, so the public site never names
+  a higher one.
+- The page shows each access's own label in a centred band at the top of its popup, and a full-width banner
+  at the very top and bottom of the chart with the **highest** label among the
+  accesses shown (a chart with none shows the ceiling). A Simplified bar takes
+  the highest label of the windows merged into it.
+- PNG and SVG exports carry the banner at their top and bottom edges and name
+  the label in their provenance.
+
+`RESTRICTED` appears only in test fixtures, never under `data/` or `web/`.
+Banner wording and colours are placeholders for marking policy: one edit in
+`seclabs`. Details in `config/README.md`.
+
 ## Embed
 
 ```html
@@ -307,8 +332,8 @@ same checks locally before pushing:
 
 | Check | What it catches |
 |---|---|
-| `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the High Arctic when the sun never rises, Sentinel-1 stays in its swath, Simplified roll-up merges overlaps), config checks (a view without a title, duplicate rows, a grouping with different rows, bad banner times, a catalogue row not in the matrix, a library without a store), data files (required fields, unknown satellites, both views drawn from one file, no matrix named in it, demo data reproducible), ICOD rules (missing or future ICOD fails, demo is labelled), the `<view>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
-| `check_data.py` | A `web/live` file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, or has events on unknown rows |
+| `tests/` | Pass prediction against the committed snapshot (thresholds reached, EO only in daylight, no EO in the High Arctic when the sun never rises, Sentinel-1 stays in its swath, Simplified roll-up merges overlaps), config checks (a view without a title, duplicate rows, a grouping with different rows, bad banner times, a catalogue row not in the matrix, a library without a store), data files (required fields, unknown satellites, both views drawn from one file, no matrix named in it, demo data reproducible), ICOD rules (missing or future ICOD fails, demo is labelled), security labels (missing or unknown label fails, rank by position not spelling, a window above the ceiling fails from any store, roll-ups take the highest, every published event at or under the ceiling, a payload lists no label above it), the `<view>/<locality>/<date>.json` layout and labels, event validation, day/night shading at the extremes (midnight sun, polar night, white nights, equator), end of local day on a DST change and a +5:45 offset |
+| `check_data.py` | A `web/live` file that doesn't parse, isn't in `index.json` (or is listed but missing), lacks an ICOD, has events on unknown rows, or has an event without a known security label or above `max_seclab` |
 | `check_build.py` | `data/demo`, `data/predicted` or `web/live` out of date with `config/`, the exporter, the newest committed TLE snapshot or the pass prediction (rebuilds everything into a temp folder and compares, ignoring timestamps) |
 | `check_js_syntax.py` | Syntax errors in `web/*.js` and inline `<script>` blocks (needs Node.js) |
-| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed library: default view (predicted, no Data switch), Demo as the last locality (DEMO DATA badge, keeps the matrix, lands on the right demo day, also with the clock frozen on a demo day), layout (groups, 61 rows, 24 hour labels), localities north to south, each place shows only the groups it evaluates (RF only at sea, EO/SAR, EO/SAR/RF, IR only, all), ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |
+| `tests/browser/` | The real page in headless Chromium (Playwright), against the committed library: default view (predicted, no Data switch), Demo as the last locality (DEMO DATA badge, keeps the matrix, lands on the right demo day, also with the clock frozen on a demo day), layout (groups, 61 rows, 24 hour labels), localities north to south, each place shows only the groups it evaluates (RF only at sea, EO/SAR, EO/SAR/RF, IR only, all), ICOD badge, Group by Provider (same events), Simplified always phenomenology, day/night switch, polar night and midnight sun shading, PNG/SVG export with provenance, security banners at the very top and bottom (highest label shown, each popup its own label, ranked by position, the ceiling when nothing is shown, exports marked top and bottom), single-file mode, the dashboard iframe. Any console error fails the test. In CI, failing pages are saved as screenshots (`playwright-results` artifact) |
