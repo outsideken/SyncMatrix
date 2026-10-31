@@ -215,7 +215,7 @@ several labels:
 - `config/workflow.json` `max_seclab` is the ceiling for `web/live`. A window
   above it fails the build (it is never dropped quietly), and
   `scripts/check_data.py` checks every published event against it.
-- The page shows each access's own label in its popup, and a full-width banner
+- The page shows each access's own label in a centred band at the top of its popup, and a full-width banner
   at the very top and bottom of the chart with the **highest** label among the
   accesses shown (a chart with none shows the ceiling). A Simplified bar takes
   the highest label of the windows merged into it.

@@ -785,13 +785,14 @@
       `<span class="muted">${formatFull(e.start)} – ${formatTick(e.end)}</span>`,
     ];
     if (e.notes) parts.push(`<span class="muted">${escapeHtml(e.notes)}</span>`);
-    const label = current && seclabFor(current, e.seclab);
-    if (e.seclab) {
-      // This access's own label (the chart banner shows the highest drawn).
-      parts.push(`<span class="sm-tooltip-seclab"${label ? ` style="background:${label.color};color:${label.text_color || readableInk(label.color)}"` : ""}>` +
-                 `${escapeHtml(e.seclab)}</span>`);
-    }
     let html = parts.join("<br>");
+    if (e.seclab) {
+      // This access's own label, centred across the top like a document marking
+      // (the chart banner shows the highest label drawn).
+      const label = current && seclabFor(current, e.seclab);
+      html = `<div class="sm-tooltip-seclab"${label ? ` style="background:${label.color};color:${label.text_color || readableInk(label.color)}"` : ""}>` +
+             `${escapeHtml(e.seclab)}</div>` + html;
+    }
     const g = e.phenomenology;
     const prov = g && current && current.provenance && current.provenance[g.id];
     if (prov) {

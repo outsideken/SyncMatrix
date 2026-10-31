@@ -493,7 +493,13 @@ def test_seclab_banner_is_at_the_very_top_and_bottom(page, base_url, errors):
     assert top["y"] + top["height"] <= page.locator(".sm-title").bounding_box()["y"]
     assert page.locator(".sm-seclab rect").first.get_attribute("fill") == "#1a9850"  # from the payload
     page.locator(".sm-event").first.hover()
-    expect(page.locator(".sm-tooltip .sm-tooltip-seclab")).to_have_text("UNCLASSIFIED")
+    chip = page.locator(".sm-tooltip .sm-tooltip-seclab")
+    expect(chip).to_have_text("UNCLASSIFIED")
+    # Centred across the top of the popup, before anything else in it.
+    assert page.locator(".sm-tooltip > *").first.get_attribute("class") == "sm-tooltip-seclab"
+    tip, band = page.locator(".sm-tooltip").bounding_box(), chip.bounding_box()
+    assert band["y"] == pytest.approx(tip["y"], abs=1) and band["width"] == pytest.approx(tip["width"], abs=1)
+    assert chip.evaluate("el => getComputedStyle(el).textAlign") == "center"
     assert errors == []
 
 

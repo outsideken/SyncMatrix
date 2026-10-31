@@ -262,7 +262,7 @@ today, but nothing assumes it:
   (ranked from `matrix.json`, not from the payloads).
 - **Rolled-up bars take the highest label** of the windows merged into them.
   Unlike status, mixed labels are allowed.
-- **The page draws** each access's own label in its popup, and a full-width
+- **The page draws** each access's own label as a centred band across the top of its popup, and a full-width
   banner at the very top and bottom of the chart with the highest label among
   the accesses shown (a chart with none shows the library's ceiling). The
   banner is part of the SVG, so PNG and SVG exports carry it at their top and
