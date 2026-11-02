@@ -1,0 +1,2861 @@
+{
+  "version": 1,
+  "title": "Abstracted Sync Matrix",
+  "subtitle": "Tehran \u00b7 04 November 2026",
+  "icod": "2026-11-02T13:28:40Z",
+  "icod_source": "celestrak",
+  "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-02T1328Z.json), computed with Skyfield",
+  "provenance": {
+    "all": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-02T1328Z.json), computed with Skyfield",
+      "icod": "2026-11-02T13:28:40Z",
+      "icod_source": "celestrak"
+    },
+    "EO": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-02T1328Z.json), computed with Skyfield",
+      "icod": "2026-11-02T13:28:40Z",
+      "icod_source": "celestrak",
+      "notes": "7 predicted passes from 7 of 15 configured satellites"
+    },
+    "IR": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-02T1328Z.json), computed with Skyfield",
+      "icod": "2026-11-02T13:28:40Z",
+      "icod_source": "celestrak",
+      "notes": "15 predicted passes from 7 of 7 configured satellites"
+    },
+    "SAR": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-02T1328Z.json), computed with Skyfield",
+      "icod": "2026-11-02T13:28:40Z",
+      "icod_source": "celestrak",
+      "notes": "13 predicted passes from 10 of 12 configured satellites"
+    },
+    "RF": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-02T1328Z.json), computed with Skyfield",
+      "icod": "2026-11-02T13:28:40Z",
+      "icod_source": "celestrak",
+      "notes": "78 predicted passes from 33 of 33 configured satellites"
+    }
+  },
+  "generated": "2026-11-02T13:30:44Z",
+  "locality": {
+    "id": "tehran",
+    "name": "Tehran",
+    "lon": 51.389722,
+    "lat": 35.688889,
+    "timezone": "Asia/Tehran",
+    "point": "POINT(51.389722 35.688889)"
+  },
+  "window": {
+    "start": "2026-11-04T00:00:00Z",
+    "end": "2026-11-05T00:00:00Z",
+    "tick_minutes": 30
+  },
+  "groups": [
+    {
+      "id": "EO",
+      "label": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
+      "rows": [
+        {
+          "id": "GeoEye-1",
+          "label": "GeoEye-1"
+        },
+        {
+          "id": "Legion-1",
+          "label": "Legion-1"
+        },
+        {
+          "id": "Legion-2",
+          "label": "Legion-2"
+        },
+        {
+          "id": "Legion-3",
+          "label": "Legion-3"
+        },
+        {
+          "id": "Legion-4",
+          "label": "Legion-4"
+        },
+        {
+          "id": "Legion-5",
+          "label": "Legion-5"
+        },
+        {
+          "id": "Legion-6",
+          "label": "Legion-6"
+        },
+        {
+          "id": "Sentinel-2",
+          "label": "Sentinel-2"
+        },
+        {
+          "id": "Sentinel-3 OLCI",
+          "label": "Sentinel-3 OLCI"
+        },
+        {
+          "id": "WorldView-1",
+          "label": "WorldView-1"
+        },
+        {
+          "id": "WorldView-2",
+          "label": "WorldView-2"
+        },
+        {
+          "id": "WorldView-3",
+          "label": "WorldView-3"
+        }
+      ]
+    },
+    {
+      "id": "IR",
+      "label": "IR",
+      "color": "#cb181d",
+      "tint": "#fcbba1",
+      "rows": [
+        {
+          "id": "Aqua MODIS",
+          "label": "Aqua MODIS"
+        },
+        {
+          "id": "NOAA-20 VIIRS",
+          "label": "NOAA-20 VIIRS"
+        },
+        {
+          "id": "NOAA-21 VIIRS",
+          "label": "NOAA-21 VIIRS"
+        },
+        {
+          "id": "S-NPP VIIRS",
+          "label": "S-NPP VIIRS"
+        },
+        {
+          "id": "Sentinel-3 SLSTR",
+          "label": "Sentinel-3 SLSTR"
+        },
+        {
+          "id": "Terra MODIS",
+          "label": "Terra MODIS"
+        }
+      ]
+    },
+    {
+      "id": "SAR",
+      "label": "SAR",
+      "color": "#525252",
+      "tint": "#d9d9d9",
+      "rows": [
+        {
+          "id": "Capella-11",
+          "label": "Capella-11"
+        },
+        {
+          "id": "Capella-13",
+          "label": "Capella-13"
+        },
+        {
+          "id": "Capella-14",
+          "label": "Capella-14"
+        },
+        {
+          "id": "Capella-15",
+          "label": "Capella-15"
+        },
+        {
+          "id": "Capella-16",
+          "label": "Capella-16"
+        },
+        {
+          "id": "Capella-17",
+          "label": "Capella-17"
+        },
+        {
+          "id": "Capella-18",
+          "label": "Capella-18"
+        },
+        {
+          "id": "Capella-19",
+          "label": "Capella-19"
+        },
+        {
+          "id": "Capella-20",
+          "label": "Capella-20"
+        },
+        {
+          "id": "Sentinel-1",
+          "label": "Sentinel-1"
+        }
+      ]
+    },
+    {
+      "id": "RF",
+      "label": "RF",
+      "color": "#238b45",
+      "tint": "#c7e9c0",
+      "rows": [
+        {
+          "id": "HE360 Cluster 1",
+          "label": "HE360 Cluster 1"
+        },
+        {
+          "id": "HE360 Cluster 2",
+          "label": "HE360 Cluster 2"
+        },
+        {
+          "id": "HE360 Cluster 3",
+          "label": "HE360 Cluster 3"
+        },
+        {
+          "id": "HE360 Cluster 5",
+          "label": "HE360 Cluster 5"
+        },
+        {
+          "id": "HE360 Cluster 6",
+          "label": "HE360 Cluster 6"
+        },
+        {
+          "id": "HE360 Cluster 7",
+          "label": "HE360 Cluster 7"
+        },
+        {
+          "id": "HE360 Cluster 8",
+          "label": "HE360 Cluster 8"
+        },
+        {
+          "id": "HE360 Cluster 9",
+          "label": "HE360 Cluster 9"
+        },
+        {
+          "id": "HE360 Cluster 10",
+          "label": "HE360 Cluster 10"
+        },
+        {
+          "id": "HE360 Cluster 11",
+          "label": "HE360 Cluster 11"
+        },
+        {
+          "id": "HE360 Cluster 12",
+          "label": "HE360 Cluster 12"
+        },
+        {
+          "id": "HE360 Cluster 13",
+          "label": "HE360 Cluster 13"
+        },
+        {
+          "id": "HE360 Cluster 14",
+          "label": "HE360 Cluster 14"
+        },
+        {
+          "id": "HE360 Cluster 15",
+          "label": "HE360 Cluster 15"
+        },
+        {
+          "id": "HE360 Cluster 16",
+          "label": "HE360 Cluster 16"
+        },
+        {
+          "id": "BRO-5",
+          "label": "BRO-5"
+        },
+        {
+          "id": "BRO-6",
+          "label": "BRO-6"
+        },
+        {
+          "id": "BRO-8",
+          "label": "BRO-8"
+        },
+        {
+          "id": "BRO-11",
+          "label": "BRO-11"
+        },
+        {
+          "id": "BRO-12",
+          "label": "BRO-12"
+        },
+        {
+          "id": "BRO-13",
+          "label": "BRO-13"
+        },
+        {
+          "id": "BRO-14",
+          "label": "BRO-14"
+        },
+        {
+          "id": "BRO-15",
+          "label": "BRO-15"
+        },
+        {
+          "id": "BRO-16",
+          "label": "BRO-16"
+        },
+        {
+          "id": "BRO-17",
+          "label": "BRO-17"
+        },
+        {
+          "id": "BRO-18",
+          "label": "BRO-18"
+        },
+        {
+          "id": "BRO-19",
+          "label": "BRO-19"
+        },
+        {
+          "id": "BRO-20",
+          "label": "BRO-20"
+        },
+        {
+          "id": "BRO-21",
+          "label": "BRO-21"
+        },
+        {
+          "id": "BRO-22",
+          "label": "BRO-22"
+        },
+        {
+          "id": "BRO-23",
+          "label": "BRO-23"
+        },
+        {
+          "id": "BRO-31",
+          "label": "BRO-31"
+        },
+        {
+          "id": "BRO-32",
+          "label": "BRO-32"
+        }
+      ]
+    }
+  ],
+  "grouping": "Phenomenology",
+  "alt_groupings": [
+    {
+      "id": "provider",
+      "label": "Provider",
+      "groups": [
+        {
+          "id": "Capella",
+          "label": "Capella",
+          "color": "#525252",
+          "tint": "#d9d9d9",
+          "rows": [
+            {
+              "id": "Capella-11",
+              "label": "Capella-11"
+            },
+            {
+              "id": "Capella-13",
+              "label": "Capella-13"
+            },
+            {
+              "id": "Capella-14",
+              "label": "Capella-14"
+            },
+            {
+              "id": "Capella-15",
+              "label": "Capella-15"
+            },
+            {
+              "id": "Capella-16",
+              "label": "Capella-16"
+            },
+            {
+              "id": "Capella-17",
+              "label": "Capella-17"
+            },
+            {
+              "id": "Capella-18",
+              "label": "Capella-18"
+            },
+            {
+              "id": "Capella-19",
+              "label": "Capella-19"
+            },
+            {
+              "id": "Capella-20",
+              "label": "Capella-20"
+            }
+          ]
+        },
+        {
+          "id": "Copernicus",
+          "label": "Copernicus",
+          "color": "#08519c",
+          "tint": "#c6dbef",
+          "rows": [
+            {
+              "id": "Sentinel-1",
+              "label": "Sentinel-1"
+            },
+            {
+              "id": "Sentinel-2",
+              "label": "Sentinel-2"
+            },
+            {
+              "id": "Sentinel-3 OLCI",
+              "label": "Sentinel-3 OLCI"
+            },
+            {
+              "id": "Sentinel-3 SLSTR",
+              "label": "Sentinel-3 SLSTR"
+            }
+          ]
+        },
+        {
+          "id": "HawkEye 360",
+          "label": "HawkEye 360",
+          "color": "#238b45",
+          "tint": "#c7e9c0",
+          "rows": [
+            {
+              "id": "HE360 Cluster 1",
+              "label": "HE360 Cluster 1"
+            },
+            {
+              "id": "HE360 Cluster 2",
+              "label": "HE360 Cluster 2"
+            },
+            {
+              "id": "HE360 Cluster 3",
+              "label": "HE360 Cluster 3"
+            },
+            {
+              "id": "HE360 Cluster 5",
+              "label": "HE360 Cluster 5"
+            },
+            {
+              "id": "HE360 Cluster 6",
+              "label": "HE360 Cluster 6"
+            },
+            {
+              "id": "HE360 Cluster 7",
+              "label": "HE360 Cluster 7"
+            },
+            {
+              "id": "HE360 Cluster 8",
+              "label": "HE360 Cluster 8"
+            },
+            {
+              "id": "HE360 Cluster 9",
+              "label": "HE360 Cluster 9"
+            },
+            {
+              "id": "HE360 Cluster 10",
+              "label": "HE360 Cluster 10"
+            },
+            {
+              "id": "HE360 Cluster 11",
+              "label": "HE360 Cluster 11"
+            },
+            {
+              "id": "HE360 Cluster 12",
+              "label": "HE360 Cluster 12"
+            },
+            {
+              "id": "HE360 Cluster 13",
+              "label": "HE360 Cluster 13"
+            },
+            {
+              "id": "HE360 Cluster 14",
+              "label": "HE360 Cluster 14"
+            },
+            {
+              "id": "HE360 Cluster 15",
+              "label": "HE360 Cluster 15"
+            },
+            {
+              "id": "HE360 Cluster 16",
+              "label": "HE360 Cluster 16"
+            }
+          ]
+        },
+        {
+          "id": "NASA FIRMS",
+          "label": "NASA FIRMS",
+          "color": "#cb181d",
+          "tint": "#fcbba1",
+          "rows": [
+            {
+              "id": "Aqua MODIS",
+              "label": "Aqua MODIS"
+            },
+            {
+              "id": "NOAA-20 VIIRS",
+              "label": "NOAA-20 VIIRS"
+            },
+            {
+              "id": "NOAA-21 VIIRS",
+              "label": "NOAA-21 VIIRS"
+            },
+            {
+              "id": "S-NPP VIIRS",
+              "label": "S-NPP VIIRS"
+            },
+            {
+              "id": "Terra MODIS",
+              "label": "Terra MODIS"
+            }
+          ]
+        },
+        {
+          "id": "Unseenlabs",
+          "label": "Unseenlabs",
+          "color": "#d94801",
+          "tint": "#fdd0a2",
+          "rows": [
+            {
+              "id": "BRO-5",
+              "label": "BRO-5"
+            },
+            {
+              "id": "BRO-6",
+              "label": "BRO-6"
+            },
+            {
+              "id": "BRO-8",
+              "label": "BRO-8"
+            },
+            {
+              "id": "BRO-11",
+              "label": "BRO-11"
+            },
+            {
+              "id": "BRO-12",
+              "label": "BRO-12"
+            },
+            {
+              "id": "BRO-13",
+              "label": "BRO-13"
+            },
+            {
+              "id": "BRO-14",
+              "label": "BRO-14"
+            },
+            {
+              "id": "BRO-15",
+              "label": "BRO-15"
+            },
+            {
+              "id": "BRO-16",
+              "label": "BRO-16"
+            },
+            {
+              "id": "BRO-17",
+              "label": "BRO-17"
+            },
+            {
+              "id": "BRO-18",
+              "label": "BRO-18"
+            },
+            {
+              "id": "BRO-19",
+              "label": "BRO-19"
+            },
+            {
+              "id": "BRO-20",
+              "label": "BRO-20"
+            },
+            {
+              "id": "BRO-21",
+              "label": "BRO-21"
+            },
+            {
+              "id": "BRO-22",
+              "label": "BRO-22"
+            },
+            {
+              "id": "BRO-23",
+              "label": "BRO-23"
+            },
+            {
+              "id": "BRO-31",
+              "label": "BRO-31"
+            },
+            {
+              "id": "BRO-32",
+              "label": "BRO-32"
+            }
+          ]
+        },
+        {
+          "id": "Vantor",
+          "label": "Vantor",
+          "color": "#6a51a3",
+          "tint": "#dadaeb",
+          "rows": [
+            {
+              "id": "GeoEye-1",
+              "label": "GeoEye-1"
+            },
+            {
+              "id": "Legion-1",
+              "label": "Legion-1"
+            },
+            {
+              "id": "Legion-2",
+              "label": "Legion-2"
+            },
+            {
+              "id": "Legion-3",
+              "label": "Legion-3"
+            },
+            {
+              "id": "Legion-4",
+              "label": "Legion-4"
+            },
+            {
+              "id": "Legion-5",
+              "label": "Legion-5"
+            },
+            {
+              "id": "Legion-6",
+              "label": "Legion-6"
+            },
+            {
+              "id": "WorldView-1",
+              "label": "WorldView-1"
+            },
+            {
+              "id": "WorldView-2",
+              "label": "WorldView-2"
+            },
+            {
+              "id": "WorldView-3",
+              "label": "WorldView-3"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "row": "Aqua MODIS",
+      "start": "2026-11-04T00:14:08Z",
+      "end": "2026-11-04T00:18:32Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Aqua MODIS-27424-0016Z",
+      "norad": 27424,
+      "label": "AQUA pass",
+      "notes": "Highest 41\u00b0 at 0016Z (sun -33\u00b0). Threshold 25\u00b0. Orbit: Celestrak NORAD 27424, epoch 2026-11-02 04:57Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T00:16:21Z",
+        "elevation": 40.8,
+        "azimuth": 99.1,
+        "sun_elevation": -33.4,
+        "sun_azimuth": 85.2
+      }
+    },
+    {
+      "row": "HE360 Cluster 5",
+      "start": "2026-11-04T01:37:31Z",
+      "end": "2026-11-04T01:39:41Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 5-52757-0138Z",
+      "norad": 52757,
+      "label": "HAWK-5A pass",
+      "notes": "Highest 24\u00b0 at 0138Z (sun -17\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 52757, epoch 2026-11-01 21:01Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T01:38:35Z",
+        "elevation": 24.4,
+        "azimuth": 262.5,
+        "sun_elevation": -16.7,
+        "sun_azimuth": 97.1
+      }
+    },
+    {
+      "row": "HE360 Cluster 13",
+      "start": "2026-11-04T01:53:33Z",
+      "end": "2026-11-04T01:57:35Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 13-67392-0155Z",
+      "norad": 67392,
+      "label": "HAWK-13A pass",
+      "notes": "Highest 36\u00b0 at 0155Z (sun -13\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 67392, epoch 2026-11-01 11:40Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T01:55:35Z",
+        "elevation": 35.6,
+        "azimuth": 98.1,
+        "sun_elevation": -13.3,
+        "sun_azimuth": 99.5
+      }
+    },
+    {
+      "row": "HE360 Cluster 12",
+      "start": "2026-11-04T01:59:54Z",
+      "end": "2026-11-04T02:03:16Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 12-64623-0201Z",
+      "norad": 64623,
+      "label": "HAWK-12A pass",
+      "notes": "Highest 28\u00b0 at 0201Z (sun -12\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 64623, epoch 2026-11-01 22:48Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T02:01:35Z",
+        "elevation": 28.1,
+        "azimuth": 97.1,
+        "sun_elevation": -12.1,
+        "sun_azimuth": 100.3
+      }
+    },
+    {
+      "row": "Capella-19",
+      "start": "2026-11-04T02:07:34Z",
+      "end": "2026-11-04T02:10:57Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-19-67384-0209Z",
+      "norad": 67384,
+      "label": "CAPELLA-19 (ACADIA-9) pass",
+      "notes": "Highest 68\u00b0 at 0209Z (sun -11\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 67384, epoch 2026-10-31 10:16Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T02:09:16Z",
+        "elevation": 67.9,
+        "azimuth": 101.2,
+        "sun_elevation": -10.6,
+        "sun_azimuth": 101.4
+      }
+    },
+    {
+      "row": "Sentinel-1",
+      "start": "2026-11-04T02:35:16Z",
+      "end": "2026-11-04T02:37:07Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-1-39634-0236Z",
+      "norad": 39634,
+      "label": "SENTINEL-1A pass",
+      "notes": "Highest 51\u00b0 at 0236Z (sun -5\u00b0). Threshold 44\u201361\u00b0. Orbit: Celestrak NORAD 39634, epoch 2026-11-02 03:52Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T02:36:11Z",
+        "elevation": 51.0,
+        "azimuth": 99.9,
+        "sun_elevation": -5.2,
+        "sun_azimuth": 105.1
+      }
+    },
+    {
+      "row": "Legion-3",
+      "start": "2026-11-04T03:13:37Z",
+      "end": "2026-11-04T03:15:24Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Legion-3-60452-0314Z",
+      "norad": 60452,
+      "label": "LEGION 3 pass",
+      "notes": "Highest 48\u00b0 at 0314Z (sun 2\u00b0). Threshold 40\u00b0. Orbit: Celestrak NORAD 60452, epoch 2026-11-02 04:47Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T03:14:30Z",
+        "elevation": 48.4,
+        "azimuth": 216.4,
+        "sun_elevation": 2.4,
+        "sun_azimuth": 110.6
+      }
+    },
+    {
+      "row": "HE360 Cluster 16",
+      "start": "2026-11-04T03:37:57Z",
+      "end": "2026-11-04T03:43:06Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 16-101146-0340Z",
+      "norad": 101146,
+      "label": "HAWK-16A pass",
+      "notes": "Highest 76\u00b0 at 0340Z (sun 7\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 101146, epoch 2026-11-01 04:12Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T03:40:31Z",
+        "elevation": 76.4,
+        "azimuth": 77.1,
+        "sun_elevation": 7.1,
+        "sun_azimuth": 114.6
+      }
+    },
+    {
+      "row": "Terra MODIS",
+      "start": "2026-11-04T05:03:47Z",
+      "end": "2026-11-04T05:08:32Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Terra MODIS-25994-0506Z",
+      "norad": 25994,
+      "label": "TERRA pass",
+      "notes": "Highest 46\u00b0 at 0506Z (sun 22\u00b0). Threshold 25\u00b0. Orbit: Celestrak NORAD 25994, epoch 2026-11-02 03:15Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T05:06:10Z",
+        "elevation": 46.2,
+        "azimuth": 99.1,
+        "sun_elevation": 21.8,
+        "sun_azimuth": 129.6
+      }
+    },
+    {
+      "row": "HE360 Cluster 1",
+      "start": "2026-11-04T05:26:54Z",
+      "end": "2026-11-04T05:30:30Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 1-43765-0528Z",
+      "norad": 43765,
+      "label": "HAWK-A pass",
+      "notes": "Highest 33\u00b0 at 0528Z (sun 25\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 43765, epoch 2026-11-01 09:10Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T05:28:42Z",
+        "elevation": 33.3,
+        "azimuth": 97.9,
+        "sun_elevation": 25.1,
+        "sun_azimuth": 134.2
+      }
+    },
+    {
+      "row": "HE360 Cluster 2",
+      "start": "2026-11-04T05:28:58Z",
+      "end": "2026-11-04T05:33:25Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 2-47505-0531Z",
+      "norad": 47505,
+      "label": "HAWK-2A pass",
+      "notes": "Highest 68\u00b0 at 0531Z (sun 26\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 47505, epoch 2026-11-02 01:18Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T05:31:12Z",
+        "elevation": 67.7,
+        "azimuth": 283.0,
+        "sun_elevation": 25.5,
+        "sun_azimuth": 134.7
+      }
+    },
+    {
+      "row": "HE360 Cluster 7",
+      "start": "2026-11-04T06:11:47Z",
+      "end": "2026-11-04T06:16:29Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 7-56191-0614Z",
+      "norad": 56191,
+      "label": "HAWK-7A pass",
+      "notes": "Highest 72\u00b0 at 0614Z (sun 31\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 56191, epoch 2026-11-02 02:14Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T06:14:07Z",
+        "elevation": 71.6,
+        "azimuth": 259.1,
+        "sun_elevation": 31.1,
+        "sun_azimuth": 144.6
+      }
+    },
+    {
+      "row": "BRO-32",
+      "start": "2026-11-04T06:25:59Z",
+      "end": "2026-11-04T06:28:01Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-32-100916-0627Z",
+      "norad": 100916,
+      "label": "BRO-32 pass",
+      "notes": "Highest 22\u00b0 at 0627Z (sun 33\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 100916, epoch 2026-11-01 22:25Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T06:27:00Z",
+        "elevation": 22.4,
+        "azimuth": 95.9,
+        "sun_elevation": 32.6,
+        "sun_azimuth": 147.8
+      }
+    },
+    {
+      "row": "BRO-22",
+      "start": "2026-11-04T06:35:48Z",
+      "end": "2026-11-04T06:41:10Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-22-69504-0638Z",
+      "norad": 69504,
+      "label": "BRO-22 pass",
+      "notes": "Highest 79\u00b0 at 0638Z (sun 34\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 69504, epoch 2026-11-02 01:10Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T06:38:29Z",
+        "elevation": 79.5,
+        "azimuth": 102.0,
+        "sun_elevation": 33.8,
+        "sun_azimuth": 150.8
+      }
+    },
+    {
+      "row": "BRO-20",
+      "start": "2026-11-04T06:43:36Z",
+      "end": "2026-11-04T06:47:27Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-20-66674-0645Z",
+      "norad": 66674,
+      "label": "BRO-20 pass",
+      "notes": "Highest 33\u00b0 at 0645Z (sun 34\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 66674, epoch 2026-11-02 03:31Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T06:45:32Z",
+        "elevation": 32.7,
+        "azimuth": 97.6,
+        "sun_elevation": 34.5,
+        "sun_azimuth": 152.7
+      }
+    },
+    {
+      "row": "BRO-23",
+      "start": "2026-11-04T07:00:41Z",
+      "end": "2026-11-04T07:05:42Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-23-100885-0703Z",
+      "norad": 100885,
+      "label": "BRO-23 pass",
+      "notes": "Highest 72\u00b0 at 0703Z (sun 36\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 100885, epoch 2026-11-01 16:39Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:03:12Z",
+        "elevation": 71.5,
+        "azimuth": 100.8,
+        "sun_elevation": 36.0,
+        "sun_azimuth": 157.6
+      }
+    },
+    {
+      "row": "GeoEye-1",
+      "start": "2026-11-04T07:01:15Z",
+      "end": "2026-11-04T07:03:29Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "GeoEye-1-33331-0702Z",
+      "norad": 33331,
+      "label": "GEOEYE 1 pass",
+      "notes": "Highest 49\u00b0 at 0702Z (sun 36\u00b0). Threshold 40\u00b0. Orbit: Celestrak NORAD 33331, epoch 2026-11-02 03:33Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:02:22Z",
+        "elevation": 48.9,
+        "azimuth": 99.8,
+        "sun_elevation": 35.9,
+        "sun_azimuth": 157.3
+      }
+    },
+    {
+      "row": "Sentinel-3 SLSTR",
+      "start": "2026-11-04T07:01:27Z",
+      "end": "2026-11-04T07:04:49Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-3 SLSTR-41335-0703Z",
+      "norad": 41335,
+      "label": "SENTINEL-3A pass",
+      "notes": "Highest 84\u00b0 at 0703Z (sun 36\u00b0). Threshold 45\u00b0. Orbit: Celestrak NORAD 41335, epoch 2026-11-02 03:53Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:03:08Z",
+        "elevation": 84.0,
+        "azimuth": 284.8,
+        "sun_elevation": 36.0,
+        "sun_azimuth": 157.6
+      }
+    },
+    {
+      "row": "Sentinel-3 OLCI",
+      "start": "2026-11-04T07:01:42Z",
+      "end": "2026-11-04T07:04:34Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-3 OLCI-41335-0703Z",
+      "norad": 41335,
+      "label": "SENTINEL-3A pass",
+      "notes": "Highest 84\u00b0 at 0703Z (sun 36\u00b0). Threshold 50\u00b0. Orbit: Celestrak NORAD 41335, epoch 2026-11-02 03:53Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:03:08Z",
+        "elevation": 84.0,
+        "azimuth": 284.8,
+        "sun_elevation": 36.0,
+        "sun_azimuth": 157.6
+      }
+    },
+    {
+      "row": "BRO-11",
+      "start": "2026-11-04T07:02:45Z",
+      "end": "2026-11-04T07:06:03Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-11-58264-0704Z",
+      "norad": 58264,
+      "label": "BRO-11 pass",
+      "notes": "Highest 29\u00b0 at 0704Z (sun 36\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 58264, epoch 2026-11-02 04:09Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:04:24Z",
+        "elevation": 29.1,
+        "azimuth": 97.4,
+        "sun_elevation": 36.0,
+        "sun_azimuth": 157.9
+      }
+    },
+    {
+      "row": "BRO-8",
+      "start": "2026-11-04T07:11:12Z",
+      "end": "2026-11-04T07:15:07Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-8-55011-0713Z",
+      "norad": 55011,
+      "label": "BRO-8 pass",
+      "notes": "Highest 68\u00b0 at 0713Z (sun 37\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 55011, epoch 2026-11-02 03:45Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:13:10Z",
+        "elevation": 67.6,
+        "azimuth": 282.9,
+        "sun_elevation": 36.7,
+        "sun_azimuth": 160.4
+      }
+    },
+    {
+      "row": "BRO-15",
+      "start": "2026-11-04T07:14:38Z",
+      "end": "2026-11-04T07:20:12Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-15-60553-0717Z",
+      "norad": 60553,
+      "label": "BRO-15 pass",
+      "notes": "Highest 70\u00b0 at 0717Z (sun 37\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 60553, epoch 2026-11-01 11:14Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:17:26Z",
+        "elevation": 70.0,
+        "azimuth": 101.4,
+        "sun_elevation": 37.0,
+        "sun_azimuth": 161.6
+      }
+    },
+    {
+      "row": "BRO-5",
+      "start": "2026-11-04T07:17:39Z",
+      "end": "2026-11-04T07:21:23Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-5-51061-0719Z",
+      "norad": 51061,
+      "label": "BRO-5 pass",
+      "notes": "Highest 46\u00b0 at 0719Z (sun 37\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 51061, epoch 2026-11-02 03:39Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:19:31Z",
+        "elevation": 45.9,
+        "azimuth": 99.6,
+        "sun_elevation": 37.1,
+        "sun_azimuth": 162.3
+      }
+    },
+    {
+      "row": "Sentinel-2",
+      "start": "2026-11-04T07:29:31Z",
+      "end": "2026-11-04T07:30:16Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-2-40697-0729Z",
+      "norad": 40697,
+      "label": "SENTINEL-2A pass",
+      "notes": "Highest 89\u00b0 at 0729Z (sun 38\u00b0). Threshold 78\u00b0. Orbit: Celestrak NORAD 40697, epoch 2026-11-02 04:28Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:29:53Z",
+        "elevation": 89.0,
+        "azimuth": 283.2,
+        "sun_elevation": 37.7,
+        "sun_azimuth": 165.3
+      }
+    },
+    {
+      "row": "Legion-2",
+      "start": "2026-11-04T07:30:56Z",
+      "end": "2026-11-04T07:33:18Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Legion-2-59626-0732Z",
+      "norad": 59626,
+      "label": "LEGION 2 pass",
+      "notes": "Highest 68\u00b0 at 0732Z (sun 38\u00b0). Threshold 40\u00b0. Orbit: Celestrak NORAD 59626, epoch 2026-11-02 04:15Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:32:07Z",
+        "elevation": 67.8,
+        "azimuth": 101.1,
+        "sun_elevation": 37.8,
+        "sun_azimuth": 166.0
+      }
+    },
+    {
+      "row": "BRO-16",
+      "start": "2026-11-04T07:34:38Z",
+      "end": "2026-11-04T07:39:17Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-16-62654-0736Z",
+      "norad": 62654,
+      "label": "BRO-16 pass",
+      "notes": "Highest 58\u00b0 at 0736Z (sun 38\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 62654, epoch 2026-11-01 11:15Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:36:58Z",
+        "elevation": 57.7,
+        "azimuth": 100.3,
+        "sun_elevation": 38.0,
+        "sun_azimuth": 167.4
+      }
+    },
+    {
+      "row": "BRO-17",
+      "start": "2026-11-04T07:35:22Z",
+      "end": "2026-11-04T07:39:50Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-17-66672-0737Z",
+      "norad": 66672,
+      "label": "BRO-17 pass",
+      "notes": "Highest 44\u00b0 at 0737Z (sun 38\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 66672, epoch 2026-11-01 15:44Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:37:36Z",
+        "elevation": 43.7,
+        "azimuth": 285.4,
+        "sun_elevation": 38.0,
+        "sun_azimuth": 167.6
+      }
+    },
+    {
+      "row": "BRO-21",
+      "start": "2026-11-04T07:36:42Z",
+      "end": "2026-11-04T07:38:33Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-21-69007-0737Z",
+      "norad": 69007,
+      "label": "BRO-21 pass",
+      "notes": "Highest 22\u00b0 at 0737Z (sun 38\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 69007, epoch 2026-11-01 06:54Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:37:37Z",
+        "elevation": 22.0,
+        "azimuth": 264.3,
+        "sun_elevation": 38.0,
+        "sun_azimuth": 167.6
+      }
+    },
+    {
+      "row": "BRO-31",
+      "start": "2026-11-04T07:37:13Z",
+      "end": "2026-11-04T07:41:35Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-31-69896-0739Z",
+      "norad": 69896,
+      "label": "BRO-31 pass",
+      "notes": "Highest 33\u00b0 at 0739Z (sun 38\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 69896, epoch 2026-11-01 23:10Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:39:23Z",
+        "elevation": 32.8,
+        "azimuth": 262.4,
+        "sun_elevation": 38.1,
+        "sun_azimuth": 168.2
+      }
+    },
+    {
+      "row": "BRO-14",
+      "start": "2026-11-04T07:38:55Z",
+      "end": "2026-11-04T07:44:21Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-14-60551-0741Z",
+      "norad": 60551,
+      "label": "BRO-14 pass",
+      "notes": "Highest 61\u00b0 at 0741Z (sun 38\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 60551, epoch 2026-11-02 03:42Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:41:38Z",
+        "elevation": 60.7,
+        "azimuth": 284.4,
+        "sun_elevation": 38.2,
+        "sun_azimuth": 168.8
+      }
+    },
+    {
+      "row": "Capella-13",
+      "start": "2026-11-04T07:40:33Z",
+      "end": "2026-11-04T07:42:04Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-13-60419-0741Z",
+      "norad": 60419,
+      "label": "CAPELLA-13 (ACADIA-3) pass",
+      "notes": "Highest 38\u00b0 at 0741Z (sun 38\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 60419, epoch 2026-11-02 00:37Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:41:18Z",
+        "elevation": 37.9,
+        "azimuth": 323.1,
+        "sun_elevation": 38.2,
+        "sun_azimuth": 168.7
+      }
+    },
+    {
+      "row": "Capella-16",
+      "start": "2026-11-04T07:42:53Z",
+      "end": "2026-11-04T07:45:46Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-16-65318-0744Z",
+      "norad": 65318,
+      "label": "CAPELLA-16 (ACADIA-6) pass",
+      "notes": "Highest 55\u00b0 at 0744Z (sun 38\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 65318, epoch 2026-11-02 03:42Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:44:20Z",
+        "elevation": 55.2,
+        "azimuth": 285.1,
+        "sun_elevation": 38.3,
+        "sun_azimuth": 169.7
+      }
+    },
+    {
+      "row": "HE360 Cluster 10",
+      "start": "2026-11-04T07:47:10Z",
+      "end": "2026-11-04T07:52:18Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 10-60540-0749Z",
+      "norad": 60540,
+      "label": "HAWK-10A pass",
+      "notes": "Highest 49\u00b0 at 0749Z (sun 38\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 60540, epoch 2026-11-01 23:02Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:49:44Z",
+        "elevation": 48.5,
+        "azimuth": 285.6,
+        "sun_elevation": 38.5,
+        "sun_azimuth": 171.3
+      }
+    },
+    {
+      "row": "Legion-4",
+      "start": "2026-11-04T07:52:37Z",
+      "end": "2026-11-04T07:53:55Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Legion-4-60453-0753Z",
+      "norad": 60453,
+      "label": "LEGION 4 pass",
+      "notes": "Highest 44\u00b0 at 0753Z (sun 39\u00b0). Threshold 40\u00b0. Orbit: Celestrak NORAD 60453, epoch 2026-11-02 03:10Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T07:53:16Z",
+        "elevation": 44.0,
+        "azimuth": 23.5,
+        "sun_elevation": 38.6,
+        "sun_azimuth": 172.4
+      }
+    },
+    {
+      "row": "BRO-6",
+      "start": "2026-11-04T08:24:36Z",
+      "end": "2026-11-04T08:27:12Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-6-52422-0825Z",
+      "norad": 52422,
+      "label": "BRO-6 pass",
+      "notes": "Highest 28\u00b0 at 0825Z (sun 39\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 52422, epoch 2026-11-02 05:05Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T08:25:54Z",
+        "elevation": 27.8,
+        "azimuth": 97.8,
+        "sun_elevation": 38.9,
+        "sun_azimuth": 182.5
+      }
+    },
+    {
+      "row": "NOAA-21 VIIRS",
+      "start": "2026-11-04T08:58:52Z",
+      "end": "2026-11-04T09:05:40Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "NOAA-21 VIIRS-54234-0902Z",
+      "norad": 54234,
+      "label": "NOAA 21 (JPSS-2) pass",
+      "notes": "Highest 45\u00b0 at 0902Z (sun 38\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 54234, epoch 2026-11-02 02:43Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T09:02:15Z",
+        "elevation": 44.7,
+        "azimuth": 71.4,
+        "sun_elevation": 37.8,
+        "sun_azimuth": 193.6
+      }
+    },
+    {
+      "row": "Legion-6",
+      "start": "2026-11-04T09:14:53Z",
+      "end": "2026-11-04T09:16:51Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Legion-6-62901-0915Z",
+      "norad": 62901,
+      "label": "LEGION 6 pass",
+      "notes": "Highest 51\u00b0 at 0915Z (sun 37\u00b0). Threshold 40\u00b0. Orbit: Celestrak NORAD 62901, epoch 2026-11-02 00:02Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T09:15:52Z",
+        "elevation": 50.8,
+        "azimuth": 334.7,
+        "sun_elevation": 37.1,
+        "sun_azimuth": 197.6
+      }
+    },
+    {
+      "row": "S-NPP VIIRS",
+      "start": "2026-11-04T09:35:28Z",
+      "end": "2026-11-04T09:43:03Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "S-NPP VIIRS-37849-0939Z",
+      "norad": 37849,
+      "label": "SUOMI NPP pass",
+      "notes": "Highest 75\u00b0 at 0939Z (sun 35\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 37849, epoch 2026-11-02 03:21Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T09:39:15Z",
+        "elevation": 75.2,
+        "azimuth": 74.8,
+        "sun_elevation": 35.4,
+        "sun_azimuth": 204.2
+      }
+    },
+    {
+      "row": "BRO-18",
+      "start": "2026-11-04T09:42:04Z",
+      "end": "2026-11-04T09:46:02Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-18-64550-0944Z",
+      "norad": 64550,
+      "label": "BRO-18 pass",
+      "notes": "Highest 35\u00b0 at 0944Z (sun 35\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 64550, epoch 2026-11-02 03:28Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T09:44:04Z",
+        "elevation": 35.3,
+        "azimuth": 98.2,
+        "sun_elevation": 35.0,
+        "sun_azimuth": 205.6
+      }
+    },
+    {
+      "row": "NOAA-20 VIIRS",
+      "start": "2026-11-04T09:55:17Z",
+      "end": "2026-11-04T10:02:42Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "NOAA-20 VIIRS-43013-0958Z",
+      "norad": 43013,
+      "label": "NOAA 20 (JPSS-1) pass",
+      "notes": "Highest 61\u00b0 at 0958Z (sun 34\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 43013, epoch 2026-11-02 01:59Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T09:58:59Z",
+        "elevation": 61.2,
+        "azimuth": 258.5,
+        "sun_elevation": 33.6,
+        "sun_azimuth": 209.6
+      }
+    },
+    {
+      "row": "HE360 Cluster 14",
+      "start": "2026-11-04T10:18:00Z",
+      "end": "2026-11-04T10:20:45Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 14-68448-1019Z",
+      "norad": 68448,
+      "label": "HAWK-14A pass",
+      "notes": "Highest 25\u00b0 at 1019Z (sun 31\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 68448, epoch 2026-11-01 20:30Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T10:19:22Z",
+        "elevation": 25.0,
+        "azimuth": 71.7,
+        "sun_elevation": 31.4,
+        "sun_azimuth": 214.8
+      }
+    },
+    {
+      "row": "BRO-13",
+      "start": "2026-11-04T10:39:24Z",
+      "end": "2026-11-04T10:42:49Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-13-59107-1041Z",
+      "norad": 59107,
+      "label": "BRO-13 pass",
+      "notes": "Highest 27\u00b0 at 1041Z (sun 29\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59107, epoch 2026-11-02 03:29Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T10:41:07Z",
+        "elevation": 26.5,
+        "azimuth": 96.6,
+        "sun_elevation": 28.7,
+        "sun_azimuth": 220.0
+      }
+    },
+    {
+      "row": "Aqua MODIS",
+      "start": "2026-11-04T11:15:16Z",
+      "end": "2026-11-04T11:18:32Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Aqua MODIS-27424-1116Z",
+      "norad": 27424,
+      "label": "AQUA pass",
+      "notes": "Highest 32\u00b0 at 1116Z (sun 24\u00b0). Threshold 25\u00b0. Orbit: Celestrak NORAD 27424, epoch 2026-11-02 04:57Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T11:16:54Z",
+        "elevation": 31.8,
+        "azimuth": 70.3,
+        "sun_elevation": 23.7,
+        "sun_azimuth": 227.8
+      }
+    },
+    {
+      "row": "Capella-20",
+      "start": "2026-11-04T11:20:07Z",
+      "end": "2026-11-04T11:22:18Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-20-68485-1121Z",
+      "norad": 68485,
+      "label": "CAPELLA-20 (ACADIA-10) pass",
+      "notes": "Highest 42\u00b0 at 1121Z (sun 23\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 68485, epoch 2026-11-01 10:31Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T11:21:13Z",
+        "elevation": 42.2,
+        "azimuth": 261.3,
+        "sun_elevation": 23.0,
+        "sun_azimuth": 228.6
+      }
+    },
+    {
+      "row": "BRO-19",
+      "start": "2026-11-04T11:30:59Z",
+      "end": "2026-11-04T11:34:26Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-19-68422-1132Z",
+      "norad": 68422,
+      "label": "BRO-19 pass",
+      "notes": "Highest 29\u00b0 at 1132Z (sun 21\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 68422, epoch 2026-11-01 15:26Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T11:32:42Z",
+        "elevation": 29.1,
+        "azimuth": 262.8,
+        "sun_elevation": 21.2,
+        "sun_azimuth": 230.9
+      }
+    },
+    {
+      "row": "BRO-12",
+      "start": "2026-11-04T11:35:52Z",
+      "end": "2026-11-04T11:41:12Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-12-59108-1138Z",
+      "norad": 59108,
+      "label": "BRO-12 pass",
+      "notes": "Highest 57\u00b0 at 1138Z (sun 20\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59108, epoch 2026-11-02 04:27Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T11:38:33Z",
+        "elevation": 57.4,
+        "azimuth": 285.0,
+        "sun_elevation": 20.3,
+        "sun_azimuth": 232.1
+      }
+    },
+    {
+      "row": "HE360 Cluster 15",
+      "start": "2026-11-04T12:06:44Z",
+      "end": "2026-11-04T12:11:18Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 15-101119-1209Z",
+      "norad": 101119,
+      "label": "HAWK-15A pass",
+      "notes": "Highest 33\u00b0 at 1209Z (sun 15\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 101119, epoch 2026-11-01 13:16Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T12:09:00Z",
+        "elevation": 33.1,
+        "azimuth": 128.6,
+        "sun_elevation": 15.3,
+        "sun_azimuth": 237.6
+      }
+    },
+    {
+      "row": "BRO-13",
+      "start": "2026-11-04T12:15:58Z",
+      "end": "2026-11-04T12:16:20Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-13-59107-1216Z",
+      "norad": 59107,
+      "label": "BRO-13 pass",
+      "notes": "Highest 20\u00b0 at 1216Z (sun 14\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59107, epoch 2026-11-02 03:29Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T12:16:09Z",
+        "elevation": 20.1,
+        "azimuth": 291.0,
+        "sun_elevation": 14.0,
+        "sun_azimuth": 238.9
+      }
+    },
+    {
+      "row": "HE360 Cluster 11",
+      "start": "2026-11-04T12:17:35Z",
+      "end": "2026-11-04T12:22:25Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 11-62382-1220Z",
+      "norad": 62382,
+      "label": "HAWK-11A pass",
+      "notes": "Highest 69\u00b0 at 1220Z (sun 13\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 62382, epoch 2026-11-02 03:45Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T12:20:00Z",
+        "elevation": 69.4,
+        "azimuth": 146.7,
+        "sun_elevation": 13.4,
+        "sun_azimuth": 239.5
+      }
+    },
+    {
+      "row": "HE360 Cluster 6",
+      "start": "2026-11-04T12:57:04Z",
+      "end": "2026-11-04T13:00:48Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 6-55327-1258Z",
+      "norad": 55327,
+      "label": "HAWK-6A pass",
+      "notes": "Highest 31\u00b0 at 1258Z (sun 6\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 55327, epoch 2026-11-02 04:08Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T12:58:56Z",
+        "elevation": 30.6,
+        "azimuth": 147.5,
+        "sun_elevation": 6.4,
+        "sun_azimuth": 245.8
+      }
+    },
+    {
+      "row": "Capella-14",
+      "start": "2026-11-04T13:07:05Z",
+      "end": "2026-11-04T13:10:06Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-14-59444-1308Z",
+      "norad": 59444,
+      "label": "CAPELLA-14 (ACADIA-4) pass",
+      "notes": "Highest 58\u00b0 at 1308Z (sun 5\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 59444, epoch 2026-11-02 03:33Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T13:08:35Z",
+        "elevation": 58.3,
+        "azimuth": 332.1,
+        "sun_elevation": 4.6,
+        "sun_azimuth": 247.3
+      }
+    },
+    {
+      "row": "Capella-18",
+      "start": "2026-11-04T13:12:02Z",
+      "end": "2026-11-04T13:14:42Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-18-67385-1313Z",
+      "norad": 67385,
+      "label": "CAPELLA-18 (ACADIA-8) pass",
+      "notes": "Highest 48\u00b0 at 1313Z (sun 4\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 67385, epoch 2026-11-01 23:40Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T13:13:22Z",
+        "elevation": 48.4,
+        "azimuth": 74.0,
+        "sun_elevation": 3.8,
+        "sun_azimuth": 248.0
+      }
+    },
+    {
+      "row": "HE360 Cluster 8",
+      "start": "2026-11-04T13:43:28Z",
+      "end": "2026-11-04T13:48:07Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 8-59443-1345Z",
+      "norad": 59443,
+      "label": "HAWK-8A pass",
+      "notes": "Highest 35\u00b0 at 1345Z (sun -3\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59443, epoch 2026-11-02 02:24Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T13:45:47Z",
+        "elevation": 35.4,
+        "azimuth": 139.9,
+        "sun_elevation": -2.5,
+        "sun_azimuth": 252.8
+      }
+    },
+    {
+      "row": "Sentinel-1",
+      "start": "2026-11-04T13:45:49Z",
+      "end": "2026-11-04T13:47:17Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-1-62261-1346Z",
+      "norad": 62261,
+      "label": "SENTINEL-1C pass",
+      "notes": "Highest 48\u00b0 at 1346Z (sun -3\u00b0). Threshold 44\u201361\u00b0. Orbit: Celestrak NORAD 62261, epoch 2026-11-02 04:00Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T13:46:33Z",
+        "elevation": 48.2,
+        "azimuth": 73.2,
+        "sun_elevation": -2.7,
+        "sun_azimuth": 252.9
+      }
+    },
+    {
+      "row": "HE360 Cluster 15",
+      "start": "2026-11-04T13:47:05Z",
+      "end": "2026-11-04T13:51:44Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 15-101119-1349Z",
+      "norad": 101119,
+      "label": "HAWK-15A pass",
+      "notes": "Highest 33\u00b0 at 1349Z (sun -3\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 101119, epoch 2026-11-01 13:16Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T13:49:25Z",
+        "elevation": 33.2,
+        "azimuth": 324.5,
+        "sun_elevation": -3.3,
+        "sun_azimuth": 253.3
+      }
+    },
+    {
+      "row": "HE360 Cluster 11",
+      "start": "2026-11-04T13:57:06Z",
+      "end": "2026-11-04T14:00:20Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 11-62382-1358Z",
+      "norad": 62382,
+      "label": "HAWK-11A pass",
+      "notes": "Highest 28\u00b0 at 1358Z (sun -5\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 62382, epoch 2026-11-02 03:45Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T13:58:43Z",
+        "elevation": 27.6,
+        "azimuth": 343.1,
+        "sun_elevation": -5.1,
+        "sun_azimuth": 254.6
+      }
+    },
+    {
+      "row": "HE360 Cluster 13",
+      "start": "2026-11-04T14:02:49Z",
+      "end": "2026-11-04T14:07:05Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 13-67392-1404Z",
+      "norad": 67392,
+      "label": "HAWK-13A pass",
+      "notes": "Highest 39\u00b0 at 1404Z (sun -6\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 67392, epoch 2026-11-01 11:40Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T14:04:56Z",
+        "elevation": 38.9,
+        "azimuth": 261.4,
+        "sun_elevation": -6.3,
+        "sun_azimuth": 255.5
+      }
+    },
+    {
+      "row": "HE360 Cluster 12",
+      "start": "2026-11-04T14:09:12Z",
+      "end": "2026-11-04T14:13:47Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 12-64623-1411Z",
+      "norad": 64623,
+      "label": "HAWK-12A pass",
+      "notes": "Highest 50\u00b0 at 1411Z (sun -8\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 64623, epoch 2026-11-01 22:48Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T14:11:29Z",
+        "elevation": 50.2,
+        "azimuth": 260.4,
+        "sun_elevation": -7.6,
+        "sun_azimuth": 256.4
+      }
+    },
+    {
+      "row": "HE360 Cluster 9",
+      "start": "2026-11-04T14:23:28Z",
+      "end": "2026-11-04T14:29:11Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 9-59446-1426Z",
+      "norad": 59446,
+      "label": "HAWK-9A pass",
+      "notes": "Highest 71\u00b0 at 1426Z (sun -11\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59446, epoch 2026-11-01 15:51Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T14:26:20Z",
+        "elevation": 70.7,
+        "azimuth": 145.1,
+        "sun_elevation": -10.6,
+        "sun_azimuth": 258.5
+      }
+    },
+    {
+      "row": "HE360 Cluster 5",
+      "start": "2026-11-04T14:26:16Z",
+      "end": "2026-11-04T14:27:43Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 5-52757-1426Z",
+      "norad": 52757,
+      "label": "HAWK-5A pass",
+      "notes": "Highest 22\u00b0 at 1426Z (sun -11\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 52757, epoch 2026-11-01 21:01Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T14:26:59Z",
+        "elevation": 21.8,
+        "azimuth": 288.0,
+        "sun_elevation": -10.7,
+        "sun_azimuth": 258.6
+      }
+    },
+    {
+      "row": "Sentinel-1",
+      "start": "2026-11-04T14:34:46Z",
+      "end": "2026-11-04T14:36:16Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-1-66315-1435Z",
+      "norad": 66315,
+      "label": "SENTINEL-1D pass",
+      "notes": "Highest 48\u00b0 at 1435Z (sun -12\u00b0). Threshold 44\u201361\u00b0. Orbit: Celestrak NORAD 66315, epoch 2026-11-01 14:01Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T14:35:31Z",
+        "elevation": 48.3,
+        "azimuth": 260.4,
+        "sun_elevation": -12.4,
+        "sun_azimuth": 259.7
+      }
+    },
+    {
+      "row": "HE360 Cluster 6",
+      "start": "2026-11-04T14:35:38Z",
+      "end": "2026-11-04T14:40:42Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 6-55327-1438Z",
+      "norad": 55327,
+      "label": "HAWK-6A pass",
+      "notes": "Highest 65\u00b0 at 1438Z (sun -13\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 55327, epoch 2026-11-02 04:08Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T14:38:09Z",
+        "elevation": 65.4,
+        "azimuth": 342.7,
+        "sun_elevation": -13.0,
+        "sun_azimuth": 260.1
+      }
+    },
+    {
+      "row": "HE360 Cluster 8",
+      "start": "2026-11-04T15:23:45Z",
+      "end": "2026-11-04T15:29:00Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 8-59443-1526Z",
+      "norad": 59443,
+      "label": "HAWK-8A pass",
+      "notes": "Highest 45\u00b0 at 1526Z (sun -23\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59443, epoch 2026-11-02 02:24Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T15:26:23Z",
+        "elevation": 45.1,
+        "azimuth": 335.5,
+        "sun_elevation": -22.7,
+        "sun_azimuth": 266.8
+      }
+    },
+    {
+      "row": "HE360 Cluster 2",
+      "start": "2026-11-04T15:59:35Z",
+      "end": "2026-11-04T16:01:03Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 2-47505-1600Z",
+      "norad": 47505,
+      "label": "HAWK-2A pass",
+      "notes": "Highest 21\u00b0 at 1600Z (sun -30\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 47505, epoch 2026-11-02 01:18Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T16:00:19Z",
+        "elevation": 21.5,
+        "azimuth": 71.9,
+        "sun_elevation": -29.6,
+        "sun_azimuth": 271.7
+      }
+    },
+    {
+      "row": "HE360 Cluster 9",
+      "start": "2026-11-04T16:05:08Z",
+      "end": "2026-11-04T16:09:22Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 9-59446-1607Z",
+      "norad": 59446,
+      "label": "HAWK-9A pass",
+      "notes": "Highest 31\u00b0 at 1607Z (sun -31\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59446, epoch 2026-11-01 15:51Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T16:07:15Z",
+        "elevation": 30.6,
+        "azimuth": 342.2,
+        "sun_elevation": -31.0,
+        "sun_azimuth": 272.7
+      }
+    },
+    {
+      "row": "Terra MODIS",
+      "start": "2026-11-04T16:05:23Z",
+      "end": "2026-11-04T16:08:58Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Terra MODIS-25994-1607Z",
+      "norad": 25994,
+      "label": "TERRA pass",
+      "notes": "Highest 34\u00b0 at 1607Z (sun -31\u00b0). Threshold 25\u00b0. Orbit: Celestrak NORAD 25994, epoch 2026-11-02 03:15Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T16:07:11Z",
+        "elevation": 33.6,
+        "azimuth": 71.3,
+        "sun_elevation": -31.0,
+        "sun_azimuth": 272.7
+      }
+    },
+    {
+      "row": "HE360 Cluster 6",
+      "start": "2026-11-04T16:15:40Z",
+      "end": "2026-11-04T16:20:05Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 6-55327-1617Z",
+      "norad": 55327,
+      "label": "HAWK-6A pass",
+      "notes": "Highest 39\u00b0 at 1617Z (sun -33\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 55327, epoch 2026-11-02 04:08Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T16:17:53Z",
+        "elevation": 38.6,
+        "azimuth": 359.5,
+        "sun_elevation": -33.2,
+        "sun_azimuth": 274.4
+      }
+    },
+    {
+      "row": "HE360 Cluster 16",
+      "start": "2026-11-04T16:47:09Z",
+      "end": "2026-11-04T16:51:45Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 16-101146-1649Z",
+      "norad": 101146,
+      "label": "HAWK-16A pass",
+      "notes": "Highest 46\u00b0 at 1649Z (sun -40\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 101146, epoch 2026-11-01 04:12Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T16:49:28Z",
+        "elevation": 45.5,
+        "azimuth": 285.3,
+        "sun_elevation": -39.5,
+        "sun_azimuth": 279.5
+      }
+    },
+    {
+      "row": "HE360 Cluster 8",
+      "start": "2026-11-04T17:06:44Z",
+      "end": "2026-11-04T17:08:47Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 8-59443-1707Z",
+      "norad": 59443,
+      "label": "HAWK-8A pass",
+      "notes": "Highest 22\u00b0 at 1707Z (sun -43\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59443, epoch 2026-11-02 02:24Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T17:07:45Z",
+        "elevation": 21.8,
+        "azimuth": 354.2,
+        "sun_elevation": -43.2,
+        "sun_azimuth": 282.8
+      }
+    },
+    {
+      "row": "HE360 Cluster 11",
+      "start": "2026-11-04T17:15:17Z",
+      "end": "2026-11-04T17:19:09Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 11-62382-1717Z",
+      "norad": 62382,
+      "label": "HAWK-11A pass",
+      "notes": "Highest 33\u00b0 at 1717Z (sun -45\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 62382, epoch 2026-11-02 03:45Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T17:17:13Z",
+        "elevation": 33.3,
+        "azimuth": 20.3,
+        "sun_elevation": -45.0,
+        "sun_azimuth": 284.7
+      }
+    },
+    {
+      "row": "HE360 Cluster 3",
+      "start": "2026-11-04T17:19:45Z",
+      "end": "2026-11-04T17:21:24Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 3-48957-1720Z",
+      "norad": 48957,
+      "label": "HAWK-3A pass",
+      "notes": "Highest 24\u00b0 at 1720Z (sun -46\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 48957, epoch 2026-11-01 20:35Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T17:20:35Z",
+        "elevation": 23.8,
+        "azimuth": 286.5,
+        "sun_elevation": -45.7,
+        "sun_azimuth": 285.3
+      }
+    },
+    {
+      "row": "BRO-22",
+      "start": "2026-11-04T17:20:35Z",
+      "end": "2026-11-04T17:24:37Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-22-69504-1722Z",
+      "norad": 69504,
+      "label": "BRO-22 pass",
+      "notes": "Highest 31\u00b0 at 1722Z (sun -46\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 69504, epoch 2026-11-02 01:10Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T17:22:36Z",
+        "elevation": 31.0,
+        "azimuth": 72.2,
+        "sun_elevation": -46.1,
+        "sun_azimuth": 285.7
+      }
+    },
+    {
+      "row": "HE360 Cluster 1",
+      "start": "2026-11-04T17:33:06Z",
+      "end": "2026-11-04T17:37:27Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 1-43765-1735Z",
+      "norad": 43765,
+      "label": "HAWK-A pass",
+      "notes": "Highest 43\u00b0 at 1735Z (sun -49\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 43765, epoch 2026-11-01 09:10Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T17:35:17Z",
+        "elevation": 42.9,
+        "azimuth": 260.9,
+        "sun_elevation": -48.6,
+        "sun_azimuth": 288.4
+      }
+    },
+    {
+      "row": "BRO-23",
+      "start": "2026-11-04T17:39:40Z",
+      "end": "2026-11-04T17:41:00Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-23-100885-1740Z",
+      "norad": 100885,
+      "label": "BRO-23 pass",
+      "notes": "Highest 21\u00b0 at 1740Z (sun -50\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 100885, epoch 2026-11-01 16:39Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T17:40:20Z",
+        "elevation": 21.0,
+        "azimuth": 70.7,
+        "sun_elevation": -49.5,
+        "sun_azimuth": 289.5
+      }
+    },
+    {
+      "row": "Sentinel-3 SLSTR",
+      "start": "2026-11-04T17:41:02Z",
+      "end": "2026-11-04T17:42:12Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-3 SLSTR-43437-1741Z",
+      "norad": 43437,
+      "label": "SENTINEL-3B pass",
+      "notes": "Highest 47\u00b0 at 1741Z (sun -50\u00b0). Threshold 45\u00b0. Orbit: Celestrak NORAD 43437, epoch 2026-11-02 04:55Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T17:41:37Z",
+        "elevation": 47.0,
+        "azimuth": 71.8,
+        "sun_elevation": -49.8,
+        "sun_azimuth": 289.8
+      }
+    },
+    {
+      "row": "HE360 Cluster 9",
+      "start": "2026-11-04T17:48:01Z",
+      "end": "2026-11-04T17:49:35Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 9-59446-1748Z",
+      "norad": 59446,
+      "label": "HAWK-9A pass",
+      "notes": "Highest 21\u00b0 at 1748Z (sun -51\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59446, epoch 2026-11-01 15:51Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T17:48:48Z",
+        "elevation": 21.0,
+        "azimuth": 1.6,
+        "sun_elevation": -51.1,
+        "sun_azimuth": 291.5
+      }
+    },
+    {
+      "row": "HE360 Cluster 6",
+      "start": "2026-11-04T17:55:05Z",
+      "end": "2026-11-04T18:00:08Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 6-55327-1757Z",
+      "norad": 55327,
+      "label": "HAWK-6A pass",
+      "notes": "Highest 62\u00b0 at 1757Z (sun -53\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 55327, epoch 2026-11-02 04:08Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T17:57:37Z",
+        "elevation": 62.3,
+        "azimuth": 16.7,
+        "sun_elevation": -52.8,
+        "sun_azimuth": 293.6
+      }
+    },
+    {
+      "row": "BRO-15",
+      "start": "2026-11-04T18:01:09Z",
+      "end": "2026-11-04T18:04:55Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-15-60553-1803Z",
+      "norad": 60553,
+      "label": "BRO-15 pass",
+      "notes": "Highest 29\u00b0 at 1803Z (sun -54\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 60553, epoch 2026-11-01 11:14Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T18:03:02Z",
+        "elevation": 28.9,
+        "azimuth": 71.6,
+        "sun_elevation": -53.8,
+        "sun_azimuth": 295.0
+      }
+    },
+    {
+      "row": "Capella-14",
+      "start": "2026-11-04T18:09:52Z",
+      "end": "2026-11-04T18:12:52Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-14-59444-1811Z",
+      "norad": 59444,
+      "label": "CAPELLA-14 (ACADIA-4) pass",
+      "notes": "Highest 58\u00b0 at 1811Z (sun -55\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 59444, epoch 2026-11-02 03:33Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T18:11:22Z",
+        "elevation": 58.4,
+        "azimuth": 28.0,
+        "sun_elevation": -55.3,
+        "sun_azimuth": 297.3
+      }
+    },
+    {
+      "row": "BRO-17",
+      "start": "2026-11-04T18:11:29Z",
+      "end": "2026-11-04T18:16:05Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-17-66672-1813Z",
+      "norad": 66672,
+      "label": "BRO-17 pass",
+      "notes": "Highest 47\u00b0 at 1813Z (sun -56\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 66672, epoch 2026-11-01 15:44Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T18:13:47Z",
+        "elevation": 46.7,
+        "azimuth": 75.0,
+        "sun_elevation": -55.8,
+        "sun_azimuth": 298.0
+      }
+    },
+    {
+      "row": "Sentinel-3 SLSTR",
+      "start": "2026-11-04T18:18:07Z",
+      "end": "2026-11-04T18:21:20Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-3 SLSTR-41335-1819Z",
+      "norad": 41335,
+      "label": "SENTINEL-3A pass",
+      "notes": "Highest 73\u00b0 at 1819Z (sun -57\u00b0). Threshold 45\u00b0. Orbit: Celestrak NORAD 41335, epoch 2026-11-02 03:53Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T18:19:44Z",
+        "elevation": 73.0,
+        "azimuth": 257.7,
+        "sun_elevation": -56.8,
+        "sun_azimuth": 299.7
+      }
+    },
+    {
+      "row": "BRO-14",
+      "start": "2026-11-04T18:24:32Z",
+      "end": "2026-11-04T18:29:48Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-14-60551-1827Z",
+      "norad": 60551,
+      "label": "BRO-14 pass",
+      "notes": "Highest 54\u00b0 at 1827Z (sun -58\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 60551, epoch 2026-11-02 03:42Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T18:27:09Z",
+        "elevation": 54.1,
+        "azimuth": 75.1,
+        "sun_elevation": -58.1,
+        "sun_azimuth": 302.0
+      }
+    },
+    {
+      "row": "Capella-16",
+      "start": "2026-11-04T18:28:53Z",
+      "end": "2026-11-04T18:31:59Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-16-65318-1830Z",
+      "norad": 65318,
+      "label": "CAPELLA-16 (ACADIA-6) pass",
+      "notes": "Highest 61\u00b0 at 1830Z (sun -59\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 65318, epoch 2026-11-02 03:42Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T18:30:26Z",
+        "elevation": 61.3,
+        "azimuth": 75.4,
+        "sun_elevation": -58.7,
+        "sun_azimuth": 303.1
+      }
+    },
+    {
+      "row": "HE360 Cluster 10",
+      "start": "2026-11-04T18:32:21Z",
+      "end": "2026-11-04T18:37:49Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 10-60540-1835Z",
+      "norad": 60540,
+      "label": "HAWK-10A pass",
+      "notes": "Highest 67\u00b0 at 1835Z (sun -59\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 60540, epoch 2026-11-01 23:02Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T18:35:05Z",
+        "elevation": 67.3,
+        "azimuth": 76.2,
+        "sun_elevation": -59.5,
+        "sun_azimuth": 304.6
+      }
+    },
+    {
+      "row": "BRO-32",
+      "start": "2026-11-04T18:35:07Z",
+      "end": "2026-11-04T18:40:01Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-32-100916-1837Z",
+      "norad": 100916,
+      "label": "BRO-32 pass",
+      "notes": "Highest 65\u00b0 at 1837Z (sun -60\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 100916, epoch 2026-11-01 22:25Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T18:37:33Z",
+        "elevation": 65.1,
+        "azimuth": 259.4,
+        "sun_elevation": -59.9,
+        "sun_azimuth": 305.5
+      }
+    },
+    {
+      "row": "HE360 Cluster 8",
+      "start": "2026-11-04T18:47:37Z",
+      "end": "2026-11-04T18:51:07Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 8-59443-1849Z",
+      "norad": 59443,
+      "label": "HAWK-8A pass",
+      "notes": "Highest 26\u00b0 at 1849Z (sun -62\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59443, epoch 2026-11-02 02:24Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T18:49:22Z",
+        "elevation": 26.2,
+        "azimuth": 13.7,
+        "sun_elevation": -61.8,
+        "sun_azimuth": 309.8
+      }
+    },
+    {
+      "row": "BRO-20",
+      "start": "2026-11-04T18:53:15Z",
+      "end": "2026-11-04T18:57:44Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-20-66674-1855Z",
+      "norad": 66674,
+      "label": "BRO-20 pass",
+      "notes": "Highest 43\u00b0 at 1855Z (sun -63\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 66674, epoch 2026-11-02 03:31Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T18:55:29Z",
+        "elevation": 42.8,
+        "azimuth": 261.1,
+        "sun_elevation": -62.7,
+        "sun_azimuth": 312.3
+      }
+    },
+    {
+      "row": "HE360 Cluster 11",
+      "start": "2026-11-04T18:53:32Z",
+      "end": "2026-11-04T18:58:02Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 11-62382-1855Z",
+      "norad": 62382,
+      "label": "HAWK-11A pass",
+      "notes": "Highest 47\u00b0 at 1855Z (sun -63\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 62382, epoch 2026-11-02 03:45Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T18:55:47Z",
+        "elevation": 46.8,
+        "azimuth": 216.3,
+        "sun_elevation": -62.8,
+        "sun_azimuth": 312.4
+      }
+    },
+    {
+      "row": "BRO-21",
+      "start": "2026-11-04T19:07:18Z",
+      "end": "2026-11-04T19:11:20Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-21-69007-1909Z",
+      "norad": 69007,
+      "label": "BRO-21 pass",
+      "notes": "Highest 36\u00b0 at 1909Z (sun -65\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 69007, epoch 2026-11-01 06:54Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T19:09:20Z",
+        "elevation": 35.6,
+        "azimuth": 98.0,
+        "sun_elevation": -64.7,
+        "sun_azimuth": 318.3
+      }
+    },
+    {
+      "row": "BRO-11",
+      "start": "2026-11-04T19:07:43Z",
+      "end": "2026-11-04T19:12:08Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-11-58264-1909Z",
+      "norad": 58264,
+      "label": "BRO-11 pass",
+      "notes": "Highest 52\u00b0 at 1909Z (sun -65\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 58264, epoch 2026-11-02 04:09Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T19:09:55Z",
+        "elevation": 51.5,
+        "azimuth": 260.2,
+        "sun_elevation": -64.8,
+        "sun_azimuth": 318.6
+      }
+    },
+    {
+      "row": "BRO-5",
+      "start": "2026-11-04T19:12:04Z",
+      "end": "2026-11-04T19:15:40Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-5-51061-1913Z",
+      "norad": 51061,
+      "label": "BRO-5 pass",
+      "notes": "Highest 40\u00b0 at 1913Z (sun -65\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 51061, epoch 2026-11-02 03:39Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T19:13:52Z",
+        "elevation": 39.8,
+        "azimuth": 261.1,
+        "sun_elevation": -65.3,
+        "sun_azimuth": 320.5
+      }
+    },
+    {
+      "row": "BRO-23",
+      "start": "2026-11-04T19:13:42Z",
+      "end": "2026-11-04T19:14:50Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-23-100885-1914Z",
+      "norad": 100885,
+      "label": "BRO-23 pass",
+      "notes": "Highest 21\u00b0 at 1914Z (sun -65\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 100885, epoch 2026-11-01 16:39Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T19:14:16Z",
+        "elevation": 20.7,
+        "azimuth": 264.6,
+        "sun_elevation": -65.3,
+        "sun_azimuth": 320.7
+      }
+    },
+    {
+      "row": "HE360 Cluster 7",
+      "start": "2026-11-04T19:14:20Z",
+      "end": "2026-11-04T19:18:10Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 7-56191-1916Z",
+      "norad": 56191,
+      "label": "HAWK-7A pass",
+      "notes": "Highest 35\u00b0 at 1916Z (sun -66\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 56191, epoch 2026-11-02 02:14Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T19:16:15Z",
+        "elevation": 35.0,
+        "azimuth": 286.0,
+        "sun_elevation": -65.6,
+        "sun_azimuth": 321.7
+      }
+    },
+    {
+      "row": "BRO-31",
+      "start": "2026-11-04T19:22:17Z",
+      "end": "2026-11-04T19:27:18Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-31-69896-1924Z",
+      "norad": 69896,
+      "label": "BRO-31 pass",
+      "notes": "Highest 43\u00b0 at 1924Z (sun -67\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 69896, epoch 2026-11-01 23:10Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T19:24:48Z",
+        "elevation": 42.9,
+        "azimuth": 99.1,
+        "sun_elevation": -66.6,
+        "sun_azimuth": 326.1
+      }
+    },
+    {
+      "row": "HE360 Cluster 9",
+      "start": "2026-11-04T19:27:57Z",
+      "end": "2026-11-04T19:32:40Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 9-59446-1930Z",
+      "norad": 59446,
+      "label": "HAWK-9A pass",
+      "notes": "Highest 35\u00b0 at 1930Z (sun -67\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59446, epoch 2026-11-01 15:51Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T19:30:18Z",
+        "elevation": 35.4,
+        "azimuth": 20.7,
+        "sun_elevation": -67.2,
+        "sun_azimuth": 329.1
+      }
+    },
+    {
+      "row": "HE360 Cluster 6",
+      "start": "2026-11-04T19:34:53Z",
+      "end": "2026-11-04T19:38:52Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 6-55327-1936Z",
+      "norad": 55327,
+      "label": "HAWK-6A pass",
+      "notes": "Highest 33\u00b0 at 1936Z (sun -68\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 55327, epoch 2026-11-02 04:08Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T19:36:52Z",
+        "elevation": 33.1,
+        "azimuth": 211.7,
+        "sun_elevation": -67.9,
+        "sun_azimuth": 332.9
+      }
+    },
+    {
+      "row": "BRO-16",
+      "start": "2026-11-04T19:42:41Z",
+      "end": "2026-11-04T19:45:36Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-16-62654-1944Z",
+      "norad": 62654,
+      "label": "BRO-16 pass",
+      "notes": "Highest 26\u00b0 at 1944Z (sun -68\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 62654, epoch 2026-11-01 11:15Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T19:44:08Z",
+        "elevation": 26.1,
+        "azimuth": 263.3,
+        "sun_elevation": -68.5,
+        "sun_azimuth": 337.3
+      }
+    },
+    {
+      "row": "BRO-6",
+      "start": "2026-11-04T20:13:41Z",
+      "end": "2026-11-04T20:17:32Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-6-52422-2015Z",
+      "norad": 52422,
+      "label": "BRO-6 pass",
+      "notes": "Highest 77\u00b0 at 2015Z (sun -70\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 52422, epoch 2026-11-02 05:05Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T20:15:36Z",
+        "elevation": 77.0,
+        "azimuth": 258.5,
+        "sun_elevation": -69.9,
+        "sun_azimuth": 358.3
+      }
+    },
+    {
+      "row": "HE360 Cluster 8",
+      "start": "2026-11-04T20:27:34Z",
+      "end": "2026-11-04T20:33:21Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 8-59443-2030Z",
+      "norad": 59443,
+      "label": "HAWK-8A pass",
+      "notes": "Highest 82\u00b0 at 2030Z (sun -70\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59443, epoch 2026-11-02 02:24Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T20:30:28Z",
+        "elevation": 81.6,
+        "azimuth": 31.7,
+        "sun_elevation": -69.7,
+        "sun_azimuth": 8.7
+      }
+    },
+    {
+      "row": "HE360 Cluster 15",
+      "start": "2026-11-04T20:33:12Z",
+      "end": "2026-11-04T20:39:09Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 15-101119-2036Z",
+      "norad": 101119,
+      "label": "HAWK-15A pass",
+      "notes": "Highest 77\u00b0 at 2036Z (sun -69\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 101119, epoch 2026-11-01 13:16Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T20:36:11Z",
+        "elevation": 76.8,
+        "azimuth": 225.8,
+        "sun_elevation": -69.5,
+        "sun_azimuth": 12.6
+      }
+    },
+    {
+      "row": "HE360 Cluster 9",
+      "start": "2026-11-04T21:08:21Z",
+      "end": "2026-11-04T21:13:49Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 9-59446-2111Z",
+      "norad": 59446,
+      "label": "HAWK-9A pass",
+      "notes": "Highest 53\u00b0 at 2111Z (sun -67\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59446, epoch 2026-11-01 15:51Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T21:11:05Z",
+        "elevation": 52.9,
+        "azimuth": 217.0,
+        "sun_elevation": -66.6,
+        "sun_azimuth": 33.9
+      }
+    },
+    {
+      "row": "NOAA-21 VIIRS",
+      "start": "2026-11-04T21:21:31Z",
+      "end": "2026-11-04T21:24:52Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "NOAA-21 VIIRS-54234-2123Z",
+      "norad": 54234,
+      "label": "NOAA 21 (JPSS-2) pass",
+      "notes": "Highest 23\u00b0 at 2123Z (sun -65\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 54234, epoch 2026-11-02 02:43Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T21:23:11Z",
+        "elevation": 23.1,
+        "azimuth": 95.1,
+        "sun_elevation": -65.2,
+        "sun_azimuth": 40.1
+      }
+    },
+    {
+      "row": "BRO-18",
+      "start": "2026-11-04T21:50:01Z",
+      "end": "2026-11-04T21:54:14Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-18-64550-2152Z",
+      "norad": 64550,
+      "label": "BRO-18 pass",
+      "notes": "Highest 40\u00b0 at 2152Z (sun -61\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 64550, epoch 2026-11-02 03:28Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T21:52:07Z",
+        "elevation": 39.8,
+        "azimuth": 261.3,
+        "sun_elevation": -60.9,
+        "sun_azimuth": 52.3
+      }
+    },
+    {
+      "row": "S-NPP VIIRS",
+      "start": "2026-11-04T21:57:13Z",
+      "end": "2026-11-04T22:03:37Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "S-NPP VIIRS-37849-2200Z",
+      "norad": 37849,
+      "label": "SUOMI NPP pass",
+      "notes": "Highest 38\u00b0 at 2200Z (sun -60\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 37849, epoch 2026-11-02 03:21Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T22:00:26Z",
+        "elevation": 38.3,
+        "azimuth": 98.5,
+        "sun_elevation": -59.6,
+        "sun_azimuth": 55.3
+      }
+    },
+    {
+      "row": "Capella-11",
+      "start": "2026-11-04T22:12:52Z",
+      "end": "2026-11-04T22:15:17Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-11-57693-2214Z",
+      "norad": 57693,
+      "label": "CAPELLA-11 (ACADIA-1) pass",
+      "notes": "Highest 44\u00b0 at 2214Z (sun -57\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 57693, epoch 2026-11-01 06:46Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T22:14:04Z",
+        "elevation": 44.0,
+        "azimuth": 38.4,
+        "sun_elevation": -57.2,
+        "sun_azimuth": 59.7
+      }
+    },
+    {
+      "row": "NOAA-20 VIIRS",
+      "start": "2026-11-04T22:16:27Z",
+      "end": "2026-11-04T22:24:01Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "NOAA-20 VIIRS-43013-2220Z",
+      "norad": 43013,
+      "label": "NOAA 20 (JPSS-1) pass",
+      "notes": "Highest 70\u00b0 at 2220Z (sun -56\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 43013, epoch 2026-11-02 01:59Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T22:20:14Z",
+        "elevation": 70.3,
+        "azimuth": 102.3,
+        "sun_elevation": -56.1,
+        "sun_azimuth": 61.5
+      }
+    },
+    {
+      "row": "BRO-12",
+      "start": "2026-11-04T22:21:03Z",
+      "end": "2026-11-04T22:26:27Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-12-59108-2223Z",
+      "norad": 59108,
+      "label": "BRO-12 pass",
+      "notes": "Highest 59\u00b0 at 2223Z (sun -56\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59108, epoch 2026-11-02 04:27Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T22:23:45Z",
+        "elevation": 58.7,
+        "azimuth": 75.2,
+        "sun_elevation": -55.5,
+        "sun_azimuth": 62.5
+      }
+    },
+    {
+      "row": "BRO-13",
+      "start": "2026-11-04T22:59:10Z",
+      "end": "2026-11-04T23:04:10Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-13-59107-2301Z",
+      "norad": 59107,
+      "label": "BRO-13 pass",
+      "notes": "Highest 43\u00b0 at 2301Z (sun -48\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 59107, epoch 2026-11-02 03:29Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T23:01:40Z",
+        "elevation": 43.4,
+        "azimuth": 260.8,
+        "sun_elevation": -48.4,
+        "sun_azimuth": 71.9
+      }
+    },
+    {
+      "row": "NOAA-21 VIIRS",
+      "start": "2026-11-04T23:00:17Z",
+      "end": "2026-11-04T23:06:37Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "NOAA-21 VIIRS-54234-2303Z",
+      "norad": 54234,
+      "label": "NOAA 21 (JPSS-2) pass",
+      "notes": "Highest 38\u00b0 at 2303Z (sun -48\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 54234, epoch 2026-11-02 02:43Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T23:03:28Z",
+        "elevation": 38.4,
+        "azimuth": 289.7,
+        "sun_elevation": -48.1,
+        "sun_azimuth": 72.3
+      }
+    },
+    {
+      "row": "BRO-19",
+      "start": "2026-11-04T23:03:55Z",
+      "end": "2026-11-04T23:07:10Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "BRO-19-68422-2305Z",
+      "norad": 68422,
+      "label": "BRO-19 pass",
+      "notes": "Highest 28\u00b0 at 2305Z (sun -48\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 68422, epoch 2026-11-01 15:26Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T23:05:33Z",
+        "elevation": 27.6,
+        "azimuth": 96.9,
+        "sun_elevation": -47.7,
+        "sun_azimuth": 72.7
+      }
+    },
+    {
+      "row": "Capella-20",
+      "start": "2026-11-04T23:08:32Z",
+      "end": "2026-11-04T23:09:56Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-20-68485-2309Z",
+      "norad": 68485,
+      "label": "CAPELLA-20 (ACADIA-10) pass",
+      "notes": "Highest 38\u00b0 at 2309Z (sun -47\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 68485, epoch 2026-11-01 10:31Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T23:09:14Z",
+        "elevation": 37.7,
+        "azimuth": 98.2,
+        "sun_elevation": -46.9,
+        "sun_azimuth": 73.5
+      }
+    },
+    {
+      "row": "HE360 Cluster 14",
+      "start": "2026-11-04T23:23:51Z",
+      "end": "2026-11-04T23:28:34Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "HE360 Cluster 14-68448-2326Z",
+      "norad": 68448,
+      "label": "HAWK-14A pass",
+      "notes": "Highest 52\u00b0 at 2326Z (sun -44\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 68448, epoch 2026-11-01 20:30Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T23:26:12Z",
+        "elevation": 51.9,
+        "azimuth": 99.7,
+        "sun_elevation": -43.6,
+        "sun_azimuth": 76.9
+      }
+    },
+    {
+      "row": "S-NPP VIIRS",
+      "start": "2026-11-04T23:38:30Z",
+      "end": "2026-11-04T23:42:13Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "S-NPP VIIRS-37849-2340Z",
+      "norad": 37849,
+      "label": "SUOMI NPP pass",
+      "notes": "Highest 24\u00b0 at 2340Z (sun -41\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 37849, epoch 2026-11-02 03:21Z, fetched 2026-11-02T13:28:40Z.",
+      "pass": {
+        "peak": "2026-11-04T23:40:22Z",
+        "elevation": 24.1,
+        "azimuth": 293.4,
+        "sun_elevation": -40.8,
+        "sun_azimuth": 79.5
+      }
+    }
+  ],
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint"
+    },
+    "Collected": {
+      "fill": "tint"
+    },
+    "High": {
+      "fill": "tint"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "tint"
+    },
+    "No Concern": {
+      "fill": "tint"
+    }
+  },
+  "icod_ageing": {
+    "ageing_after_hours": 30,
+    "stale_after_hours": 54
+  },
+  "seclabs": {
+    "labels": [
+      {
+        "name": "UNCLASSIFIED",
+        "color": "#1a9850",
+        "text_color": "#ffffff"
+      }
+    ],
+    "ceiling": "UNCLASSIFIED"
+  },
+  "daylight": {
+    "step_minutes": 10,
+    "elevations": [
+      -36.7,
+      -34.7,
+      -32.7,
+      -30.6,
+      -28.6,
+      -26.6,
+      -24.5,
+      -22.5,
+      -20.5,
+      -18.5,
+      -16.4,
+      -14.4,
+      -12.4,
+      -10.4,
+      -8.4,
+      -6.4,
+      -4.5,
+      -2.5,
+      -0.2,
+      1.6,
+      3.4,
+      5.2,
+      7.0,
+      8.8,
+      10.6,
+      12.4,
+      14.1,
+      15.8,
+      17.5,
+      19.2,
+      20.8,
+      22.3,
+      23.9,
+      25.3,
+      26.8,
+      28.1,
+      29.4,
+      30.7,
+      31.8,
+      32.9,
+      33.9,
+      34.9,
+      35.7,
+      36.5,
+      37.1,
+      37.7,
+      38.1,
+      38.5,
+      38.7,
+      38.9,
+      38.9,
+      38.8,
+      38.6,
+      38.4,
+      37.9,
+      37.4,
+      36.8,
+      36.1,
+      35.3,
+      34.5,
+      33.5,
+      32.4,
+      31.3,
+      30.1,
+      28.8,
+      27.5,
+      26.1,
+      24.7,
+      23.2,
+      21.6,
+      20.1,
+      18.4,
+      16.8,
+      15.1,
+      13.4,
+      11.6,
+      9.8,
+      8.0,
+      6.2,
+      4.4,
+      2.6,
+      0.8,
+      -1.3,
+      -3.4,
+      -5.4,
+      -7.3,
+      -9.3,
+      -11.3,
+      -13.3,
+      -15.3,
+      -17.4,
+      -19.4,
+      -21.4,
+      -23.4,
+      -25.5,
+      -27.5,
+      -29.5,
+      -31.6,
+      -33.6,
+      -35.6,
+      -37.6,
+      -39.6,
+      -41.6,
+      -43.6,
+      -45.6,
+      -47.5,
+      -49.5,
+      -51.4,
+      -53.2,
+      -55.1,
+      -56.9,
+      -58.6,
+      -60.3,
+      -61.9,
+      -63.4,
+      -64.8,
+      -66.1,
+      -67.2,
+      -68.2,
+      -68.9,
+      -69.5,
+      -69.8,
+      -69.9,
+      -69.7,
+      -69.3,
+      -68.6,
+      -67.8,
+      -66.8,
+      -65.6,
+      -64.3,
+      -62.8,
+      -61.3,
+      -59.6,
+      -57.9,
+      -56.2,
+      -54.4,
+      -52.5,
+      -50.6,
+      -48.7,
+      -46.8,
+      -44.8,
+      -42.9,
+      -40.9,
+      -38.9,
+      -36.9
+    ],
+    "sun": {
+      "dawn": "2026-11-04T02:32:15Z",
+      "sunrise": "2026-11-04T02:59:19Z",
+      "sunset": "2026-11-04T13:36:10Z",
+      "dusk": "2026-11-04T14:03:13Z"
+    }
+  },
+  "markers": [],
+  "banners": [],
+  "label": "Abstracted Sync Matrix"
+}

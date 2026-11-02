@@ -1,0 +1,1072 @@
+{
+  "version": 1,
+  "title": "Simplified Sync Matrix",
+  "subtitle": "Tokyo \u00b7 04 November 2026",
+  "icod": "2026-11-02T13:28:40Z",
+  "icod_source": "celestrak",
+  "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-02T1328Z.json), computed with Skyfield",
+  "provenance": {
+    "all": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-02T1328Z.json), computed with Skyfield",
+      "icod": "2026-11-02T13:28:40Z",
+      "icod_source": "celestrak"
+    },
+    "EO": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-02T1328Z.json), computed with Skyfield",
+      "icod": "2026-11-02T13:28:40Z",
+      "icod_source": "celestrak",
+      "notes": "7 predicted passes from 7 of 15 configured satellites"
+    },
+    "SAR": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-02T1328Z.json), computed with Skyfield",
+      "icod": "2026-11-02T13:28:40Z",
+      "icod_source": "celestrak",
+      "notes": "16 predicted passes from 11 of 12 configured satellites"
+    },
+    "RF": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-02T1328Z.json), computed with Skyfield",
+      "icod": "2026-11-02T13:28:40Z",
+      "icod_source": "celestrak",
+      "notes": "77 predicted passes from 33 of 33 configured satellites"
+    }
+  },
+  "generated": "2026-11-02T13:30:44Z",
+  "locality": {
+    "id": "tokyo",
+    "name": "Tokyo",
+    "lon": 139.6917,
+    "lat": 35.6895,
+    "timezone": "Asia/Tokyo",
+    "point": "POINT(139.6917 35.6895)"
+  },
+  "window": {
+    "start": "2026-11-04T00:00:00Z",
+    "end": "2026-11-05T00:00:00Z",
+    "tick_minutes": 30
+  },
+  "groups": [
+    {
+      "id": "EO",
+      "label": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
+      "rows": [
+        {
+          "id": "EO",
+          "label": "EO"
+        }
+      ]
+    },
+    {
+      "id": "SAR",
+      "label": "SAR",
+      "color": "#525252",
+      "tint": "#d9d9d9",
+      "rows": [
+        {
+          "id": "SAR",
+          "label": "SAR"
+        }
+      ]
+    },
+    {
+      "id": "RF",
+      "label": "RF",
+      "color": "#238b45",
+      "tint": "#c7e9c0",
+      "rows": [
+        {
+          "id": "RF",
+          "label": "RF"
+        }
+      ]
+    }
+  ],
+  "grouping": "Phenomenology",
+  "alt_groupings": [],
+  "events": [
+    {
+      "id": "RF-0012",
+      "row": "RF",
+      "start": "2026-11-04T00:12:34Z",
+      "end": "2026-11-04T00:16:29Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-22"
+    },
+    {
+      "id": "RF-0041",
+      "row": "RF",
+      "start": "2026-11-04T00:41:35Z",
+      "end": "2026-11-04T00:45:30Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "2 RF passes",
+      "notes": "BRO-23; HAWK-A"
+    },
+    {
+      "id": "RF-0050",
+      "row": "RF",
+      "start": "2026-11-04T00:50:43Z",
+      "end": "2026-11-04T00:54:21Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-15"
+    },
+    {
+      "id": "RF-0101",
+      "row": "RF",
+      "start": "2026-11-04T01:01:36Z",
+      "end": "2026-11-04T01:05:28Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-8"
+    },
+    {
+      "id": "RF-0107",
+      "row": "RF",
+      "start": "2026-11-04T01:07:19Z",
+      "end": "2026-11-04T01:09:25Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-5"
+    },
+    {
+      "id": "RF-0110",
+      "row": "RF",
+      "start": "2026-11-04T01:10:38Z",
+      "end": "2026-11-04T01:21:26Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "5 RF passes",
+      "notes": "BRO-31; BRO-14; BRO-17; BRO-21; BRO-16"
+    },
+    {
+      "id": "SAR-0117",
+      "row": "SAR",
+      "start": "2026-11-04T01:17:44Z",
+      "end": "2026-11-04T01:20:41Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-16 (ACADIA-6)"
+    },
+    {
+      "id": "EO-0120",
+      "row": "EO",
+      "start": "2026-11-04T01:20:07Z",
+      "end": "2026-11-04T01:25:20Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "2 EO passes",
+      "notes": "SENTINEL-3B; WORLDVIEW-2 (WV-2)"
+    },
+    {
+      "id": "RF-0122",
+      "row": "RF",
+      "start": "2026-11-04T01:22:20Z",
+      "end": "2026-11-04T01:27:49Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-10A"
+    },
+    {
+      "id": "EO-0135",
+      "row": "EO",
+      "start": "2026-11-04T01:35:03Z",
+      "end": "2026-11-04T01:38:05Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 EO pass",
+      "notes": "WORLDVIEW-3 (WV-3)"
+    },
+    {
+      "id": "RF-0139",
+      "row": "RF",
+      "start": "2026-11-04T01:39:20Z",
+      "end": "2026-11-04T01:43:41Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-32"
+    },
+    {
+      "id": "SAR-0149",
+      "row": "SAR",
+      "start": "2026-11-04T01:49:22Z",
+      "end": "2026-11-04T01:50:36Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-15 (ACADIA-5)"
+    },
+    {
+      "id": "RF-0158",
+      "row": "RF",
+      "start": "2026-11-04T01:58:33Z",
+      "end": "2026-11-04T02:01:43Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-20"
+    },
+    {
+      "id": "EO-0200",
+      "row": "EO",
+      "start": "2026-11-04T02:00:24Z",
+      "end": "2026-11-04T02:02:29Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 EO pass",
+      "notes": "LEGION 1"
+    },
+    {
+      "id": "RF-0219",
+      "row": "RF",
+      "start": "2026-11-04T02:19:23Z",
+      "end": "2026-11-04T02:22:10Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-11"
+    },
+    {
+      "id": "EO-0253",
+      "row": "EO",
+      "start": "2026-11-04T02:53:09Z",
+      "end": "2026-11-04T02:55:54Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 EO pass",
+      "notes": "LEGION 6"
+    },
+    {
+      "id": "EO-0310",
+      "row": "EO",
+      "start": "2026-11-04T03:10:22Z",
+      "end": "2026-11-04T03:12:55Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 EO pass",
+      "notes": "LEGION 4"
+    },
+    {
+      "id": "SAR-0437",
+      "row": "SAR",
+      "start": "2026-11-04T04:37:28Z",
+      "end": "2026-11-04T04:39:04Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-17 (ACADIA-7)"
+    },
+    {
+      "id": "EO-0448",
+      "row": "EO",
+      "start": "2026-11-04T04:48:20Z",
+      "end": "2026-11-04T04:50:03Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 EO pass",
+      "notes": "WORLDVIEW-1 (WV-1)"
+    },
+    {
+      "id": "SAR-0452",
+      "row": "SAR",
+      "start": "2026-11-04T04:52:13Z",
+      "end": "2026-11-04T04:55:42Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-20 (ACADIA-10)"
+    },
+    {
+      "id": "RF-0458",
+      "row": "RF",
+      "start": "2026-11-04T04:58:10Z",
+      "end": "2026-11-04T05:00:34Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-18"
+    },
+    {
+      "id": "RF-0511",
+      "row": "RF",
+      "start": "2026-11-04T05:11:11Z",
+      "end": "2026-11-04T05:16:35Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "2 RF passes",
+      "notes": "BRO-19; BRO-12"
+    },
+    {
+      "id": "RF-0531",
+      "row": "RF",
+      "start": "2026-11-04T05:31:58Z",
+      "end": "2026-11-04T05:36:02Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-14A"
+    },
+    {
+      "id": "RF-0549",
+      "row": "RF",
+      "start": "2026-11-04T05:49:06Z",
+      "end": "2026-11-04T05:54:11Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-13"
+    },
+    {
+      "id": "RF-0601",
+      "row": "RF",
+      "start": "2026-11-04T06:01:03Z",
+      "end": "2026-11-04T06:05:08Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-11A"
+    },
+    {
+      "id": "RF-0719",
+      "row": "RF",
+      "start": "2026-11-04T07:19:12Z",
+      "end": "2026-11-04T07:25:05Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-15A"
+    },
+    {
+      "id": "RF-0739",
+      "row": "RF",
+      "start": "2026-11-04T07:39:30Z",
+      "end": "2026-11-04T07:48:32Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "2 RF passes",
+      "notes": "HAWK-11A; HAWK-13A"
+    },
+    {
+      "id": "RF-0749",
+      "row": "RF",
+      "start": "2026-11-04T07:49:56Z",
+      "end": "2026-11-04T07:54:46Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-12A"
+    },
+    {
+      "id": "RF-0758",
+      "row": "RF",
+      "start": "2026-11-04T07:58:36Z",
+      "end": "2026-11-04T08:03:13Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-9A"
+    },
+    {
+      "id": "SAR-0759",
+      "row": "SAR",
+      "start": "2026-11-04T07:59:46Z",
+      "end": "2026-11-04T08:02:15Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "2 SAR passes",
+      "notes": "CAPELLA-13 (ACADIA-3); SENTINEL-1D"
+    },
+    {
+      "id": "SAR-0806",
+      "row": "SAR",
+      "start": "2026-11-04T08:06:25Z",
+      "end": "2026-11-04T08:08:33Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-19 (ACADIA-9)"
+    },
+    {
+      "id": "RF-0815",
+      "row": "RF",
+      "start": "2026-11-04T08:15:06Z",
+      "end": "2026-11-04T08:21:38Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "2 RF passes",
+      "notes": "HAWK-5A; HAWK-6A"
+    },
+    {
+      "id": "SAR-0840",
+      "row": "SAR",
+      "start": "2026-11-04T08:40:03Z",
+      "end": "2026-11-04T08:41:46Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "SENTINEL-1A"
+    },
+    {
+      "id": "SAR-0857",
+      "row": "SAR",
+      "start": "2026-11-04T08:57:37Z",
+      "end": "2026-11-04T09:00:12Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-11 (ACADIA-1)"
+    },
+    {
+      "id": "RF-0857",
+      "row": "RF",
+      "start": "2026-11-04T08:57:53Z",
+      "end": "2026-11-04T09:03:39Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-8A"
+    },
+    {
+      "id": "RF-0938",
+      "row": "RF",
+      "start": "2026-11-04T09:38:52Z",
+      "end": "2026-11-04T09:44:08Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-9A"
+    },
+    {
+      "id": "RF-0956",
+      "row": "RF",
+      "start": "2026-11-04T09:56:23Z",
+      "end": "2026-11-04T10:00:55Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-6A"
+    },
+    {
+      "id": "RF-1026",
+      "row": "RF",
+      "start": "2026-11-04T10:26:55Z",
+      "end": "2026-11-04T10:31:59Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-16A"
+    },
+    {
+      "id": "RF-1040",
+      "row": "RF",
+      "start": "2026-11-04T10:40:11Z",
+      "end": "2026-11-04T10:43:34Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-8A"
+    },
+    {
+      "id": "RF-1058",
+      "row": "RF",
+      "start": "2026-11-04T10:58:39Z",
+      "end": "2026-11-04T11:01:28Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-11A"
+    },
+    {
+      "id": "RF-1115",
+      "row": "RF",
+      "start": "2026-11-04T11:15:26Z",
+      "end": "2026-11-04T11:20:18Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "3 RF passes",
+      "notes": "HAWK-A; HAWK-3A; HAWK-2A"
+    },
+    {
+      "id": "RF-1121",
+      "row": "RF",
+      "start": "2026-11-04T11:21:51Z",
+      "end": "2026-11-04T11:23:55Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-9A"
+    },
+    {
+      "id": "RF-1136",
+      "row": "RF",
+      "start": "2026-11-04T11:36:03Z",
+      "end": "2026-11-04T11:40:50Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-6A"
+    },
+    {
+      "id": "SAR-1146",
+      "row": "SAR",
+      "start": "2026-11-04T11:46:54Z",
+      "end": "2026-11-04T11:47:55Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-14 (ACADIA-4)"
+    },
+    {
+      "id": "RF-1153",
+      "row": "RF",
+      "start": "2026-11-04T11:53:48Z",
+      "end": "2026-11-04T11:55:33Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-17"
+    },
+    {
+      "id": "RF-1201",
+      "row": "RF",
+      "start": "2026-11-04T12:01:22Z",
+      "end": "2026-11-04T12:03:40Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-14"
+    },
+    {
+      "id": "RF-1208",
+      "row": "RF",
+      "start": "2026-11-04T12:08:46Z",
+      "end": "2026-11-04T12:12:16Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-10A"
+    },
+    {
+      "id": "RF-1215",
+      "row": "RF",
+      "start": "2026-11-04T12:15:46Z",
+      "end": "2026-11-04T12:20:28Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-32"
+    },
+    {
+      "id": "RF-1222",
+      "row": "RF",
+      "start": "2026-11-04T12:22:25Z",
+      "end": "2026-11-04T12:24:34Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-8A"
+    },
+    {
+      "id": "RF-1231",
+      "row": "RF",
+      "start": "2026-11-04T12:31:18Z",
+      "end": "2026-11-04T12:41:19Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "3 RF passes",
+      "notes": "BRO-22; BRO-20; HAWK-11A"
+    },
+    {
+      "id": "RF-1250",
+      "row": "RF",
+      "start": "2026-11-04T12:50:46Z",
+      "end": "2026-11-04T12:56:44Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "3 RF passes",
+      "notes": "BRO-11; BRO-23; BRO-8"
+    },
+    {
+      "id": "RF-1257",
+      "row": "RF",
+      "start": "2026-11-04T12:57:09Z",
+      "end": "2026-11-04T13:06:14Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "3 RF passes",
+      "notes": "HAWK-7A; BRO-5; HAWK-9A"
+    },
+    {
+      "id": "RF-1310",
+      "row": "RF",
+      "start": "2026-11-04T13:10:54Z",
+      "end": "2026-11-04T13:20:21Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "2 RF passes",
+      "notes": "BRO-15; HAWK-6A"
+    },
+    {
+      "id": "RF-1324",
+      "row": "RF",
+      "start": "2026-11-04T13:24:00Z",
+      "end": "2026-11-04T13:28:41Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-16"
+    },
+    {
+      "id": "SAR-1326",
+      "row": "SAR",
+      "start": "2026-11-04T13:26:27Z",
+      "end": "2026-11-04T13:28:57Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-14 (ACADIA-4)"
+    },
+    {
+      "id": "RF-1336",
+      "row": "RF",
+      "start": "2026-11-04T13:36:27Z",
+      "end": "2026-11-04T13:38:54Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-14"
+    },
+    {
+      "id": "RF-1402",
+      "row": "RF",
+      "start": "2026-11-04T14:02:12Z",
+      "end": "2026-11-04T14:11:48Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "3 RF passes",
+      "notes": "HAWK-8A; BRO-6; HAWK-15A"
+    },
+    {
+      "id": "RF-1423",
+      "row": "RF",
+      "start": "2026-11-04T14:23:14Z",
+      "end": "2026-11-04T14:25:47Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-21"
+    },
+    {
+      "id": "RF-1432",
+      "row": "RF",
+      "start": "2026-11-04T14:32:20Z",
+      "end": "2026-11-04T14:36:19Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-31"
+    },
+    {
+      "id": "RF-1442",
+      "row": "RF",
+      "start": "2026-11-04T14:42:42Z",
+      "end": "2026-11-04T14:48:30Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-9A"
+    },
+    {
+      "id": "RF-1531",
+      "row": "RF",
+      "start": "2026-11-04T15:31:28Z",
+      "end": "2026-11-04T15:36:21Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-18"
+    },
+    {
+      "id": "RF-1543",
+      "row": "RF",
+      "start": "2026-11-04T15:43:11Z",
+      "end": "2026-11-04T15:47:40Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-8A"
+    },
+    {
+      "id": "RF-1548",
+      "row": "RF",
+      "start": "2026-11-04T15:48:30Z",
+      "end": "2026-11-04T15:49:50Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-15A"
+    },
+    {
+      "id": "RF-1557",
+      "row": "RF",
+      "start": "2026-11-04T15:57:49Z",
+      "end": "2026-11-04T16:00:44Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-12"
+    },
+    {
+      "id": "RF-1634",
+      "row": "RF",
+      "start": "2026-11-04T16:34:11Z",
+      "end": "2026-11-04T16:39:45Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-13"
+    },
+    {
+      "id": "RF-1705",
+      "row": "RF",
+      "start": "2026-11-04T17:05:52Z",
+      "end": "2026-11-04T17:08:10Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-14A"
+    },
+    {
+      "id": "SAR-1725",
+      "row": "SAR",
+      "start": "2026-11-04T17:25:21Z",
+      "end": "2026-11-04T17:28:26Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-11 (ACADIA-1)"
+    },
+    {
+      "id": "RF-1733",
+      "row": "RF",
+      "start": "2026-11-04T17:33:27Z",
+      "end": "2026-11-04T17:35:20Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-12"
+    },
+    {
+      "id": "SAR-1817",
+      "row": "SAR",
+      "start": "2026-11-04T18:17:10Z",
+      "end": "2026-11-04T18:18:23Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-20 (ACADIA-10)"
+    },
+    {
+      "id": "RF-1818",
+      "row": "RF",
+      "start": "2026-11-04T18:18:29Z",
+      "end": "2026-11-04T18:22:10Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "BRO-19"
+    },
+    {
+      "id": "RF-1836",
+      "row": "RF",
+      "start": "2026-11-04T18:36:58Z",
+      "end": "2026-11-04T18:38:59Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-5A"
+    },
+    {
+      "id": "SAR-1954",
+      "row": "SAR",
+      "start": "2026-11-04T19:54:55Z",
+      "end": "2026-11-04T19:56:14Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-19 (ACADIA-9)"
+    },
+    {
+      "id": "SAR-2008",
+      "row": "SAR",
+      "start": "2026-11-04T20:08:29Z",
+      "end": "2026-11-04T20:11:32Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "CAPELLA-18 (ACADIA-8)"
+    },
+    {
+      "id": "SAR-2041",
+      "row": "SAR",
+      "start": "2026-11-04T20:41:03Z",
+      "end": "2026-11-04T20:42:44Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 SAR pass",
+      "notes": "SENTINEL-1A"
+    },
+    {
+      "id": "RF-2050",
+      "row": "RF",
+      "start": "2026-11-04T20:50:20Z",
+      "end": "2026-11-04T20:54:40Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-13A"
+    },
+    {
+      "id": "RF-2056",
+      "row": "RF",
+      "start": "2026-11-04T20:56:57Z",
+      "end": "2026-11-04T21:01:44Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-12A"
+    },
+    {
+      "id": "RF-2106",
+      "row": "RF",
+      "start": "2026-11-04T21:06:00Z",
+      "end": "2026-11-04T21:08:05Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-16A"
+    },
+    {
+      "id": "RF-2240",
+      "row": "RF",
+      "start": "2026-11-04T22:40:48Z",
+      "end": "2026-11-04T22:41:20Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-16A"
+    },
+    {
+      "id": "RF-2330",
+      "row": "RF",
+      "start": "2026-11-04T23:30:46Z",
+      "end": "2026-11-04T23:32:35Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "1 RF pass",
+      "notes": "HAWK-7A"
+    }
+  ],
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint"
+    },
+    "Collected": {
+      "fill": "tint"
+    },
+    "High": {
+      "fill": "tint"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "tint"
+    },
+    "No Concern": {
+      "fill": "tint"
+    }
+  },
+  "icod_ageing": {
+    "ageing_after_hours": 30,
+    "stale_after_hours": 54
+  },
+  "seclabs": {
+    "labels": [
+      {
+        "name": "UNCLASSIFIED",
+        "color": "#1a9850",
+        "text_color": "#ffffff"
+      }
+    ],
+    "ceiling": "UNCLASSIFIED"
+  },
+  "daylight": {
+    "step_minutes": 10,
+    "elevations": [
+      28.6,
+      29.9,
+      31.1,
+      32.2,
+      33.3,
+      34.3,
+      35.2,
+      36.0,
+      36.8,
+      37.4,
+      37.9,
+      38.3,
+      38.7,
+      38.9,
+      39.0,
+      39.0,
+      38.9,
+      38.6,
+      38.3,
+      37.9,
+      37.3,
+      36.7,
+      36.0,
+      35.1,
+      34.2,
+      33.2,
+      32.1,
+      31.0,
+      29.8,
+      28.5,
+      27.1,
+      25.7,
+      24.3,
+      22.8,
+      21.2,
+      19.6,
+      18.0,
+      16.3,
+      14.6,
+      12.8,
+      11.1,
+      9.3,
+      7.5,
+      5.7,
+      3.8,
+      2.0,
+      0.3,
+      -1.9,
+      -4.0,
+      -6.0,
+      -7.9,
+      -9.9,
+      -11.9,
+      -13.9,
+      -15.9,
+      -18.0,
+      -20.0,
+      -22.0,
+      -24.0,
+      -26.1,
+      -28.1,
+      -30.1,
+      -32.2,
+      -34.2,
+      -36.2,
+      -38.2,
+      -40.2,
+      -42.2,
+      -44.2,
+      -46.2,
+      -48.1,
+      -50.0,
+      -51.9,
+      -53.8,
+      -55.6,
+      -57.4,
+      -59.1,
+      -60.7,
+      -62.3,
+      -63.8,
+      -65.1,
+      -66.4,
+      -67.5,
+      -68.4,
+      -69.1,
+      -69.5,
+      -69.8,
+      -69.8,
+      -69.5,
+      -69.0,
+      -68.3,
+      -67.4,
+      -66.3,
+      -65.1,
+      -63.7,
+      -62.3,
+      -60.7,
+      -59.0,
+      -57.3,
+      -55.6,
+      -53.7,
+      -51.9,
+      -50.0,
+      -48.1,
+      -46.1,
+      -44.2,
+      -42.2,
+      -40.2,
+      -38.2,
+      -36.2,
+      -34.2,
+      -32.1,
+      -30.1,
+      -28.1,
+      -26.0,
+      -24.0,
+      -22.0,
+      -20.0,
+      -17.9,
+      -15.9,
+      -13.9,
+      -11.9,
+      -9.9,
+      -7.9,
+      -5.9,
+      -4.0,
+      -2.0,
+      0.3,
+      2.0,
+      3.8,
+      5.6,
+      7.4,
+      9.2,
+      11.0,
+      12.8,
+      14.5,
+      16.2,
+      17.9,
+      19.5,
+      21.1,
+      22.7,
+      24.2,
+      25.6,
+      27.0,
+      28.3
+    ],
+    "sun": {
+      "dawn": "2026-11-04T20:39:44Z",
+      "sunrise": "2026-11-04T21:06:50Z",
+      "sunset": "2026-11-04T07:43:11Z",
+      "dusk": "2026-11-04T08:10:14Z"
+    }
+  },
+  "markers": [],
+  "banners": [],
+  "label": "Simplified Sync Matrix"
+}
