@@ -944,7 +944,7 @@
     // The rows with a maximum elevation, named in the text, with rows sharing a rule on one line.
     const capped = new Map();
     Object.entries(p.rules).filter(([, r]) => r.max_elevation !== undefined).forEach(([row, rule]) => {
-      const key = ruleKey(rule);
+      const key = (rule.group || "") + "|" + ruleKey(rule); // never one line across phenomenologies
       if (!capped.has(key)) capped.set(key, { rule, rows: [] });
       capped.get(key).rows.push(row);
     });

@@ -795,6 +795,21 @@ def test_method_panel_says_to_refresh_old_data_before_a_request(page, base_url, 
     assert errors == []
 
 
+def test_rows_with_the_same_maximum_in_different_groups_are_not_merged(page, base_url, errors):
+    # A non-SAR row sharing Capella's rule gets its own line and group, and the
+    # panel does not call it synthetic aperture radar.
+    rules = {"Capella-11": {"min_elevation": 35, "max_elevation": 75, "group": "SAR"},
+             "HE360 Cluster 1": {"min_elevation": 35, "max_elevation": 75, "group": "RF"}}
+    open_payload(page, base_url, ruled_payload(rules), toolbar=True)
+    page.locator("#sm-method-open").click()
+    panel = page.locator("#sm-method")
+    assert panel.locator("h3:text('Maximum elevation') + p + ul li").all_text_contents() == [
+        "Capella-11 (SAR): elevation 35°–75°, so incidence 15°–55°",
+        "HE360 Cluster 1 (RF): elevation 35°–75°, so incidence 15°–55°"]
+    expect(panel).not_to_contain_text("synthetic aperture radar")
+    assert errors == []
+
+
 def test_method_panel_for_demo_and_unexplained_data(page, base_url, errors):
     open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=abstracted&locality=demo")
     page.locator("#sm-method-open").click()
