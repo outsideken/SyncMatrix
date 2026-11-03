@@ -752,7 +752,7 @@ def test_method_panel_shows_the_payloads_own_rules(page, base_url, errors):
         ["SAR"],
         ["Sentinel-1", "44° (incidence ≤ 46°)", "≤ 61°", "Day or night"],
     ]
-    assert panel.locator("h3").all_text_contents() == ["Elevation", "Daylight", "Side-looking radar", "Not modelled",
+    assert panel.locator("h3").all_text_contents() == ["Elevation", "Daylight", "Synthetic Aperture Radar (SAR)", "Not modelled",
                                                         "Before a collection request"]
     page.keyboard.press("Escape")
     expect(panel).to_be_hidden()

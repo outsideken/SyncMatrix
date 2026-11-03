@@ -970,7 +970,7 @@
               `sun's elevation there through the day.</p>`;
     }
     if (swath) {
-      html += `<h3>Side-looking radar</h3><p>Rows with a <b>highest point</b> limit look to the side. A pass counts ` +
+      html += `<h3>Synthetic Aperture Radar (SAR)</h3><p>SAR rows have a <b>highest point</b> limit because the radar looks to the side. A pass counts ` +
               `only if the satellite's highest point stays at or below it, so ${place} is in the swath rather than ` +
               `under the track. The window still spans the whole time above the minimum; the image itself is taken ` +
               `near the highest point.</p>`;
