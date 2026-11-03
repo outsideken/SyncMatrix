@@ -941,7 +941,7 @@
     }
     const rules = Object.values(p.rules);
     const daylight = rules.some((r) => r.needs_daylight);
-    // A row with a maximum (SAR), to give the incidence range as a worked example.
+    // A row with a maximum (a side-looking sensor), to give the incidence range as a worked example.
     const capped = Object.entries(p.rules).find(([, r]) => r.max_elevation !== undefined);
     html += `<p>A window is the time a satellite is <b>above its row's minimum elevation</b>, seen from ${place}. ` +
             `Passes are predicted with Skyfield from Celestrak orbit elements downloaded ` +
@@ -968,12 +968,13 @@
             `above the row's minimum, and the window is the time it stays above it. The minimum stands in for the ` +
             `sensor's field of regard: it approximates the sensor's geometry, not the provider's tasking rules.</p>`;
     if (capped) {
-      html += `<h3>Maximum elevation</h3><p>Some rows (SAR) also have a maximum. Their sensor looks to the side of ` +
-              `the ground track and cannot image a point beneath it, so a pass counts only if its highest ` +
-              `elevation, at the satellite's closest approach to ${place}, is between the row's minimum and ` +
-              `maximum: the incidence angle at closest approach is in the sensor's range ` +
-              `(${escapeHtml(capped[0])}: ${90 - capped[1].max_elevation}°–${90 - capped[1].min_elevation}°). The window still spans the whole time above the minimum; the image itself is taken ` +
-              `around the closest approach.</p>`;
+      html += `<h3>Maximum elevation</h3><p>Some rows also have a maximum because their sensor is ` +
+              `side-looking: it looks to the side of the ground track and cannot image a point beneath it. A pass ` +
+              `counts only if its highest elevation, at the satellite's closest approach to ${place}, is between ` +
+              `the row's minimum and maximum: the incidence angle at closest approach is in the sensor's range ` +
+              `(${escapeHtml(capped[0])}: ${90 - capped[1].max_elevation}°–${90 - capped[1].min_elevation}°). ` +
+              `The window still spans the whole time above the minimum; the image itself is taken around the ` +
+              `closest approach.</p>`;
     }
     if (daylight) {
       html += `<h3>Daylight</h3><p>Rows marked <b>Sun up</b> (optical) count a pass only when the sun is above ` +

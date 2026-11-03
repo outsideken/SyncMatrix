@@ -108,7 +108,7 @@ github-actions[bot], and starts the Pages deploy. The same steps locally:
   saved with their download time. Passes are computed with Skyfield, so a
   committed snapshot always rebuilds the same library; CI checks it does.
 - **A pass counts** when the satellite is above the row's elevation threshold
-  over the site; optical (EO) rows also need the sun up; side-looking SAR rows
+  over the site; optical (EO) rows also need the sun up; side-looking radar rows
   (Sentinel-1, Capella) need the site in the swath. Thresholds and NORAD
   numbers are in the prediction catalogue, `config/catalogue.json` (table in
   [config/README.md](config/README.md#pass-thresholds)). Each pass is stored as
