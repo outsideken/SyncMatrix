@@ -1,9 +1,9 @@
 """Tests for python/predict_passes.py, against the committed TLE snapshot.
 
 They check the physics and the rules, not exact times: passes respect each
-row's elevation threshold, optical (EO) passes are in daylight, side-looking
-radar passes stay in the swath, every catalogue row is a matrix row, and the
-Simplified roll-up merges overlaps.
+row's elevation threshold, optical (EO) passes are in daylight, SAR (Capella,
+Sentinel-1) passes stay in the swath, every catalogue row is a matrix row, and
+the Simplified roll-up merges overlaps.
 """
 
 import json

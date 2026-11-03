@@ -754,7 +754,10 @@ def test_method_panel_shows_the_payloads_own_rules(page, base_url, errors):
     ]
     assert panel.locator("h3").all_text_contents() == ["Minimum elevation", "Maximum elevation", "Daylight", "Not modelled",
                                                         "Before a collection request"]
-    expect(panel).to_contain_text("incidence angle at closest approach is in the sensor's range (Sentinel-1: 29°–46°)")
+    # The rows with a maximum are named, with their ranges, and what SAR is is spelled out.
+    assert panel.locator("h3:text('Maximum elevation') + p + ul li").all_text_contents() == [
+        "Sentinel-1 (SAR): elevation 44°–61°, so incidence 29°–46°"]
+    expect(panel).to_contain_text("They are synthetic aperture radar (SAR) satellites.")
     page.keyboard.press("Escape")
     expect(panel).to_be_hidden()
     page.locator("#sm-method-open").click()

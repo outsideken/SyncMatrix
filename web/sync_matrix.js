@@ -941,8 +941,13 @@
     }
     const rules = Object.values(p.rules);
     const daylight = rules.some((r) => r.needs_daylight);
-    // A row with a maximum (a side-looking sensor), to give the incidence range as a worked example.
-    const capped = Object.entries(p.rules).find(([, r]) => r.max_elevation !== undefined);
+    // The rows with a maximum elevation, named in the text, with rows sharing a rule on one line.
+    const capped = new Map();
+    Object.entries(p.rules).filter(([, r]) => r.max_elevation !== undefined).forEach(([row, rule]) => {
+      const key = ruleKey(rule);
+      if (!capped.has(key)) capped.set(key, { rule, rows: [] });
+      capped.get(key).rows.push(row);
+    });
     html += `<p>A window is the time a satellite is <b>above its row's minimum elevation</b>, seen from ${place}. ` +
             `Passes are predicted with Skyfield from Celestrak orbit elements downloaded ` +
             `${p.icod ? escapeHtml(formatIcod(p.icod)) : "(time not given)"} (the ICOD). A pass that runs over ` +
@@ -967,14 +972,21 @@
             `${place}; 90° minus it is the incidence angle on the ground. A pass counts when the satellite rises ` +
             `above the row's minimum, and the window is the time it stays above it. The minimum stands in for the ` +
             `sensor's field of regard: it approximates the sensor's geometry, not the provider's tasking rules.</p>`;
-    if (capped) {
-      html += `<h3>Maximum elevation</h3><p>Some rows also have a maximum because their sensor is ` +
-              `side-looking: it looks to the side of the ground track and cannot image a point beneath it. A pass ` +
-              `counts only if its highest elevation, at the satellite's closest approach to ${place}, is between ` +
-              `the row's minimum and maximum: the incidence angle at closest approach is in the sensor's range ` +
-              `(${escapeHtml(capped[0])}: ${90 - capped[1].max_elevation}°–${90 - capped[1].min_elevation}°). ` +
-              `The window still spans the whole time above the minimum; the image itself is taken around the ` +
-              `closest approach.</p>`;
+    if (capped.size) {
+      const lines = Array.from(capped.values());
+      const sar = lines.every(({ rule }) => rule.group === "SAR");
+      html += `<h3>Maximum elevation</h3><p>These rows also have a maximum elevation:</p><ul>` +
+              lines.map(({ rule, rows }) => `<li><b>${rows.map(escapeHtml).join(", ")}</b>` +
+                `${rule.group ? " (" + escapeHtml(rule.group) + ")" : ""}: elevation ${rule.min_elevation}°–` +
+                `${rule.max_elevation}°, so incidence ${90 - rule.max_elevation}°–${90 - rule.min_elevation}°</li>`)
+                .join("") + `</ul><p>` +
+              (sar ? `They are synthetic aperture radar (SAR) satellites. SAR images to the side of its ground ` +
+                     `track and cannot image the ground directly beneath it, so a pass that comes nearly overhead ` +
+                     `is no use. ` : "") +
+              `For these rows a pass counts only if its highest elevation, at the satellite's closest approach ` +
+              `to ${place}, is between the row's minimum and maximum, so the incidence angle is in the range ` +
+              `above. The window still spans the whole time above the minimum; the image itself is taken around ` +
+              `the closest approach.</p>`;
     }
     if (daylight) {
       html += `<h3>Daylight</h3><p>Rows marked <b>Sun up</b> (optical) count a pass only when the sun is above ` +

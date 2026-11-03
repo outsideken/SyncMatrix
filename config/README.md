@@ -120,7 +120,7 @@ drawing.
 
 `norad` lists NORAD catalogue numbers (a mission row like Sentinel-2 lists
 each spacecraft); `min_elevation` is degrees above the locality's horizon for
-a pass to count; optional `max_elevation` is for side-looking sensors (the highest
+a pass to count; optional `max_elevation` is for the SAR rows, Capella and Sentinel-1 (the highest
 point must stay at or below it, so the locality is in the swath);
 `needs_daylight` is for optical rows (sun up at the locality). `seclab` is
 the security label written on every predicted window; a row may set its own
