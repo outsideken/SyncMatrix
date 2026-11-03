@@ -245,6 +245,7 @@ def load_data(path) -> dict:
      "icod": "2026-10-30T05:17:42Z", "icod_source": "celestrak",
      "source": "one line on where the windows came from",
      "evaluated": {"Sentinel-2": [40697, 42063, 60989]},     (optional)
+     "rules": {"Sentinel-2": {"min_elevation": 78, "needs_daylight": true}},  (optional)
      "windows": [{"satellite": "Sentinel-2", "start": ..., "end": ...,
                   "status": "Predicted", "seclab": "UNCLASSIFIED",
                   "norad": 40697,                            (norad: from the catalogue)
@@ -256,6 +257,8 @@ def load_data(path) -> dict:
     had no passes is told apart from one that was not checked. "seclab" is
     the window's security label; it is required and never defaulted. "pass"
     (predict_passes.py) is copied to the event as is, for a collection request.
+    "rules" are the pass rules each row was predicted with (the catalogue on
+    that day), shown in the page's "How windows are calculated" panel.
     """
     with open(path, "r") as f:
         data = json.load(f)
@@ -398,10 +401,13 @@ def build_view(matrix: dict, view_id: str, data: dict, ceiling: str = None) -> d
     notes = group_notes(matrix, data, events)
     if matrix["views"][view_id].get("rows", "satellites") == "groups":
         events = roll_up(events, row_groups(matrix), seclab_rank(matrix))
+    # The drawn rows' pass rules, in matrix order, each with its group (so Simplified can list them too).
+    rules = {row_id(r): dict(data["rules"][row_id(r)], group=g["name"]) for g in matrix["groups"]
+             for r in g["rows"] if row_id(r) in data["rules"]} if "rules" in data else None
     return build_payload(config, events, date.fromisoformat(data["evaluation_date"]),
                          icod=data["icod"], icod_source=data.get("icod_source", "data"),
                          locality=data["locality"], source=data.get("source", "Data file"), provenance=notes,
-                         ceiling=ceiling)
+                         ceiling=ceiling, rules=rules)
 
 
 def write_views(matrix: dict, data_files, out_dir, ceiling: str = None) -> int:
@@ -617,12 +623,14 @@ def build_payload(config: dict, events: list = None, day: date = None,
                   demo_count: int = 0, seed: int = 7,
                   icod: str = None, icod_source: str = "data",
                   locality: dict = None, source: str = None,
-                  provenance: dict = None, ceiling: str = None) -> dict:
+                  provenance: dict = None, ceiling: str = None, rules: dict = None) -> dict:
     """One matrix, one locality, one UTC day.
 
     source: where the events came from (one line, shown on exports);
     provenance: per-group overrides for build_provenance(); ceiling: the
-    library's highest security label (default: the lowest label).
+    library's highest security label (default: the lowest label); rules: the
+    pass rules per drawn row (data file "rules"), when the windows were
+    predicted.
     """
     now = datetime.now(timezone.utc)
     day = day or now.date()
@@ -665,7 +673,8 @@ def build_payload(config: dict, events: list = None, day: date = None,
             "daylight": daylight,
             "markers": markers,
             "banners": build_banners(config, window_start),
-            "label": config.get("label", config["title"])}
+            "label": config.get("label", config["title"]),
+            "rules": rules}
 
 
 def slugify(text: str) -> str:

@@ -205,3 +205,24 @@ def test_the_folder_ceiling_applies_to_every_store(tmp_path):
     with pytest.raises(ValueError, match="above this library's ceiling UNCLASSIFIED"):
         wf.draw_library(matrix, [tmp_path / "other"], tmp_path / "web", workflow["max_seclab"])
     assert wf.draw_library(matrix, [tmp_path / "other"], tmp_path / "web", "RESTRICTED") == len(matrix["views"])
+
+
+def test_published_rules_are_the_catalogues_for_the_rows_drawn():
+    # The "How windows are calculated" panel reads these; they must be the catalogue's numbers, row by row.
+    workflow, matrix = wf.load_workflow(), wf.load_matrix()
+    catalogue = json.loads((REPO / "config" / "catalogue.json").read_text())["satellites"]
+    group_of = ep.row_groups(matrix)
+    order = [ep.row_id(r) for g in matrix["groups"] for r in g["rows"]]
+    for loc in workflow["localities"]:
+        rows = wf.evaluated_rows(matrix, loc)
+        for view in ("abstracted", "simplified"):
+            for path in (REPO / workflow["folder"] / view / ep.slugify(loc["name"])).glob("*.json"):
+                payload = json.loads(path.read_text())
+                assert list(payload["rules"]) == [r for r in order if r in rows], path
+                for row, rule in payload["rules"].items():
+                    spec = catalogue[row]
+                    assert rule == dict({k: spec[k] for k in ("min_elevation", "max_elevation", "needs_daylight")
+                                         if k in spec}, group=group_of[row]), (path, row)
+
+    demo = sorted((REPO / workflow["folder"]).glob("*/demo/*.json"))
+    assert demo and all(json.loads(p.read_text())["rules"] is None for p in demo)  # generated, not predicted

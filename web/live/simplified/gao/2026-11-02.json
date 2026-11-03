@@ -18,7 +18,7 @@
       "notes": "9 predicted passes from 6 of 7 configured satellites"
     }
   },
-  "generated": "2026-11-02T13:30:43Z",
+  "generated": "2026-11-03T17:23:38Z",
   "locality": {
     "id": "gao",
     "name": "Gao",
@@ -332,5 +332,31 @@
   },
   "markers": [],
   "banners": [],
-  "label": "Simplified Sync Matrix"
+  "label": "Simplified Sync Matrix",
+  "rules": {
+    "Aqua MODIS": {
+      "min_elevation": 25,
+      "group": "IR"
+    },
+    "NOAA-20 VIIRS": {
+      "min_elevation": 20,
+      "group": "IR"
+    },
+    "NOAA-21 VIIRS": {
+      "min_elevation": 20,
+      "group": "IR"
+    },
+    "S-NPP VIIRS": {
+      "min_elevation": 20,
+      "group": "IR"
+    },
+    "Sentinel-3 SLSTR": {
+      "min_elevation": 45,
+      "group": "IR"
+    },
+    "Terra MODIS": {
+      "min_elevation": 25,
+      "group": "IR"
+    }
+  }
 }

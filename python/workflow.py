@@ -204,6 +204,7 @@ def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
                         "icod_source": "celestrak",
                         "source": PREDICTED_SOURCE % snapshot_name,
                         "evaluated": evaluated,
+                        "rules": pp.rules(here),
                         "windows": pp.predict_windows(here, snapshot, lat, lon, start,
                                                       start + timedelta(days=1))})
     return out

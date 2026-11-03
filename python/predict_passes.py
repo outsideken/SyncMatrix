@@ -10,7 +10,7 @@ per matrix row, which spacecraft it covers and when a pass counts:
 - min_elevation: the satellite must be at least this high above the
   locality's horizon (degrees). Elevation = 90 - incidence angle, so this
   stands in for each sensor's field of regard (off-nadir pointing or swath).
-- max_elevation (side-looking SAR): the pass only counts if the satellite's
+- max_elevation (the SAR rows, Capella and Sentinel-1, which image to the side): the pass only counts if the satellite's
   highest point stays at or below this, i.e. the locality falls in the swath
   rather than under the satellite.
 - needs_daylight: optical (EO) rows; the sun must be up at the locality when
@@ -107,6 +107,18 @@ def passes(sat: EarthSatellite, lat: float, lon: float, start: datetime, end: da
     return result
 
 
+RULE_KEYS = ("min_elevation", "max_elevation", "needs_daylight")
+
+
+def rules(catalogue: dict) -> dict:
+    """Each row's pass rules as used, for the data file: what made a pass count.
+
+    {"WorldView-2": {"min_elevation": 40, "needs_daylight": true},
+     "Sentinel-1": {"min_elevation": 44, "max_elevation": 61}}
+    """
+    return {row: {k: spec[k] for k in RULE_KEYS if k in spec} for row, spec in catalogue.get("satellites", {}).items()}
+
+
 def load_catalogue(path) -> dict:
     """The prediction catalogue: {"seclab": ..., "satellites": {row: {"norad": [...], "min_elevation": ...}}}.
 
@@ -134,7 +146,7 @@ def predict_windows(catalogue: dict, snapshot: dict, lat: float, lon: float,
             record = snapshot["by_norad"][int(norad)]
             for rise, peak, set_, max_el, az, clipped in passes(sat, lat, lon, start, end, spec["min_elevation"]):
                 if "max_elevation" in spec and max_el > spec["max_elevation"]:
-                    continue  # side-looking SAR: the locality is under the satellite, not in the swath
+                    continue  # SAR images to the side: the locality is under the satellite, not in the swath
                 sun = sun_elevation(observer, peak)
                 if spec.get("needs_daylight") and sun <= 0:
                     continue  # optical sensor in the dark

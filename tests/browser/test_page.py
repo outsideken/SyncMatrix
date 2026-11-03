@@ -715,3 +715,137 @@ def test_live_simplified_and_demo_offer_no_requests(page, base_url, errors):
     page.locator(".sm-event").first.click()
     expect(page.locator(".sm-tooltip .sm-request-link")).to_have_count(1)  # a predicted pass of one satellite
     assert errors == []
+
+################################################################################
+## How windows are calculated
+################################################################################
+
+def ruled_payload(rules) -> dict:
+    """dated_payload with the pass rules of the rows it draws (a temporary fixture)."""
+    return dict(dated_payload(), rules=rules)
+
+
+RULES = {"Legion-3": {"min_elevation": 40, "needs_daylight": True, "group": "EO"},
+         "WorldView-2": {"min_elevation": 40, "needs_daylight": True, "group": "EO"},
+         "Sentinel-2": {"min_elevation": 78, "needs_daylight": True, "group": "EO"},
+         "Sentinel-1": {"min_elevation": 44, "max_elevation": 61, "group": "SAR"}}
+
+
+def method_table(page):
+    return page.locator(".sm-method-rules tbody tr").evaluate_all(
+        "rows => rows.map(r => [...r.children].map(c => c.textContent.trim()))")
+
+
+def test_method_panel_shows_the_payloads_own_rules(page, base_url, errors):
+    open_payload(page, base_url, ruled_payload(RULES), toolbar=True)
+    page.locator("#sm-method-open").click()
+    panel = page.locator("#sm-method")
+    expect(panel).to_be_visible()
+    expect(panel.locator("h2")).to_have_text("How windows are calculated")
+    expect(panel.locator(".sm-method-sub")).to_have_text("London · 28 Oct 2026 (UTC)")
+    expect(panel).to_contain_text("downloaded 28 Oct 2026 @ 0600Z (the ICOD)")
+    # Rows sharing a rule share a line; numbers come from the payload.
+    assert method_table(page) == [
+        ["EO"],
+        ["Legion-3, WorldView-2", "40° (incidence ≤ 50°)", "—", "Sun up"],
+        ["Sentinel-2", "78° (incidence ≤ 12°)", "—", "Sun up"],
+        ["SAR"],
+        ["Sentinel-1", "44° (incidence ≤ 46°)", "61° (incidence ≥ 29°)", "Day or night"],
+    ]
+    assert panel.locator("h3").all_text_contents() == ["Minimum elevation", "Maximum elevation", "Daylight", "Not modelled",
+                                                        "Before a collection request"]
+    # The rows with a maximum are named, with their ranges, and what SAR is is spelled out.
+    assert panel.locator("h3:text('Maximum elevation') + p + ul li").all_text_contents() == [
+        "Sentinel-1 (SAR): elevation 44°–61°, so incidence 29°–46°"]
+    expect(panel).to_contain_text("They are synthetic aperture radar (SAR) satellites.")
+    page.keyboard.press("Escape")
+    expect(panel).to_be_hidden()
+    page.locator("#sm-method-open").click()
+    panel.locator(".sm-method-close").click()
+    expect(panel).to_be_hidden()
+    page.locator("#sm-method-open").click()
+    page.mouse.click(3, 3)  # the backdrop
+    expect(panel).to_be_hidden()
+    assert errors == []
+
+
+def test_method_panel_only_explains_the_rules_it_has(page, base_url, errors):
+    # IR only (like Gao): no daylight or radar section.
+    open_payload(page, base_url, ruled_payload({"Terra MODIS": {"min_elevation": 25, "group": "IR"}}), toolbar=True)
+    page.locator("#sm-method-open").click()
+    assert page.locator("#sm-method h3").all_text_contents() == ["Minimum elevation", "Not modelled", "Before a collection request"]
+    assert errors == []
+
+
+@pytest.mark.parametrize("now, warned", [
+    ("2026-10-29T05:00:00Z", False),  # 23 h after the ICOD
+    ("2026-10-29T07:00:00Z", True),   # 25 h: refresh before requesting
+])
+def test_method_panel_says_to_refresh_old_data_before_a_request(page, base_url, errors, now, warned):
+    page.clock.set_fixed_time(now)
+    open_payload(page, base_url, ruled_payload(RULES), toolbar=True)
+    page.locator("#sm-method-open").click()
+    note = page.locator("#sm-method .sm-method-refresh")
+    expect(note).to_contain_text("more than 24 hours old and you intend to submit a collection request")
+    (expect(note).to_have_class if warned else expect(note).not_to_have_class)(re.compile("stale"))
+    # The age is always stated: it is part of the data's provenance.
+    expect(note).to_contain_text("This chart's ICOD is 28 Oct 2026 @ 0600Z, %s ago" % ("25h 0m" if warned else "23h 0m"))
+    expect(page.locator("#sm-method")).not_to_contain_text("cloud are not")
+    expect(page.locator("#sm-method")).to_contain_text("Accesses are evaluated from a point (London)")
+    assert errors == []
+
+
+def test_rows_with_the_same_maximum_in_different_groups_are_not_merged(page, base_url, errors):
+    # A non-SAR row sharing Capella's rule gets its own line and group, and the
+    # panel does not call it synthetic aperture radar.
+    rules = {"Capella-11": {"min_elevation": 35, "max_elevation": 75, "group": "SAR"},
+             "HE360 Cluster 1": {"min_elevation": 35, "max_elevation": 75, "group": "RF"}}
+    open_payload(page, base_url, ruled_payload(rules), toolbar=True)
+    page.locator("#sm-method-open").click()
+    panel = page.locator("#sm-method")
+    assert panel.locator("h3:text('Maximum elevation') + p + ul li").all_text_contents() == [
+        "Capella-11 (SAR): elevation 35°–75°, so incidence 15°–55°",
+        "HE360 Cluster 1 (RF): elevation 35°–75°, so incidence 15°–55°"]
+    expect(panel).not_to_contain_text("synthetic aperture radar")
+    assert errors == []
+
+
+def test_method_panel_for_demo_and_unexplained_data(page, base_url, errors):
+    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=abstracted&locality=demo")
+    page.locator("#sm-method-open").click()
+    expect(page.locator("#sm-method")).to_contain_text("generated sample windows (DEMO DATA)")
+    expect(page.locator("#sm-method .sm-method-rules")).to_have_count(0)
+    page.keyboard.press("Escape")
+    open_payload(page, base_url, dated_payload(), toolbar=True)  # real data, but no rules in it
+    page.locator("#sm-method-open").click()
+    expect(page.locator("#sm-method")).to_contain_text("does not say how its windows were made")
+    assert errors == []
+
+
+def test_live_simplified_explains_its_merged_bars(page, base_url, errors):
+    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=simplified&locality=tokyo")
+    page.locator("#sm-method-open").click()
+    assert [r[0] for r in method_table(page) if len(r) == 1] == ["EO", "SAR", "RF"]
+    expect(page.locator("#sm-method")).to_contain_text("Each bar merges the overlapping passes")
+    assert errors == []
+
+
+def test_embedded_chart_has_the_link_in_its_footer_but_exports_do_not(page, base_url, errors):
+    open_payload(page, base_url, ruled_payload(RULES))  # single-file mode: no toolbar
+    expect(page.locator(".sm-toolbar")).to_be_hidden()
+    link = page.locator(".sm-method-link")
+    expect(link).to_have_text("How windows are calculated")
+    assert link.bounding_box()["x"] > page.locator(".sm-icod").bounding_box()["x"]  # after the ICOD line
+    link.click()
+    expect(page.locator("#sm-method")).to_be_visible()
+    page.keyboard.press("Escape")
+    link.focus()
+    page.keyboard.press("Enter")
+    expect(page.locator("#sm-method")).to_be_visible()
+    page.keyboard.press("Escape")
+    # Export the embedded chart (the dashboard's export message), where the footer link is drawn.
+    with page.expect_download() as info:
+        page.evaluate("window.postMessage({type: 'sync-matrix:export', format: 'svg'}, location.origin)")
+    svg = open(info.value.path()).read()
+    assert "sm-icod" in svg and "How windows are calculated" not in svg
+    assert errors == []

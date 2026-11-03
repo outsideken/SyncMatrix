@@ -263,3 +263,37 @@ body {
   font-weight: 700;
   letter-spacing: 0.08em;
 }
+
+/* "How windows are calculated": a toolbar button, or a footer link when the toolbar is hidden. */
+.sm-method-open {
+  border: 0; background: none; padding: 0; font: inherit; font-size: 12px;
+  color: var(--sm-ink); text-decoration: underline; cursor: pointer;
+}
+.sm-method-link { font-size: 11px; fill: var(--sm-ink); text-decoration: underline; cursor: pointer; }
+.sm-method-link:focus-visible, .sm-method-open:focus-visible { outline: 2px solid var(--sm-icod); }
+
+/* The panel: the payload's own pass rules, by phenomenology. */
+.sm-method {
+  width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto;
+  padding: 14px 18px 16px; border: 0; border-radius: 6px;
+  background: var(--sm-bg); color: var(--sm-ink);
+  font-size: 13px; line-height: 1.45; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+.sm-method::backdrop { background: rgba(0, 0, 0, 0.35); }
+.sm-method header { display: flex; align-items: baseline; justify-content: space-between; }
+.sm-method h2 { margin: 0; font-size: 16px; }
+.sm-method h3 { margin: 14px 0 2px; font-size: 13px; }
+.sm-method p, .sm-method ul { margin: 4px 0; }
+.sm-method ul { padding-left: 18px; }
+.sm-method .muted { opacity: 0.7; }
+.sm-method-sub { opacity: 0.75; }
+.sm-method-refresh.stale { padding-left: 8px; border-left: 4px solid #d73027; } /* RdYlGn stale, as the ICOD badge */
+.sm-method-close {
+  border: 0; background: none; color: inherit; font-size: 20px; line-height: 1; cursor: pointer; padding: 0 2px;
+}
+.sm-method-rules { width: 100%; margin: 10px 0 4px; border-collapse: collapse; font-size: 12px; }
+.sm-method-rules th, .sm-method-rules td { padding: 3px 6px; text-align: left; vertical-align: top; }
+.sm-method-rules thead th { border-bottom: 1px solid var(--sm-divider); font-weight: 600; }
+.sm-method-rules td { border-bottom: 1px solid var(--sm-grid); }
+.sm-method-rules td:not(:first-child) { white-space: nowrap; }
+.sm-method-group th { padding-top: 8px; border-left: 4px solid #525252; font-weight: 700; }

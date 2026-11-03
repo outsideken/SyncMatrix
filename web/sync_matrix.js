@@ -44,6 +44,8 @@
  *        nothing is sent anywhere else; see COLLECTION REQUEST below)
  *
  * Clicking an access pins its popup (Esc, × or a click elsewhere closes it).
+ * "How windows are calculated" (toolbar, or the footer when the toolbar is
+ * hidden) explains the payload's own pass rules, row by row.
  */
 
 (function () {
@@ -603,6 +605,12 @@
         .text(icodLabel(p));
       icodText.append("title").text(ICOD_MEANING + " " + ageingRule(p));
       icodWidth = 14 + icodText.node().getComputedTextLength();
+      // The toolbar's "How windows are calculated" button, here instead (not in exports).
+      const methodLink = plot.append("text").attr("class", "sm-method-link").attr("x", icodWidth + 14).attr("y", footerY)
+        .attr("role", "button").attr("tabindex", 0).text("How windows are calculated")
+        .on("click", openMethod)
+        .on("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); openMethod(); } });
+      icodWidth += 14 + methodLink.node().getComputedTextLength();
     }
 
     const usedStatuses = Array.from(new Set(p.events.map((e) => e.status))).filter(Boolean);
@@ -890,6 +898,142 @@
   }
 
   //============================================================================
+  // HOW WINDOWS ARE CALCULATED
+  //============================================================================
+  // The method in words, with the numbers from the payload's own "rules":
+  // the pass rules each drawn row was predicted with (config/catalogue.json
+  // on that day). Rows with the same rule share a line. Nothing here is a
+  // second copy of the thresholds.
+
+  const methodDialog = d3.select("#sm-method");
+  // Older data than this gets a "refresh before you request" warning.
+  const REFRESH_BEFORE_REQUEST_HOURS = 24;
+
+  function ruleKey(rule) {
+    return [rule.min_elevation, rule.max_elevation ?? "", rule.needs_daylight ? 1 : 0].join("|");
+  }
+
+  function methodRows(p) {
+    // Per group (matrix order): [{rule, rows: [names]}], rows sharing a rule together.
+    const byGroup = new Map(p.groups.map((g) => [g.id, { group: g, lines: new Map() }]));
+    Object.entries(p.rules || {}).forEach(([row, rule]) => {
+      const entry = byGroup.get(rule.group);
+      if (!entry) return;
+      const key = ruleKey(rule);
+      if (!entry.lines.has(key)) entry.lines.set(key, { rule, rows: [] });
+      entry.lines.get(key).rows.push(row);
+    });
+    return Array.from(byGroup.values()).filter((e) => e.lines.size);
+  }
+
+  function methodHtml(p) {
+    const place = escapeHtml((p.locality && p.locality.name) || "the locality");
+    const day = formatFull(p.window.start).split(" ").slice(0, 3).join(" ");
+    let html = `<header><h2 id="sm-method-title">How windows are calculated</h2>` +
+               `<button type="button" class="sm-method-close" aria-label="Close">×</button></header>` +
+               `<p class="sm-method-sub">${place} · ${escapeHtml(day)} (UTC)</p>`;
+    if (!p.rules) {
+      html += p.icod_source === "demo"
+        ? `<p>These are <b>generated sample windows</b> (DEMO DATA), placed at random to show the layout. ` +
+          `They are not computed from orbits.</p>`
+        : `<p>This data file does not say how its windows were made. Its source: ${escapeHtml(p.source || "not given")}.</p>`;
+      return html;
+    }
+    const rules = Object.values(p.rules);
+    const daylight = rules.some((r) => r.needs_daylight);
+    // The rows with a maximum elevation, named in the text, with rows sharing a rule on one line.
+    const capped = new Map();
+    Object.entries(p.rules).filter(([, r]) => r.max_elevation !== undefined).forEach(([row, rule]) => {
+      const key = (rule.group || "") + "|" + ruleKey(rule); // never one line across phenomenologies
+      if (!capped.has(key)) capped.set(key, { rule, rows: [] });
+      capped.get(key).rows.push(row);
+    });
+    html += `<p>A window is the time a satellite is <b>above its row's minimum elevation</b>, seen from ${place}. ` +
+            `Passes are predicted with Skyfield from Celestrak orbit elements downloaded ` +
+            `${p.icod ? escapeHtml(formatIcod(p.icod)) : "(time not given)"} (the ICOD). A pass that runs over ` +
+            `midnight UTC is cut at the day's edge.</p>`;
+    html += `<table class="sm-method-rules"><thead><tr><th scope="col">Sensor rows</th>` +
+            `<th scope="col">Minimum elevation</th><th scope="col">Maximum elevation</th><th scope="col">Daylight</th>` +
+            `</tr></thead>`;
+    methodRows(p).forEach(({ group, lines }) => {
+      html += `<tbody><tr class="sm-method-group"><th colspan="4" scope="rowgroup" ` +
+              `style="border-left-color:${group.color || "#525252"}">${escapeHtml(group.label)}</th></tr>`;
+      lines.forEach(({ rule, rows }) => {
+        html += `<tr><td>${rows.map(escapeHtml).join(", ")}</td>` +
+                `<td>${rule.min_elevation}° <span class="muted">(incidence ≤ ${90 - rule.min_elevation}°)</span></td>` +
+                `<td>${rule.max_elevation !== undefined
+                  ? `${rule.max_elevation}° <span class="muted">(incidence ≥ ${90 - rule.max_elevation}°)</span>` : "—"}</td>` +
+                `<td>${rule.needs_daylight ? "Sun up" : "Day or night"}</td></tr>`;
+      });
+      html += `</tbody>`;
+    });
+    html += `</table>`;
+    html += `<h3>Minimum elevation</h3><p>Elevation is the satellite's angle above the horizon seen from ` +
+            `${place}; 90° minus it is the incidence angle on the ground. A pass counts when the satellite rises ` +
+            `above the row's minimum, and the window is the time it stays above it. The minimum stands in for the ` +
+            `sensor's field of regard: it approximates the sensor's geometry, not the provider's tasking rules.</p>`;
+    if (capped.size) {
+      const lines = Array.from(capped.values());
+      const sar = lines.every(({ rule }) => rule.group === "SAR");
+      html += `<h3>Maximum elevation</h3><p>These rows also have a maximum elevation:</p><ul>` +
+              lines.map(({ rule, rows }) => `<li><b>${rows.map(escapeHtml).join(", ")}</b>` +
+                `${rule.group ? " (" + escapeHtml(rule.group) + ")" : ""}: elevation ${rule.min_elevation}°–` +
+                `${rule.max_elevation}°, so incidence ${90 - rule.max_elevation}°–${90 - rule.min_elevation}°</li>`)
+                .join("") + `</ul><p>` +
+              (sar ? `They are synthetic aperture radar (SAR) satellites. SAR images to the side of its ground ` +
+                     `track and cannot image the ground directly beneath it, so a pass that comes nearly overhead ` +
+                     `is no use. ` : "") +
+              `For these rows a pass counts only if its highest elevation, at the satellite's closest approach ` +
+              `to ${place}, is between the row's minimum and maximum, so the incidence angle is in the range ` +
+              `above. The window still spans the whole time above the minimum; the image itself is taken around ` +
+              `the closest approach.</p>`;
+    }
+    if (daylight) {
+      html += `<h3>Daylight</h3><p>Rows marked <b>Sun up</b> (optical) count a pass only when the sun is above ` +
+              `the horizon at ${place} at the satellite's closest approach. The chart's day/night shading is the ` +
+              `sun's elevation there through the day.</p>`;
+    }
+    // Simplified draws one row per group: none of its rows is a sensor row with a rule.
+    if (!p.groups.some((g) => g.rows.some((r) => p.rules[r.id]))) {
+      html += `<h3>This view</h3><p>Each bar merges the overlapping passes of one phenomenology; its popup ` +
+              `names them.</p>`;
+    }
+    html += `<h3>Not modelled</h3><ul>` +
+            `<li><b>Access is not collection.</b> A window means the geometry allows it; tasking priority, ` +
+            `satellite agility, power and downlink are not considered.</li>` +
+            `<li><b>Weather is not checked.</b> No cloud forecast or cloud-cover limit is applied, so an ` +
+            `optical or infrared window may be clouded out.</li>` +
+            `<li><b>Accesses are evaluated from a point</b> (${place}), not from the polygon of an area of ` +
+            `interest; a large area may be partly out of view in a window shown here.</li>` +
+            `<li>Orbit predictions lose accuracy after a few days; the orbits are refreshed daily.</li></ul>`;
+    const icod = oldestIcod(p);
+    const old = icod && (Date.now() - icod) / 3.6e6 > REFRESH_BEFORE_REQUEST_HOURS;
+    html += `<h3>Before a collection request</h3><p class="sm-method-refresh${old ? " stale" : ""}">` +
+            `If the ICOD is more than ${REFRESH_BEFORE_REQUEST_HOURS} hours old and you intend to submit a ` +
+            `collection request, refresh the data first so the windows come from current orbits.` +
+            (icod ? ` <b>This chart's ICOD is ${escapeHtml(formatIcod(icod))}, ${escapeHtml(formatAge(icod))}.</b>`
+                  : ` <b>This chart has no ICOD, so its age is unknown.</b>`) + `</p>`;
+    return html;
+  }
+
+  function openMethod() {
+    if (!current) return;
+    unpinTooltip();
+    const dialog = methodDialog.node();
+    methodDialog.html(methodHtml(current));
+    methodDialog.select(".sm-method-close").on("click", () => dialog.close());
+    if (!dialog.open) dialog.showModal();
+  }
+
+  // A click on the backdrop (outside the panel's box) closes it; Esc is the dialog's own.
+  methodDialog.on("click", (ev) => {
+    const box = ev.currentTarget.getBoundingClientRect();
+    const inside = ev.clientX >= box.left && ev.clientX <= box.right && ev.clientY >= box.top && ev.clientY <= box.bottom;
+    if (!inside) ev.currentTarget.close();
+  });
+  d3.select("#sm-method-open").on("click", openMethod);
+
+  //============================================================================
   // COLLECTION REQUEST (demonstration)
   //============================================================================
   // The vision is an abstracted workflow: the page hands over one request
@@ -1100,7 +1244,7 @@
     // title and provenance added here; their old places in the chart are cut out.
     const seclab = highestSeclab(p);
     const cut = seclab ? LAYOUT.seclabHeight : 0;
-    clone.querySelectorAll(".sm-seclab").forEach((el) => el.remove());
+    clone.querySelectorAll(".sm-seclab, .sm-method-link").forEach((el) => el.remove());
     const header = cut + (options.showTitle ? 0 : 44);
     const phenomenologyLines = exportProvenanceLines(p);
     const footer = 44 + phenomenologyLines.length * 15 + cut;

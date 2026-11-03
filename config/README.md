@@ -120,7 +120,7 @@ drawing.
 
 `norad` lists NORAD catalogue numbers (a mission row like Sentinel-2 lists
 each spacecraft); `min_elevation` is degrees above the locality's horizon for
-a pass to count; optional `max_elevation` is for side-looking SAR (the highest
+a pass to count; optional `max_elevation` is for the SAR rows, Capella and Sentinel-1 (the highest
 point must stay at or below it, so the locality is in the swath);
 `needs_daylight` is for optical rows (sun up at the locality). `seclab` is
 the security label written on every predicted window; a row may set its own
@@ -243,6 +243,7 @@ view: every view is drawn from it.
 | `icod_source` | | Where the ICOD came from (`celestrak`; `demo` marks demo data) |
 | `source` | | One line on where the windows came from, shown on exports |
 | `evaluated` | | Per row, the spacecraft checked, so "no passes" is told apart from "not checked". **The chart draws exactly these rows** (in every view and grouping; empty groups are dropped), and each group's provenance notes count them. Without it, the groups that have windows are drawn |
+| `rules` | | Per row, the pass rules the windows were predicted with (`min_elevation`, and `max_elevation` / `needs_daylight` where the catalogue sets them), written by the predicted library. The page's "How windows are calculated" panel shows them for the rows drawn |
 | `windows` | yes | Access windows: `satellite` (a matrix row), `start`, `end` (ISO 8601 UTC), `status` (a `status_styles` key), `seclab` (a `seclabs` name; required, never defaulted), plus `norad` when the window comes from the catalogue, and optional `id`, `label`, `notes` shown in popups, and `pass` (geometry at the pass peak: `peak`, `elevation`, `azimuth`, `sun_elevation`, `sun_azimuth`, degrees; `clipped` lists `start`/`end` when the day's edge cuts the pass) for a collection request |
 
 ## Security labels
