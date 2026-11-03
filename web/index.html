@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sync Matrix</title>
-  <link rel="stylesheet" href="sync_matrix.css?v=32ea0da8db">
+  <link rel="stylesheet" href="sync_matrix.css?v=41c00ec3be">
 </head>
 <body>
   <form class="sm-toolbar" hidden onsubmit="return false">
@@ -31,14 +31,16 @@
         <button type="button" data-format="svg" title="Download as SVG (scalable)">SVG</button>
       </span>
     </span>
+    <button type="button" class="sm-method-open" id="sm-method-open" aria-haspopup="dialog">How windows are calculated</button>
     <span class="sm-icod-badge" id="sm-icod-badge"></span>
   </form>
   <div id="sync-matrix" class="sync-matrix">
     <div class="sm-status" role="status"></div>
   </div>
   <div class="sm-tooltip" hidden></div>
+  <dialog class="sm-method" id="sm-method" aria-labelledby="sm-method-title"></dialog>
 
   <script src="vendor/d3.v7.9.0.min.js"></script>
-  <script src="sync_matrix.js?v=d5ee85153f"></script>
+  <script src="sync_matrix.js?v=ac6d382f84"></script>
 </body>
 </html>

@@ -715,3 +715,99 @@ def test_live_simplified_and_demo_offer_no_requests(page, base_url, errors):
     page.locator(".sm-event").first.click()
     expect(page.locator(".sm-tooltip .sm-request-link")).to_have_count(1)  # a predicted pass of one satellite
     assert errors == []
+
+################################################################################
+## How windows are calculated
+################################################################################
+
+def ruled_payload(rules) -> dict:
+    """dated_payload with the pass rules of the rows it draws (a temporary fixture)."""
+    return dict(dated_payload(), rules=rules)
+
+
+RULES = {"Legion-3": {"min_elevation": 40, "needs_daylight": True, "group": "EO"},
+         "WorldView-2": {"min_elevation": 40, "needs_daylight": True, "group": "EO"},
+         "Sentinel-2": {"min_elevation": 78, "needs_daylight": True, "group": "EO"},
+         "Sentinel-1": {"min_elevation": 44, "max_elevation": 61, "group": "SAR"}}
+
+
+def method_table(page):
+    return page.locator(".sm-method-rules tbody tr").evaluate_all(
+        "rows => rows.map(r => [...r.children].map(c => c.textContent.trim()))")
+
+
+def test_method_panel_shows_the_payloads_own_rules(page, base_url, errors):
+    open_payload(page, base_url, ruled_payload(RULES), toolbar=True)
+    page.locator("#sm-method-open").click()
+    panel = page.locator("#sm-method")
+    expect(panel).to_be_visible()
+    expect(panel.locator("h2")).to_have_text("How windows are calculated")
+    expect(panel.locator(".sm-method-sub")).to_have_text("London · 28 Oct 2026 (UTC)")
+    expect(panel).to_contain_text("downloaded 28 Oct 2026 @ 0600Z (the ICOD)")
+    # Rows sharing a rule share a line; numbers come from the payload.
+    assert method_table(page) == [
+        ["EO"],
+        ["Legion-3, WorldView-2", "40° (incidence ≤ 50°)", "—", "Sun up"],
+        ["Sentinel-2", "78° (incidence ≤ 12°)", "—", "Sun up"],
+        ["SAR"],
+        ["Sentinel-1", "44° (incidence ≤ 46°)", "≤ 61°", "Day or night"],
+    ]
+    assert panel.locator("h3").all_text_contents() == ["Elevation", "Daylight", "Side-looking radar", "Not modelled"]
+    page.keyboard.press("Escape")
+    expect(panel).to_be_hidden()
+    page.locator("#sm-method-open").click()
+    panel.locator(".sm-method-close").click()
+    expect(panel).to_be_hidden()
+    page.locator("#sm-method-open").click()
+    page.mouse.click(3, 3)  # the backdrop
+    expect(panel).to_be_hidden()
+    assert errors == []
+
+
+def test_method_panel_only_explains_the_rules_it_has(page, base_url, errors):
+    # IR only (like Gao): no daylight or radar section.
+    open_payload(page, base_url, ruled_payload({"Terra MODIS": {"min_elevation": 25, "group": "IR"}}), toolbar=True)
+    page.locator("#sm-method-open").click()
+    assert page.locator("#sm-method h3").all_text_contents() == ["Elevation", "Not modelled"]
+    assert errors == []
+
+
+def test_method_panel_for_demo_and_unexplained_data(page, base_url, errors):
+    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=abstracted&locality=demo")
+    page.locator("#sm-method-open").click()
+    expect(page.locator("#sm-method")).to_contain_text("generated sample windows (DEMO DATA)")
+    expect(page.locator("#sm-method .sm-method-rules")).to_have_count(0)
+    page.keyboard.press("Escape")
+    open_payload(page, base_url, dated_payload(), toolbar=True)  # real data, but no rules in it
+    page.locator("#sm-method-open").click()
+    expect(page.locator("#sm-method")).to_contain_text("does not say how its windows were made")
+    assert errors == []
+
+
+def test_live_simplified_explains_its_merged_bars(page, base_url, errors):
+    open_page(page, base_url + "/index.html?manifest=live/index.json&matrix=simplified&locality=tokyo")
+    page.locator("#sm-method-open").click()
+    assert [r[0] for r in method_table(page) if len(r) == 1] == ["EO", "SAR", "RF"]
+    expect(page.locator("#sm-method")).to_contain_text("Each bar merges the overlapping passes")
+    assert errors == []
+
+
+def test_embedded_chart_has_the_link_in_its_footer_but_exports_do_not(page, base_url, errors):
+    open_payload(page, base_url, ruled_payload(RULES))  # single-file mode: no toolbar
+    expect(page.locator(".sm-toolbar")).to_be_hidden()
+    link = page.locator(".sm-method-link")
+    expect(link).to_have_text("How windows are calculated")
+    assert link.bounding_box()["x"] > page.locator(".sm-icod").bounding_box()["x"]  # after the ICOD line
+    link.click()
+    expect(page.locator("#sm-method")).to_be_visible()
+    page.keyboard.press("Escape")
+    link.focus()
+    page.keyboard.press("Enter")
+    expect(page.locator("#sm-method")).to_be_visible()
+    page.keyboard.press("Escape")
+    # Export the embedded chart (the dashboard's export message), where the footer link is drawn.
+    with page.expect_download() as info:
+        page.evaluate("window.postMessage({type: 'sync-matrix:export', format: 'svg'}, location.origin)")
+    svg = open(info.value.path()).read()
+    assert "sm-icod" in svg and "How windows are calculated" not in svg
+    assert errors == []

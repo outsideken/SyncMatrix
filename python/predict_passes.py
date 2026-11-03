@@ -107,6 +107,18 @@ def passes(sat: EarthSatellite, lat: float, lon: float, start: datetime, end: da
     return result
 
 
+RULE_KEYS = ("min_elevation", "max_elevation", "needs_daylight")
+
+
+def rules(catalogue: dict) -> dict:
+    """Each row's pass rules as used, for the data file: what made a pass count.
+
+    {"WorldView-2": {"min_elevation": 40, "needs_daylight": true},
+     "Sentinel-1": {"min_elevation": 44, "max_elevation": 61}}
+    """
+    return {row: {k: spec[k] for k in RULE_KEYS if k in spec} for row, spec in catalogue.get("satellites", {}).items()}
+
+
 def load_catalogue(path) -> dict:
     """The prediction catalogue: {"seclab": ..., "satellites": {row: {"norad": [...], "min_elevation": ...}}}.
 
