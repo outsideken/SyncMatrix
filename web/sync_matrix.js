@@ -941,13 +941,14 @@
     }
     const rules = Object.values(p.rules);
     const daylight = rules.some((r) => r.needs_daylight);
-    const swath = rules.some((r) => r.max_elevation !== undefined);
+    // A row with a maximum (SAR), to give the incidence range as a worked example.
+    const capped = Object.entries(p.rules).find(([, r]) => r.max_elevation !== undefined);
     html += `<p>A window is the time a satellite is <b>above its row's minimum elevation</b>, seen from ${place}. ` +
             `Passes are predicted with Skyfield from Celestrak orbit elements downloaded ` +
             `${p.icod ? escapeHtml(formatIcod(p.icod)) : "(time not given)"} (the ICOD). A pass that runs over ` +
             `midnight UTC is cut at the day's edge.</p>`;
     html += `<table class="sm-method-rules"><thead><tr><th scope="col">Sensor rows</th>` +
-            `<th scope="col">Minimum elevation</th><th scope="col">Highest point</th><th scope="col">Daylight</th>` +
+            `<th scope="col">Minimum elevation</th><th scope="col">Maximum elevation</th><th scope="col">Daylight</th>` +
             `</tr></thead>`;
     methodRows(p).forEach(({ group, lines }) => {
       html += `<tbody><tr class="sm-method-group"><th colspan="4" scope="rowgroup" ` +
@@ -955,25 +956,29 @@
       lines.forEach(({ rule, rows }) => {
         html += `<tr><td>${rows.map(escapeHtml).join(", ")}</td>` +
                 `<td>${rule.min_elevation}° <span class="muted">(incidence ≤ ${90 - rule.min_elevation}°)</span></td>` +
-                `<td>${rule.max_elevation !== undefined ? "≤ " + rule.max_elevation + "°" : "—"}</td>` +
+                `<td>${rule.max_elevation !== undefined
+                  ? `${rule.max_elevation}° <span class="muted">(incidence ≥ ${90 - rule.max_elevation}°)</span>` : "—"}</td>` +
                 `<td>${rule.needs_daylight ? "Sun up" : "Day or night"}</td></tr>`;
       });
       html += `</tbody>`;
     });
     html += `</table>`;
-    html += `<h3>Elevation</h3><p>Elevation is the satellite's angle above the horizon seen from ${place}; ` +
-            `90° minus it is the incidence angle on the ground. Each row's minimum stands in for its sensor's ` +
-            `field of regard. These approximate each sensor's geometry; they are not the providers' tasking rules.</p>`;
-    if (daylight) {
-      html += `<h3>Daylight</h3><p><b>Sun up</b> rows (optical) count a pass only when the sun is above the ` +
-              `horizon at ${place} at the moment the satellite is highest. The chart's day/night shading is the ` +
-              `sun's elevation there through the day.</p>`;
+    html += `<h3>Minimum elevation</h3><p>Elevation is the satellite's angle above the horizon seen from ` +
+            `${place}; 90° minus it is the incidence angle on the ground. A pass counts when the satellite rises ` +
+            `above the row's minimum, and the window is the time it stays above it. The minimum stands in for the ` +
+            `sensor's field of regard: it approximates the sensor's geometry, not the provider's tasking rules.</p>`;
+    if (capped) {
+      html += `<h3>Maximum elevation</h3><p>Some rows (SAR) also have a maximum. Their sensor looks to the side of ` +
+              `the ground track and cannot image a point beneath it, so a pass counts only if its highest ` +
+              `elevation, at the satellite's closest approach to ${place}, is between the row's minimum and ` +
+              `maximum: the incidence angle at closest approach is in the sensor's range ` +
+              `(${escapeHtml(capped[0])}: ${90 - capped[1].max_elevation}°–${90 - capped[1].min_elevation}°). The window still spans the whole time above the minimum; the image itself is taken ` +
+              `around the closest approach.</p>`;
     }
-    if (swath) {
-      html += `<h3>Synthetic Aperture Radar (SAR)</h3><p>SAR rows have a <b>highest point</b> limit because the radar looks to the side. A pass counts ` +
-              `only if the satellite's highest point stays at or below it, so ${place} is in the swath rather than ` +
-              `under the track. The window still spans the whole time above the minimum; the image itself is taken ` +
-              `near the highest point.</p>`;
+    if (daylight) {
+      html += `<h3>Daylight</h3><p>Rows marked <b>Sun up</b> (optical) count a pass only when the sun is above ` +
+              `the horizon at ${place} at the satellite's closest approach. The chart's day/night shading is the ` +
+              `sun's elevation there through the day.</p>`;
     }
     // Simplified draws one row per group: none of its rows is a sensor row with a rule.
     if (!p.groups.some((g) => g.rows.some((r) => p.rules[r.id]))) {

@@ -750,10 +750,11 @@ def test_method_panel_shows_the_payloads_own_rules(page, base_url, errors):
         ["Legion-3, WorldView-2", "40° (incidence ≤ 50°)", "—", "Sun up"],
         ["Sentinel-2", "78° (incidence ≤ 12°)", "—", "Sun up"],
         ["SAR"],
-        ["Sentinel-1", "44° (incidence ≤ 46°)", "≤ 61°", "Day or night"],
+        ["Sentinel-1", "44° (incidence ≤ 46°)", "61° (incidence ≥ 29°)", "Day or night"],
     ]
-    assert panel.locator("h3").all_text_contents() == ["Elevation", "Daylight", "Synthetic Aperture Radar (SAR)", "Not modelled",
+    assert panel.locator("h3").all_text_contents() == ["Minimum elevation", "Maximum elevation", "Daylight", "Not modelled",
                                                         "Before a collection request"]
+    expect(panel).to_contain_text("incidence angle at closest approach is in the sensor's range (Sentinel-1: 29°–46°)")
     page.keyboard.press("Escape")
     expect(panel).to_be_hidden()
     page.locator("#sm-method-open").click()
@@ -769,7 +770,7 @@ def test_method_panel_only_explains_the_rules_it_has(page, base_url, errors):
     # IR only (like Gao): no daylight or radar section.
     open_payload(page, base_url, ruled_payload({"Terra MODIS": {"min_elevation": 25, "group": "IR"}}), toolbar=True)
     page.locator("#sm-method-open").click()
-    assert page.locator("#sm-method h3").all_text_contents() == ["Elevation", "Not modelled", "Before a collection request"]
+    assert page.locator("#sm-method h3").all_text_contents() == ["Minimum elevation", "Not modelled", "Before a collection request"]
     assert errors == []
 
 
