@@ -993,7 +993,8 @@
     html += `<h3>Before a collection request</h3><p class="sm-method-refresh${old ? " stale" : ""}">` +
             `If the ICOD is more than ${REFRESH_BEFORE_REQUEST_HOURS} hours old and you intend to submit a ` +
             `collection request, refresh the data first so the windows come from current orbits.` +
-            (old ? ` <b>This chart's ICOD is ${escapeHtml(formatAge(icod))}.</b>` : "") + `</p>`;
+            (icod ? ` <b>This chart's ICOD is ${escapeHtml(formatIcod(icod))}, ${escapeHtml(formatAge(icod))}.</b>`
+                  : ` <b>This chart has no ICOD, so its age is unknown.</b>`) + `</p>`;
     return html;
   }
 
