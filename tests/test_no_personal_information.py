@@ -9,7 +9,7 @@ locations) are covered by the rule in AGENTS.md, not by this test.
 import re
 import subprocess
 
-from conftest import REPO
+from test_helpers import REPO
 
 THIS_FILE = "tests/test_no_personal_information.py"  # its examples below are what the scan must catch
 

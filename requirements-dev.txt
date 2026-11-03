@@ -1,3 +1,7 @@
 # Test tools (CI installs these on top of requirements.txt, with constraints.txt)
 pytest==9.2.0
-pytest-playwright==0.10.0  # browser tests; also run: python -m playwright install chromium
+pytest-playwright==0.10.0
+
+# IMPORTANT: After installing pytest-playwright, you must install browser binaries:
+#   python -m playwright install chromium
+# Without this, browser tests will fail with "Executable doesn't exist" errors.

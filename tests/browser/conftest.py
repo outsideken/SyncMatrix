@@ -9,6 +9,15 @@ import pytest
 
 pytest.importorskip("playwright", reason="browser tests need pytest-playwright (requirements-dev.txt)")
 
+# Check that Playwright browsers are installed
+try:
+    from playwright.sync_api import sync_playwright
+    with sync_playwright() as p:
+        p.chromium.executable_path  # Will raise if not installed
+except Exception:
+    pytest.skip("Playwright browsers not installed. Run: python -m playwright install chromium",
+                allow_module_level=True)
+
 WEB = Path(__file__).resolve().parents[2] / "web"
 
 
