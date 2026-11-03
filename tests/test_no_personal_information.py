@@ -11,6 +11,8 @@ import subprocess
 
 from conftest import REPO
 
+THIS_FILE = "tests/test_no_personal_information.py"  # its examples below are what the scan must catch
+
 EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}")
 ALLOWED_EMAIL = re.compile(r"(^|[.@])noreply\b|@users\.noreply\.github\.com$", re.IGNORECASE)
 HOME_PATH = re.compile(r"/Users/[^/\s\"']+/|/home/[^/\s\"']+/|[A-Za-z]:\\Users\\[^\\\s\"']+", re.IGNORECASE)
@@ -20,6 +22,8 @@ def tracked_text_files():
     names = subprocess.run(["git", "ls-files", "-z"], cwd=REPO, capture_output=True, check=True,
                            text=True).stdout.split("\0")
     for name in filter(None, names):
+        if name == THIS_FILE:
+            continue
         path = REPO / name
         if not path.is_file():
             continue
@@ -30,11 +34,13 @@ def tracked_text_files():
 
 
 def test_no_email_addresses_or_home_paths_are_committed():
-    found = []
+    found, scanned = [], 0
     for name, text in tracked_text_files():
+        scanned += 1
         found += ["%s: email %s" % (name, m.group()) for m in EMAIL.finditer(text)
                   if not ALLOWED_EMAIL.search(m.group())]
         found += ["%s: home folder %s" % (name, m.group()) for m in HOME_PATH.finditer(text)]
+    assert scanned > 10, "git ls-files found almost nothing to scan"
     assert found == [], "personal information in tracked files (see AGENTS.md):\n" + "\n".join(found)
 
 

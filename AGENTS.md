@@ -16,7 +16,7 @@ forever: anything committed stays public even after it is deleted.
 
 - **No personal information, ever (K, 2026-11-03).** No names, email
   addresses, phone numbers, street addresses, account names, home-folder
-  paths (`/Users/<name>/…`), or anything else that identifies a person.
+  paths (a Mac, Linux or Windows user folder), or anything else that identifies a person.
   Commits use the GitHub no-reply address
   (`outsideken@users.noreply.github.com`), not a personal one.
   `tests/test_no_personal_information.py` fails on email addresses and home
