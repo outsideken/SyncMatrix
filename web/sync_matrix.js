@@ -906,6 +906,8 @@
   // second copy of the thresholds.
 
   const methodDialog = d3.select("#sm-method");
+  // Older data than this gets a "refresh before you request" warning.
+  const REFRESH_BEFORE_REQUEST_HOURS = 24;
 
   function ruleKey(rule) {
     return [rule.min_elevation, rule.max_elevation ?? "", rule.needs_daylight ? 1 : 0].join("|");
@@ -980,9 +982,18 @@
     }
     html += `<h3>Not modelled</h3><ul>` +
             `<li><b>Access is not collection.</b> A window means the geometry allows it; tasking priority, ` +
-            `satellite agility, power, downlink and cloud are not considered.</li>` +
-            `<li>${place} is one point, not an area.</li>` +
+            `satellite agility, power and downlink are not considered.</li>` +
+            `<li><b>Weather is not checked.</b> No cloud forecast or cloud-cover limit is applied, so an ` +
+            `optical or infrared window may be clouded out.</li>` +
+            `<li><b>Accesses are evaluated from a point</b> (${place}), not from the polygon of an area of ` +
+            `interest; a large area may be partly out of view in a window shown here.</li>` +
             `<li>Orbit predictions lose accuracy after a few days; the orbits are refreshed daily.</li></ul>`;
+    const icod = oldestIcod(p);
+    const old = icod && (Date.now() - icod) / 3.6e6 > REFRESH_BEFORE_REQUEST_HOURS;
+    html += `<h3>Before a collection request</h3><p class="sm-method-refresh${old ? " stale" : ""}">` +
+            `If the ICOD is more than ${REFRESH_BEFORE_REQUEST_HOURS} hours old and you intend to submit a ` +
+            `collection request, refresh the data first so the windows come from current orbits.` +
+            (old ? ` <b>This chart's ICOD is ${escapeHtml(formatAge(icod))}.</b>` : "") + `</p>`;
     return html;
   }
 

@@ -752,7 +752,8 @@ def test_method_panel_shows_the_payloads_own_rules(page, base_url, errors):
         ["SAR"],
         ["Sentinel-1", "44° (incidence ≤ 46°)", "≤ 61°", "Day or night"],
     ]
-    assert panel.locator("h3").all_text_contents() == ["Elevation", "Daylight", "Side-looking radar", "Not modelled"]
+    assert panel.locator("h3").all_text_contents() == ["Elevation", "Daylight", "Side-looking radar", "Not modelled",
+                                                        "Before a collection request"]
     page.keyboard.press("Escape")
     expect(panel).to_be_hidden()
     page.locator("#sm-method-open").click()
@@ -768,7 +769,24 @@ def test_method_panel_only_explains_the_rules_it_has(page, base_url, errors):
     # IR only (like Gao): no daylight or radar section.
     open_payload(page, base_url, ruled_payload({"Terra MODIS": {"min_elevation": 25, "group": "IR"}}), toolbar=True)
     page.locator("#sm-method-open").click()
-    assert page.locator("#sm-method h3").all_text_contents() == ["Elevation", "Not modelled"]
+    assert page.locator("#sm-method h3").all_text_contents() == ["Elevation", "Not modelled", "Before a collection request"]
+    assert errors == []
+
+
+@pytest.mark.parametrize("now, warned", [
+    ("2026-10-29T05:00:00Z", False),  # 23 h after the ICOD
+    ("2026-10-29T07:00:00Z", True),   # 25 h: refresh before requesting
+])
+def test_method_panel_says_to_refresh_old_data_before_a_request(page, base_url, errors, now, warned):
+    page.clock.set_fixed_time(now)
+    open_payload(page, base_url, ruled_payload(RULES), toolbar=True)
+    page.locator("#sm-method-open").click()
+    note = page.locator("#sm-method .sm-method-refresh")
+    expect(note).to_contain_text("more than 24 hours old and you intend to submit a collection request")
+    (expect(note).to_have_class if warned else expect(note).not_to_have_class)(re.compile("stale"))
+    (expect(note).to_contain_text if warned else expect(note).not_to_contain_text)("This chart's ICOD is 25h 0m ago")
+    expect(page.locator("#sm-method")).not_to_contain_text("cloud are not")
+    expect(page.locator("#sm-method")).to_contain_text("Accesses are evaluated from a point (London)")
     assert errors == []
 
 
