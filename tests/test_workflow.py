@@ -287,21 +287,20 @@ def test_predicted_data_includes_rules_metadata():
 
 def test_rules_hash_differs_by_evaluated_rows():
     """Places evaluating different rows get different rules_hash values."""
-    # Cairo evaluates all matrix rows, Gao evaluates only SAR
-    cairo = REPO / "data/predicted/cairo"
-    gao = REPO / "data/predicted/gao"
-    assert cairo.exists() and gao.exists(), "predicted data missing"
+    import workflow as wf
     
-    cairo_data = json.loads(list(cairo.glob("*.json"))[0].read_text())
-    gao_data = json.loads(list(gao.glob("*.json"))[0].read_text())
+    def place(cat, rows):
+        """What predicted_data() hashes for a place evaluating `rows`."""
+        return wf.catalogue_metadata(dict(cat, satellites={r: cat["satellites"][r] for r in rows}))["rules_hash"]
     
-    cairo_hash = cairo_data["rules_metadata"]["rules_hash"]
-    gao_hash = gao_data["rules_metadata"]["rules_hash"]
+    before = {"satellites": {"A": {"min_elevation": 40}, "B": {"min_elevation": 78}}}
+    after = {"satellites": {"A": {"min_elevation": 40}, "B": {"min_elevation": 75}}}  # only B changed
     
-    # Different evaluate lists = different rules = different hash
-    assert cairo_hash != gao_hash, \
-        f"Cairo (all rows) and Gao (SAR only) should have different rules_hash"
+    # Different rows = different hash
+    assert place(before, ["A"]) != place(before, ["B"])
     
-    # Verify they do evaluate different rows
-    assert set(cairo_data["rules"]) != set(gao_data["rules"]), \
-        "Cairo and Gao should evaluate different satellite sets"
+    # B changed: a place with B changes its hash
+    assert place(before, ["A", "B"]) != place(after, ["A", "B"])
+    
+    # A place without B keeps its hash when B changes
+    assert place(before, ["A"]) == place(after, ["A"])
