@@ -3,13 +3,12 @@
 import functools
 import http.server
 import threading
-from pathlib import Path
 
 import pytest
 
 pytest.importorskip("playwright", reason="browser tests need pytest-playwright (requirements-dev.txt)")
 
-WEB = Path(__file__).resolve().parents[2] / "web"
+from paths import WEB
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):

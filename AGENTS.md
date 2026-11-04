@@ -51,8 +51,9 @@ forever: anything committed stays public even after it is deleted.
 ## What a reviewer runs here
 
 ```bash
-python -m pytest tests --ignore=tests/browser   # unit tests
-python -m pytest tests/browser                  # page tests (run separately: the conftests clash)
+python -m pytest tests                          # all tests (unit + browser; needs playwright browsers installed)
+python -m pytest tests --ignore=tests/browser   # unit tests only
+python -m pytest tests/browser                  # browser tests only
 python scripts/check_build.py                   # data/ and web/live match a fresh build
 python scripts/check_data.py                    # payloads, manifest and SECLAB ceiling
 ```

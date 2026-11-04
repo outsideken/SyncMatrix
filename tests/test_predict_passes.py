@@ -13,7 +13,7 @@ import pytest
 
 import export_payload as ep
 import predict_passes as pp
-from conftest import REPO
+from paths import REPO
 
 from astral import Observer
 from astral.sun import elevation as sun_elevation

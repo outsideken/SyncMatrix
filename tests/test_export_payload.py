@@ -14,7 +14,7 @@ from datetime import date, datetime, timedelta, timezone
 import pytest
 
 import export_payload as ep
-from conftest import REPO
+from paths import REPO
 
 MATRIX = REPO / "config" / "matrix.json"
 EXPORTER = REPO / "python" / "export_payload.py"
