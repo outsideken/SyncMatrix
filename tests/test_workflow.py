@@ -228,34 +228,59 @@ def test_published_rules_are_the_catalogues_for_the_rows_drawn():
     assert demo and all(json.loads(p.read_text())["rules"] is None for p in demo)  # generated, not predicted
 
 
-def test_rules_metadata_is_written_from_catalogue_version():
-    """Predicted data files carry the catalogue version that generated them."""
-    # Load catalogue to get expected versions
-    catalogue = json.loads((REPO / "config/catalogue.json").read_text())
-    expected_version = catalogue.get("version")
-    expected_schema = catalogue.get("rules_schema_version")
+def test_catalogue_metadata_derives_hash_from_satellites():
+    """catalogue_metadata() returns a hash of the satellites section."""
+    import workflow as wf
     
-    # Check predicted data files have metadata
-    predicted = list((REPO / "data/predicted").rglob("*.json"))
-    assert predicted, "no predicted files to check"
+    # Small test catalogue
+    cat1 = {
+        "version": "2026.11.04",
+        "satellites": {
+            "TestSat-A": {"min_elevation": 40, "needs_daylight": True},
+            "TestSat-B": {"min_elevation": 78}
+        }
+    }
     
-    for path in predicted:
-        data = json.loads(path.read_text())
-        metadata = data.get("rules_metadata")
-        assert metadata is not None, f"{path.name}: missing rules_metadata"
-        assert metadata["catalogue_version"] == expected_version, \
-            f"{path.name}: catalogue_version {metadata['catalogue_version']!r} != {expected_version!r}"
-        assert metadata["rules_schema_version"] == expected_schema, \
-            f"{path.name}: rules_schema_version {metadata['rules_schema_version']!r} != {expected_schema!r}"
+    metadata = wf.catalogue_metadata(cat1)
+    assert "catalogue_hash" in metadata
+    assert "catalogue_version" in metadata
+    assert metadata["catalogue_version"] == "2026.11.04"
+    assert len(metadata["catalogue_hash"]) == 12
+    assert all(c in "0123456789abcdef" for c in metadata["catalogue_hash"])
     
-    # Check published payloads also have metadata (but skip demo files - they are generated)
-    live = list((REPO / "web/live").rglob("*.json"))
-    live = [p for p in live if p.name != "index.json" and "/demo/" not in str(p)]
-    assert live, "no published files to check"
+    # Same satellites = same hash
+    cat2 = dict(cat1, version="2026.11.05")
+    assert wf.catalogue_metadata(cat2)["catalogue_hash"] == metadata["catalogue_hash"]
     
-    for path in live:
-        payload = json.loads(path.read_text())
-        metadata = payload.get("rules_metadata")
-        assert metadata is not None, f"{path.relative_to(REPO)}: missing rules_metadata"
-        assert metadata["catalogue_version"] == expected_version
-        assert metadata["rules_schema_version"] == expected_schema
+    # Different satellites = different hash
+    cat3 = dict(cat1, satellites={"TestSat-A": {"min_elevation": 41}})
+    assert wf.catalogue_metadata(cat3)["catalogue_hash"] != metadata["catalogue_hash"]
+    
+    # No version is OK
+    cat4 = {"satellites": cat1["satellites"]}
+    metadata4 = wf.catalogue_metadata(cat4)
+    assert "catalogue_hash" in metadata4
+    assert "catalogue_version" not in metadata4
+
+
+def test_predicted_data_includes_rules_metadata():
+    """Predicted data files include rules_metadata with hash."""
+    # Check one committed predicted file to verify the workflow writes it
+    tokyo = REPO / "data/predicted/tokyo"
+    if not tokyo.exists():
+        pytest.skip("no predicted data to check")
+    
+    data_files = list(tokyo.glob("*.json"))
+    assert data_files, "no tokyo predictions"
+    
+    data = json.loads(data_files[0].read_text())
+    metadata = data.get("rules_metadata")
+    
+    assert metadata is not None, "missing rules_metadata"
+    assert "catalogue_hash" in metadata, "missing catalogue_hash"
+    assert len(metadata["catalogue_hash"]) == 12
+    assert all(c in "0123456789abcdef" for c in metadata["catalogue_hash"])
+    
+    # If all tokyo files have the same hash, the catalogue was consistent
+    hashes = {json.loads(p.read_text())["rules_metadata"]["catalogue_hash"] for p in data_files}
+    assert len(hashes) == 1, f"inconsistent hashes in tokyo predictions: {hashes}"

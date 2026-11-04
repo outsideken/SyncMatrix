@@ -35,6 +35,7 @@ workflow.json, checked by load_workflow():
   ({date, icod}), events_per_day, seclab (the label on every demo window).
 """
 
+import hashlib
 import json
 import shutil
 from datetime import date, datetime, timedelta
@@ -45,6 +46,22 @@ from timezonefinder import TimezoneFinder
 import export_payload as ep
 
 REPO = Path(__file__).resolve().parents[1]
+
+
+def catalogue_metadata(catalogue: dict) -> dict:
+    """Return rules metadata with content hash of the satellites section.
+    
+    The hash is derived from the sorted JSON of the satellites rules,
+    so it's always correct and can't go stale.
+    """
+    satellites_json = json.dumps(catalogue["satellites"], sort_keys=True)
+    catalogue_hash = hashlib.sha256(satellites_json.encode()).hexdigest()[:12]
+    
+    metadata = {"catalogue_hash": catalogue_hash}
+    if "version" in catalogue:
+        metadata["catalogue_version"] = catalogue["version"]
+    
+    return metadata
 CONFIG = REPO / "config"
 PREDICTED_SOURCE = "Predicted passes from Celestrak orbits (%s), computed with Skyfield"
 DEMO_SOURCE = "Demo data: generated sample events"
@@ -195,11 +212,12 @@ def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
         wanted = evaluated_rows(matrix, loc)
         here = dict(catalogue, satellites={row: spec for row, spec in catalogue["satellites"].items() if row in wanted})
         evaluated = {row: spec["norad"] for row, spec in here["satellites"].items()}
+        
+        rules_metadata = catalogue_metadata(here)
+        
         for offset in range(int(predicted["days"])):
             day = first_day + timedelta(days=offset)
             start = ep.parse_iso("%sT00:00:00Z" % day.isoformat())
-            rules_metadata = {"catalogue_version": here.get("version"),
-                             "rules_schema_version": here.get("rules_schema_version")} if "version" in here else None
             out.append({"locality": {"name": name, "point": point},
                         "evaluation_date": day.isoformat(),
                         "icod": snapshot["fetched"],
