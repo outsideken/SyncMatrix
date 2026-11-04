@@ -7,7 +7,7 @@ import pytest
 
 import export_payload as ep
 import workflow as wf
-from test_helpers import REPO
+from paths import REPO
 
 
 def test_committed_workflow_loads():

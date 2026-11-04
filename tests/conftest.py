@@ -2,6 +2,6 @@
 
 import sys
 
-from test_helpers import REPO
+from paths import REPO
 
 sys.path.insert(0, str(REPO / "python"))

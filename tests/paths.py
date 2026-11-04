@@ -4,3 +4,6 @@ from pathlib import Path
 
 # Repository root directory
 REPO = Path(__file__).resolve().parents[1]
+
+# Web directory for browser tests
+WEB = REPO / "web"
