@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Track which version of the prediction catalogue was used to generate pass windows, enabling reproducibility and debugging. Each prediction carries a hash of the exact rules that produced it.
+Track which version of the prediction rules was used to generate pass windows, enabling reproducibility and debugging. Each prediction carries a hash of the exact rules that produced it.
 
 ## How It Works
 
-When predictions are generated, the catalogue's `satellites` section is hashed to create a unique identifier. This hash is written to every predicted data file and published payload as `catalogue_hash`.
+When predictions are generated for a place, the rules for the rows that place evaluates are hashed to create a unique identifier. This hash is written to every predicted data file and published payload as `rules_hash`.
 
 ## Data Files
 
@@ -19,15 +19,15 @@ Predicted data files (`data/predicted/<locality>/<date>.json`) include:
   },
   "rules_metadata": {
     "catalogue_version": "2026.11.04",
-    "catalogue_hash": "a1b2c3d4e5f6"
+    "rules_hash": "a1b2c3d4e5f6"
   }
 }
 ```
 
 - **`catalogue_version`** (optional): Human-readable label from `config/catalogue.json`
-- **`catalogue_hash`**: First 12 hex characters of SHA256 hash of the `satellites` rules content
+- **`rules_hash`**: First 12 hex characters of SHA256 hash of the rules for the rows this place evaluates
 
-The hash is **derived**, not typed, so it's always correct. If two data files have the same hash, they used identical rules.
+The hash is **derived**, not typed, so it's always correct. Two places with identical rules for the rows they evaluate get the same hash. A change to a row that only one place evaluates changes only that place's hash.
 
 ## Updating the Catalogue
 

@@ -49,15 +49,18 @@ REPO = Path(__file__).resolve().parents[1]
 
 
 def catalogue_metadata(catalogue: dict) -> dict:
-    """Return rules metadata with content hash of the satellites section.
+    """Return rules metadata with content hash of the satellites rules.
     
-    The hash is derived from the sorted JSON of the satellites rules,
-    so it's always correct and can't go stale.
+    The hash is derived from the sorted JSON of the satellites dict for this
+    catalogue (which may be a per-place subset). Two places with identical rules
+    for the rows they evaluate get the same hash; different rules = different hash.
+    
+    The hash is always correct and can't go stale.
     """
     satellites_json = json.dumps(catalogue["satellites"], sort_keys=True)
-    catalogue_hash = hashlib.sha256(satellites_json.encode()).hexdigest()[:12]
+    rules_hash = hashlib.sha256(satellites_json.encode()).hexdigest()[:12]
     
-    metadata = {"catalogue_hash": catalogue_hash}
+    metadata = {"rules_hash": rules_hash}
     if "version" in catalogue:
         metadata["catalogue_version"] = catalogue["version"]
     

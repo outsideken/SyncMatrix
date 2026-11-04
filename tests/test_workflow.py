@@ -229,7 +229,7 @@ def test_published_rules_are_the_catalogues_for_the_rows_drawn():
 
 
 def test_catalogue_metadata_derives_hash_from_satellites():
-    """catalogue_metadata() returns a hash of the satellites section."""
+    """catalogue_metadata() returns a hash of the satellites rules."""
     import workflow as wf
     
     # Small test catalogue
@@ -242,24 +242,24 @@ def test_catalogue_metadata_derives_hash_from_satellites():
     }
     
     metadata = wf.catalogue_metadata(cat1)
-    assert "catalogue_hash" in metadata
+    assert "rules_hash" in metadata
     assert "catalogue_version" in metadata
     assert metadata["catalogue_version"] == "2026.11.04"
-    assert len(metadata["catalogue_hash"]) == 12
-    assert all(c in "0123456789abcdef" for c in metadata["catalogue_hash"])
+    assert len(metadata["rules_hash"]) == 12
+    assert all(c in "0123456789abcdef" for c in metadata["rules_hash"])
     
     # Same satellites = same hash
     cat2 = dict(cat1, version="2026.11.05")
-    assert wf.catalogue_metadata(cat2)["catalogue_hash"] == metadata["catalogue_hash"]
+    assert wf.catalogue_metadata(cat2)["rules_hash"] == metadata["rules_hash"]
     
     # Different satellites = different hash
     cat3 = dict(cat1, satellites={"TestSat-A": {"min_elevation": 41}})
-    assert wf.catalogue_metadata(cat3)["catalogue_hash"] != metadata["catalogue_hash"]
+    assert wf.catalogue_metadata(cat3)["rules_hash"] != metadata["rules_hash"]
     
     # No version is OK
     cat4 = {"satellites": cat1["satellites"]}
     metadata4 = wf.catalogue_metadata(cat4)
-    assert "catalogue_hash" in metadata4
+    assert "rules_hash" in metadata4
     assert "catalogue_version" not in metadata4
 
 
@@ -267,8 +267,7 @@ def test_predicted_data_includes_rules_metadata():
     """Predicted data files include rules_metadata with hash."""
     # Check one committed predicted file to verify the workflow writes it
     tokyo = REPO / "data/predicted/tokyo"
-    if not tokyo.exists():
-        pytest.skip("no predicted data to check")
+    assert tokyo.exists(), "tokyo predicted data missing (is a committed folder)"
     
     data_files = list(tokyo.glob("*.json"))
     assert data_files, "no tokyo predictions"
@@ -277,10 +276,32 @@ def test_predicted_data_includes_rules_metadata():
     metadata = data.get("rules_metadata")
     
     assert metadata is not None, "missing rules_metadata"
-    assert "catalogue_hash" in metadata, "missing catalogue_hash"
-    assert len(metadata["catalogue_hash"]) == 12
-    assert all(c in "0123456789abcdef" for c in metadata["catalogue_hash"])
+    assert "rules_hash" in metadata, "missing rules_hash"
+    assert len(metadata["rules_hash"]) == 12
+    assert all(c in "0123456789abcdef" for c in metadata["rules_hash"])
     
-    # If all tokyo files have the same hash, the catalogue was consistent
-    hashes = {json.loads(p.read_text())["rules_metadata"]["catalogue_hash"] for p in data_files}
+    # If all tokyo files have the same hash, the rules were consistent
+    hashes = {json.loads(p.read_text())["rules_metadata"]["rules_hash"] for p in data_files}
     assert len(hashes) == 1, f"inconsistent hashes in tokyo predictions: {hashes}"
+
+
+def test_rules_hash_differs_by_evaluated_rows():
+    """Places evaluating different rows get different rules_hash values."""
+    # Cairo evaluates all matrix rows, Gao evaluates only SAR
+    cairo = REPO / "data/predicted/cairo"
+    gao = REPO / "data/predicted/gao"
+    assert cairo.exists() and gao.exists(), "predicted data missing"
+    
+    cairo_data = json.loads(list(cairo.glob("*.json"))[0].read_text())
+    gao_data = json.loads(list(gao.glob("*.json"))[0].read_text())
+    
+    cairo_hash = cairo_data["rules_metadata"]["rules_hash"]
+    gao_hash = gao_data["rules_metadata"]["rules_hash"]
+    
+    # Different evaluate lists = different rules = different hash
+    assert cairo_hash != gao_hash, \
+        f"Cairo (all rows) and Gao (SAR only) should have different rules_hash"
+    
+    # Verify they do evaluate different rows
+    assert set(cairo_data["rules"]) != set(gao_data["rules"]), \
+        "Cairo and Gao should evaluate different satellite sets"
