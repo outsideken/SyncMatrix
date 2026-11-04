@@ -226,3 +226,36 @@ def test_published_rules_are_the_catalogues_for_the_rows_drawn():
 
     demo = sorted((REPO / workflow["folder"]).glob("*/demo/*.json"))
     assert demo and all(json.loads(p.read_text())["rules"] is None for p in demo)  # generated, not predicted
+
+
+def test_rules_metadata_is_written_from_catalogue_version():
+    """Predicted data files carry the catalogue version that generated them."""
+    # Load catalogue to get expected versions
+    catalogue = json.loads((REPO / "config/catalogue.json").read_text())
+    expected_version = catalogue.get("version")
+    expected_schema = catalogue.get("rules_schema_version")
+    
+    # Check predicted data files have metadata
+    predicted = list((REPO / "data/predicted").rglob("*.json"))
+    assert predicted, "no predicted files to check"
+    
+    for path in predicted:
+        data = json.loads(path.read_text())
+        metadata = data.get("rules_metadata")
+        assert metadata is not None, f"{path.name}: missing rules_metadata"
+        assert metadata["catalogue_version"] == expected_version, \
+            f"{path.name}: catalogue_version {metadata['catalogue_version']!r} != {expected_version!r}"
+        assert metadata["rules_schema_version"] == expected_schema, \
+            f"{path.name}: rules_schema_version {metadata['rules_schema_version']!r} != {expected_schema!r}"
+    
+    # Check published payloads also have metadata (but skip demo files - they are generated)
+    live = list((REPO / "web/live").rglob("*.json"))
+    live = [p for p in live if p.name != "index.json" and "/demo/" not in str(p)]
+    assert live, "no published files to check"
+    
+    for path in live:
+        payload = json.loads(path.read_text())
+        metadata = payload.get("rules_metadata")
+        assert metadata is not None, f"{path.relative_to(REPO)}: missing rules_metadata"
+        assert metadata["catalogue_version"] == expected_version
+        assert metadata["rules_schema_version"] == expected_schema

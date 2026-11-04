@@ -198,6 +198,8 @@ def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
         for offset in range(int(predicted["days"])):
             day = first_day + timedelta(days=offset)
             start = ep.parse_iso("%sT00:00:00Z" % day.isoformat())
+            rules_metadata = {"catalogue_version": here.get("version"),
+                             "rules_schema_version": here.get("rules_schema_version")} if "version" in here else None
             out.append({"locality": {"name": name, "point": point},
                         "evaluation_date": day.isoformat(),
                         "icod": snapshot["fetched"],
@@ -205,6 +207,7 @@ def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
                         "source": PREDICTED_SOURCE % snapshot_name,
                         "evaluated": evaluated,
                         "rules": pp.rules(here),
+                        "rules_metadata": rules_metadata,
                         "windows": pp.predict_windows(here, snapshot, lat, lon, start,
                                                       start + timedelta(days=1))})
     return out
