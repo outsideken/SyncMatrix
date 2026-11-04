@@ -14,7 +14,7 @@ from urllib.parse import parse_qs, urlparse
 import pytest
 from playwright.sync_api import Page, expect
 
-from conftest import WEB
+from paths import WEB
 
 sys.path.insert(0, str(WEB.parent / "python"))
 import export_payload as ep  # noqa: E402
