@@ -226,3 +226,81 @@ def test_published_rules_are_the_catalogues_for_the_rows_drawn():
 
     demo = sorted((REPO / workflow["folder"]).glob("*/demo/*.json"))
     assert demo and all(json.loads(p.read_text())["rules"] is None for p in demo)  # generated, not predicted
+
+
+def test_catalogue_metadata_derives_hash_from_satellites():
+    """catalogue_metadata() returns a hash of the satellites rules."""
+    import workflow as wf
+    
+    # Small test catalogue
+    cat1 = {
+        "version": "2026.11.04",
+        "satellites": {
+            "TestSat-A": {"min_elevation": 40, "needs_daylight": True},
+            "TestSat-B": {"min_elevation": 78}
+        }
+    }
+    
+    metadata = wf.catalogue_metadata(cat1)
+    assert "rules_hash" in metadata
+    assert "catalogue_version" in metadata
+    assert metadata["catalogue_version"] == "2026.11.04"
+    assert len(metadata["rules_hash"]) == 12
+    assert all(c in "0123456789abcdef" for c in metadata["rules_hash"])
+    
+    # Same satellites = same hash
+    cat2 = dict(cat1, version="2026.11.05")
+    assert wf.catalogue_metadata(cat2)["rules_hash"] == metadata["rules_hash"]
+    
+    # Different satellites = different hash
+    cat3 = dict(cat1, satellites={"TestSat-A": {"min_elevation": 41}})
+    assert wf.catalogue_metadata(cat3)["rules_hash"] != metadata["rules_hash"]
+    
+    # No version is OK
+    cat4 = {"satellites": cat1["satellites"]}
+    metadata4 = wf.catalogue_metadata(cat4)
+    assert "rules_hash" in metadata4
+    assert "catalogue_version" not in metadata4
+
+
+def test_predicted_data_includes_rules_metadata():
+    """Predicted data files include rules_metadata with hash."""
+    # Check one committed predicted file to verify the workflow writes it
+    tokyo = REPO / "data/predicted/tokyo"
+    assert tokyo.exists(), "tokyo predicted data missing (is a committed folder)"
+    
+    data_files = list(tokyo.glob("*.json"))
+    assert data_files, "no tokyo predictions"
+    
+    data = json.loads(data_files[0].read_text())
+    metadata = data.get("rules_metadata")
+    
+    assert metadata is not None, "missing rules_metadata"
+    assert "rules_hash" in metadata, "missing rules_hash"
+    assert len(metadata["rules_hash"]) == 12
+    assert all(c in "0123456789abcdef" for c in metadata["rules_hash"])
+    
+    # If all tokyo files have the same hash, the rules were consistent
+    hashes = {json.loads(p.read_text())["rules_metadata"]["rules_hash"] for p in data_files}
+    assert len(hashes) == 1, f"inconsistent hashes in tokyo predictions: {hashes}"
+
+
+def test_rules_hash_differs_by_evaluated_rows():
+    """Places evaluating different rows get different rules_hash values."""
+    import workflow as wf
+    
+    def place(cat, rows):
+        """What predicted_data() hashes for a place evaluating `rows`."""
+        return wf.catalogue_metadata(dict(cat, satellites={r: cat["satellites"][r] for r in rows}))["rules_hash"]
+    
+    before = {"satellites": {"A": {"min_elevation": 40}, "B": {"min_elevation": 78}}}
+    after = {"satellites": {"A": {"min_elevation": 40}, "B": {"min_elevation": 75}}}  # only B changed
+    
+    # Different rows = different hash
+    assert place(before, ["A"]) != place(before, ["B"])
+    
+    # B changed: a place with B changes its hash
+    assert place(before, ["A", "B"]) != place(after, ["A", "B"])
+    
+    # A place without B keeps its hash when B changes
+    assert place(before, ["A"]) == place(after, ["A"])

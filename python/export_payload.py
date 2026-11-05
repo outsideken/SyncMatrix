@@ -404,10 +404,11 @@ def build_view(matrix: dict, view_id: str, data: dict, ceiling: str = None) -> d
     # The drawn rows' pass rules, in matrix order, each with its group (so Simplified can list them too).
     rules = {row_id(r): dict(data["rules"][row_id(r)], group=g["name"]) for g in matrix["groups"]
              for r in g["rows"] if row_id(r) in data["rules"]} if "rules" in data else None
+    rules_metadata = data.get("rules_metadata")
     return build_payload(config, events, date.fromisoformat(data["evaluation_date"]),
                          icod=data["icod"], icod_source=data.get("icod_source", "data"),
                          locality=data["locality"], source=data.get("source", "Data file"), provenance=notes,
-                         ceiling=ceiling, rules=rules)
+                         ceiling=ceiling, rules=rules, rules_metadata=rules_metadata)
 
 
 def write_views(matrix: dict, data_files, out_dir, ceiling: str = None) -> int:
@@ -623,14 +624,15 @@ def build_payload(config: dict, events: list = None, day: date = None,
                   demo_count: int = 0, seed: int = 7,
                   icod: str = None, icod_source: str = "data",
                   locality: dict = None, source: str = None,
-                  provenance: dict = None, ceiling: str = None, rules: dict = None) -> dict:
+                  provenance: dict = None, ceiling: str = None, rules: dict = None,
+                  rules_metadata: dict = None) -> dict:
     """One matrix, one locality, one UTC day.
 
     source: where the events came from (one line, shown on exports);
     provenance: per-group overrides for build_provenance(); ceiling: the
     library's highest security label (default: the lowest label); rules: the
     pass rules per drawn row (data file "rules"), when the windows were
-    predicted.
+    predicted; rules_metadata: catalogue version and schema version.
     """
     now = datetime.now(timezone.utc)
     day = day or now.date()
@@ -674,7 +676,8 @@ def build_payload(config: dict, events: list = None, day: date = None,
             "markers": markers,
             "banners": build_banners(config, window_start),
             "label": config.get("label", config["title"]),
-            "rules": rules}
+            "rules": rules,
+            "rules_metadata": rules_metadata}
 
 
 def slugify(text: str) -> str:

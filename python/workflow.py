@@ -35,6 +35,7 @@ workflow.json, checked by load_workflow():
   ({date, icod}), events_per_day, seclab (the label on every demo window).
 """
 
+import hashlib
 import json
 import shutil
 from datetime import date, datetime, timedelta
@@ -45,6 +46,25 @@ from timezonefinder import TimezoneFinder
 import export_payload as ep
 
 REPO = Path(__file__).resolve().parents[1]
+
+
+def catalogue_metadata(catalogue: dict) -> dict:
+    """Return rules metadata with content hash of the satellites rules.
+    
+    The hash is derived from the sorted JSON of the satellites dict for this
+    catalogue (which may be a per-place subset). Two places with identical rules
+    for the rows they evaluate get the same hash; different rules = different hash.
+    
+    The hash is always correct and can't go stale.
+    """
+    satellites_json = json.dumps(catalogue["satellites"], sort_keys=True)
+    rules_hash = hashlib.sha256(satellites_json.encode()).hexdigest()[:12]
+    
+    metadata = {"rules_hash": rules_hash}
+    if "version" in catalogue:
+        metadata["catalogue_version"] = catalogue["version"]
+    
+    return metadata
 CONFIG = REPO / "config"
 PREDICTED_SOURCE = "Predicted passes from Celestrak orbits (%s), computed with Skyfield"
 DEMO_SOURCE = "Demo data: generated sample events"
@@ -195,6 +215,9 @@ def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
         wanted = evaluated_rows(matrix, loc)
         here = dict(catalogue, satellites={row: spec for row, spec in catalogue["satellites"].items() if row in wanted})
         evaluated = {row: spec["norad"] for row, spec in here["satellites"].items()}
+        
+        rules_metadata = catalogue_metadata(here)
+        
         for offset in range(int(predicted["days"])):
             day = first_day + timedelta(days=offset)
             start = ep.parse_iso("%sT00:00:00Z" % day.isoformat())
@@ -205,6 +228,7 @@ def predicted_data(workflow: dict, snapshot: dict, snapshot_name: str) -> list:
                         "source": PREDICTED_SOURCE % snapshot_name,
                         "evaluated": evaluated,
                         "rules": pp.rules(here),
+                        "rules_metadata": rules_metadata,
                         "windows": pp.predict_windows(here, snapshot, lat, lon, start,
                                                       start + timedelta(days=1))})
     return out
