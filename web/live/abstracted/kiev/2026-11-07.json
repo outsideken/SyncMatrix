@@ -1,0 +1,1007 @@
+{
+  "version": 1,
+  "title": "Abstracted Sync Matrix",
+  "subtitle": "Kiev \u00b7 07 November 2026",
+  "icod": "2026-11-05T13:10:40Z",
+  "icod_source": "celestrak",
+  "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-05T1310Z.json), computed with Skyfield",
+  "provenance": {
+    "all": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-05T1310Z.json), computed with Skyfield",
+      "icod": "2026-11-05T13:10:40Z",
+      "icod_source": "celestrak"
+    },
+    "EO": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-05T1310Z.json), computed with Skyfield",
+      "icod": "2026-11-05T13:10:40Z",
+      "icod_source": "celestrak",
+      "notes": "9 predicted passes from 9 of 15 configured satellites"
+    },
+    "SAR": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-05T1310Z.json), computed with Skyfield",
+      "icod": "2026-11-05T13:10:40Z",
+      "icod_source": "celestrak",
+      "notes": "15 predicted passes from 10 of 12 configured satellites"
+    }
+  },
+  "generated": "2026-11-05T13:12:21Z",
+  "locality": {
+    "id": "kiev",
+    "name": "Kiev",
+    "lon": 30.5234,
+    "lat": 50.4501,
+    "timezone": "Europe/Kyiv",
+    "point": "POINT(30.5234 50.4501)"
+  },
+  "window": {
+    "start": "2026-11-07T00:00:00Z",
+    "end": "2026-11-08T00:00:00Z",
+    "tick_minutes": 30
+  },
+  "groups": [
+    {
+      "id": "EO",
+      "label": "EO",
+      "color": "#08519c",
+      "tint": "#c6dbef",
+      "rows": [
+        {
+          "id": "GeoEye-1",
+          "label": "GeoEye-1"
+        },
+        {
+          "id": "Legion-1",
+          "label": "Legion-1"
+        },
+        {
+          "id": "Legion-2",
+          "label": "Legion-2"
+        },
+        {
+          "id": "Legion-3",
+          "label": "Legion-3"
+        },
+        {
+          "id": "Legion-4",
+          "label": "Legion-4"
+        },
+        {
+          "id": "Legion-5",
+          "label": "Legion-5"
+        },
+        {
+          "id": "Legion-6",
+          "label": "Legion-6"
+        },
+        {
+          "id": "Sentinel-2",
+          "label": "Sentinel-2"
+        },
+        {
+          "id": "Sentinel-3 OLCI",
+          "label": "Sentinel-3 OLCI"
+        },
+        {
+          "id": "WorldView-1",
+          "label": "WorldView-1"
+        },
+        {
+          "id": "WorldView-2",
+          "label": "WorldView-2"
+        },
+        {
+          "id": "WorldView-3",
+          "label": "WorldView-3"
+        }
+      ]
+    },
+    {
+      "id": "SAR",
+      "label": "SAR",
+      "color": "#525252",
+      "tint": "#d9d9d9",
+      "rows": [
+        {
+          "id": "Capella-11",
+          "label": "Capella-11"
+        },
+        {
+          "id": "Capella-13",
+          "label": "Capella-13"
+        },
+        {
+          "id": "Capella-14",
+          "label": "Capella-14"
+        },
+        {
+          "id": "Capella-15",
+          "label": "Capella-15"
+        },
+        {
+          "id": "Capella-16",
+          "label": "Capella-16"
+        },
+        {
+          "id": "Capella-17",
+          "label": "Capella-17"
+        },
+        {
+          "id": "Capella-18",
+          "label": "Capella-18"
+        },
+        {
+          "id": "Capella-19",
+          "label": "Capella-19"
+        },
+        {
+          "id": "Capella-20",
+          "label": "Capella-20"
+        },
+        {
+          "id": "Sentinel-1",
+          "label": "Sentinel-1"
+        }
+      ]
+    }
+  ],
+  "grouping": "Phenomenology",
+  "alt_groupings": [
+    {
+      "id": "provider",
+      "label": "Provider",
+      "groups": [
+        {
+          "id": "Capella",
+          "label": "Capella",
+          "color": "#525252",
+          "tint": "#d9d9d9",
+          "rows": [
+            {
+              "id": "Capella-11",
+              "label": "Capella-11"
+            },
+            {
+              "id": "Capella-13",
+              "label": "Capella-13"
+            },
+            {
+              "id": "Capella-14",
+              "label": "Capella-14"
+            },
+            {
+              "id": "Capella-15",
+              "label": "Capella-15"
+            },
+            {
+              "id": "Capella-16",
+              "label": "Capella-16"
+            },
+            {
+              "id": "Capella-17",
+              "label": "Capella-17"
+            },
+            {
+              "id": "Capella-18",
+              "label": "Capella-18"
+            },
+            {
+              "id": "Capella-19",
+              "label": "Capella-19"
+            },
+            {
+              "id": "Capella-20",
+              "label": "Capella-20"
+            }
+          ]
+        },
+        {
+          "id": "Copernicus",
+          "label": "Copernicus",
+          "color": "#08519c",
+          "tint": "#c6dbef",
+          "rows": [
+            {
+              "id": "Sentinel-1",
+              "label": "Sentinel-1"
+            },
+            {
+              "id": "Sentinel-2",
+              "label": "Sentinel-2"
+            },
+            {
+              "id": "Sentinel-3 OLCI",
+              "label": "Sentinel-3 OLCI"
+            }
+          ]
+        },
+        {
+          "id": "Vantor",
+          "label": "Vantor",
+          "color": "#6a51a3",
+          "tint": "#dadaeb",
+          "rows": [
+            {
+              "id": "GeoEye-1",
+              "label": "GeoEye-1"
+            },
+            {
+              "id": "Legion-1",
+              "label": "Legion-1"
+            },
+            {
+              "id": "Legion-2",
+              "label": "Legion-2"
+            },
+            {
+              "id": "Legion-3",
+              "label": "Legion-3"
+            },
+            {
+              "id": "Legion-4",
+              "label": "Legion-4"
+            },
+            {
+              "id": "Legion-5",
+              "label": "Legion-5"
+            },
+            {
+              "id": "Legion-6",
+              "label": "Legion-6"
+            },
+            {
+              "id": "WorldView-1",
+              "label": "WorldView-1"
+            },
+            {
+              "id": "WorldView-2",
+              "label": "WorldView-2"
+            },
+            {
+              "id": "WorldView-3",
+              "label": "WorldView-3"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "row": "Capella-19",
+      "start": "2026-11-07T04:21:52Z",
+      "end": "2026-11-07T04:24:45Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-19-67384-0423Z",
+      "norad": 67384,
+      "label": "CAPELLA-19 (ACADIA-9) pass",
+      "notes": "Highest 52\u00b0 at 0423Z (sun -6\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 67384, epoch 2026-11-04 14:25Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T04:23:18Z",
+        "elevation": 51.8,
+        "azimuth": 289.6,
+        "sun_elevation": -6.0,
+        "sun_azimuth": 108.3
+      }
+    },
+    {
+      "row": "Capella-18",
+      "start": "2026-11-07T04:36:45Z",
+      "end": "2026-11-07T04:38:22Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-18-67385-0437Z",
+      "norad": 67385,
+      "label": "CAPELLA-18 (ACADIA-8) pass",
+      "notes": "Highest 39\u00b0 at 0437Z (sun -4\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 67385, epoch 2026-11-04 17:54Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T04:37:33Z",
+        "elevation": 38.7,
+        "azimuth": 292.2,
+        "sun_elevation": -3.8,
+        "sun_azimuth": 111.0
+      }
+    },
+    {
+      "row": "Capella-13",
+      "start": "2026-11-07T08:16:23Z",
+      "end": "2026-11-07T08:19:05Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-13-60419-0817Z",
+      "norad": 60419,
+      "label": "CAPELLA-13 (ACADIA-3) pass",
+      "notes": "Highest 47\u00b0 at 0817Z (sun 21\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 60419, epoch 2026-11-04 21:57Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T08:17:44Z",
+        "elevation": 46.9,
+        "azimuth": 146.8,
+        "sun_elevation": 20.8,
+        "sun_azimuth": 158.5
+      }
+    },
+    {
+      "row": "Sentinel-3 OLCI",
+      "start": "2026-11-07T08:22:39Z",
+      "end": "2026-11-07T08:25:09Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-3 OLCI-43437-0823Z",
+      "norad": 43437,
+      "label": "SENTINEL-3B pass",
+      "notes": "Highest 67\u00b0 at 0823Z (sun 21\u00b0). Threshold 50\u00b0. Orbit: Celestrak NORAD 43437, epoch 2026-11-04 17:31Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T08:23:54Z",
+        "elevation": 67.3,
+        "azimuth": 102.8,
+        "sun_elevation": 21.1,
+        "sun_azimuth": 160.0
+      }
+    },
+    {
+      "row": "Capella-15",
+      "start": "2026-11-07T08:35:48Z",
+      "end": "2026-11-07T08:39:05Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-15-60544-0837Z",
+      "norad": 60544,
+      "label": "CAPELLA-15 (ACADIA-5) pass",
+      "notes": "Highest 66\u00b0 at 0837Z (sun 22\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 60544, epoch 2026-11-04 22:06Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T08:37:26Z",
+        "elevation": 66.1,
+        "azimuth": 101.7,
+        "sun_elevation": 21.8,
+        "sun_azimuth": 163.4
+      }
+    },
+    {
+      "row": "GeoEye-1",
+      "start": "2026-11-07T08:43:27Z",
+      "end": "2026-11-07T08:46:22Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "GeoEye-1-33331-0844Z",
+      "norad": 33331,
+      "label": "GEOEYE 1 pass",
+      "notes": "Highest 60\u00b0 at 0844Z (sun 22\u00b0). Threshold 40\u00b0. Orbit: Celestrak NORAD 33331, epoch 2026-11-04 21:08Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T08:44:54Z",
+        "elevation": 59.8,
+        "azimuth": 101.2,
+        "sun_elevation": 22.1,
+        "sun_azimuth": 165.3
+      }
+    },
+    {
+      "row": "WorldView-3",
+      "start": "2026-11-07T08:45:14Z",
+      "end": "2026-11-07T08:47:48Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "WorldView-3-40115-0846Z",
+      "norad": 40115,
+      "label": "WORLDVIEW-3 (WV-3) pass",
+      "notes": "Highest 58\u00b0 at 0846Z (sun 22\u00b0). Threshold 40\u00b0. Orbit: Celestrak NORAD 40115, epoch 2026-11-04 21:59Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T08:46:32Z",
+        "elevation": 58.1,
+        "azimuth": 101.0,
+        "sun_elevation": 22.2,
+        "sun_azimuth": 165.7
+      }
+    },
+    {
+      "row": "Sentinel-3 OLCI",
+      "start": "2026-11-07T09:00:59Z",
+      "end": "2026-11-07T09:03:13Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-3 OLCI-41335-0902Z",
+      "norad": 41335,
+      "label": "SENTINEL-3A pass",
+      "notes": "Highest 62\u00b0 at 0902Z (sun 23\u00b0). Threshold 50\u00b0. Orbit: Celestrak NORAD 41335, epoch 2026-11-04 21:31Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T09:02:06Z",
+        "elevation": 62.4,
+        "azimuth": 290.3,
+        "sun_elevation": 22.7,
+        "sun_azimuth": 169.7
+      }
+    },
+    {
+      "row": "Legion-1",
+      "start": "2026-11-07T09:04:21Z",
+      "end": "2026-11-07T09:06:41Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Legion-1-59625-0905Z",
+      "norad": 59625,
+      "label": "LEGION 1 pass",
+      "notes": "Highest 64\u00b0 at 0905Z (sun 23\u00b0). Threshold 40\u00b0. Orbit: Celestrak NORAD 59625, epoch 2026-11-04 21:58Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T09:05:31Z",
+        "elevation": 64.2,
+        "azimuth": 101.6,
+        "sun_elevation": 22.8,
+        "sun_azimuth": 170.6
+      }
+    },
+    {
+      "row": "Sentinel-2",
+      "start": "2026-11-07T09:06:00Z",
+      "end": "2026-11-07T09:06:41Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-2-42063-0906Z",
+      "norad": 42063,
+      "label": "SENTINEL-2B pass",
+      "notes": "Highest 85\u00b0 at 0906Z (sun 23\u00b0). Threshold 78\u00b0. Orbit: Celestrak NORAD 42063, epoch 2026-11-04 21:45Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T09:06:20Z",
+        "elevation": 85.1,
+        "azimuth": 104.7,
+        "sun_elevation": 22.8,
+        "sun_azimuth": 170.8
+      }
+    },
+    {
+      "row": "Sentinel-2",
+      "start": "2026-11-07T09:16:08Z",
+      "end": "2026-11-07T09:16:37Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-2-40697-0916Z",
+      "norad": 40697,
+      "label": "SENTINEL-2A pass",
+      "notes": "Highest 81\u00b0 at 0916Z (sun 23\u00b0). Threshold 78\u00b0. Orbit: Celestrak NORAD 40697, epoch 2026-11-04 21:55Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T09:16:22Z",
+        "elevation": 81.0,
+        "azimuth": 287.2,
+        "sun_elevation": 23.0,
+        "sun_azimuth": 173.4
+      }
+    },
+    {
+      "row": "WorldView-2",
+      "start": "2026-11-07T09:26:58Z",
+      "end": "2026-11-07T09:30:08Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "WorldView-2-35946-0928Z",
+      "norad": 35946,
+      "label": "WORLDVIEW-2 (WV-2) pass",
+      "notes": "Highest 58\u00b0 at 0928Z (sun 23\u00b0). Threshold 40\u00b0. Orbit: Celestrak NORAD 35946, epoch 2026-11-04 22:26Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T09:28:33Z",
+        "elevation": 58.4,
+        "azimuth": 290.6,
+        "sun_elevation": 23.2,
+        "sun_azimuth": 176.6
+      }
+    },
+    {
+      "row": "Capella-16",
+      "start": "2026-11-07T09:32:05Z",
+      "end": "2026-11-07T09:34:40Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-16-65318-0933Z",
+      "norad": 65318,
+      "label": "CAPELLA-16 (ACADIA-6) pass",
+      "notes": "Highest 49\u00b0 at 0933Z (sun 23\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 65318, epoch 2026-11-04 21:33Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T09:33:23Z",
+        "elevation": 48.8,
+        "azimuth": 289.7,
+        "sun_elevation": 23.2,
+        "sun_azimuth": 177.9
+      }
+    },
+    {
+      "row": "Legion-2",
+      "start": "2026-11-07T09:50:25Z",
+      "end": "2026-11-07T09:50:45Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Legion-2-59626-0950Z",
+      "norad": 59626,
+      "label": "LEGION 2 pass",
+      "notes": "Highest 40\u00b0 at 0950Z (sun 23\u00b0). Threshold 40\u00b0. Orbit: Celestrak NORAD 59626, epoch 2026-11-04 21:08Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T09:50:35Z",
+        "elevation": 40.3,
+        "azimuth": 290.3,
+        "sun_elevation": 23.2,
+        "sun_azimuth": 182.4
+      }
+    },
+    {
+      "row": "Capella-13",
+      "start": "2026-11-07T09:56:41Z",
+      "end": "2026-11-07T10:00:17Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-13-60419-0958Z",
+      "norad": 60419,
+      "label": "CAPELLA-13 (ACADIA-3) pass",
+      "notes": "Highest 72\u00b0 at 0958Z (sun 23\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 60419, epoch 2026-11-04 21:57Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T09:58:29Z",
+        "elevation": 71.9,
+        "azimuth": 347.0,
+        "sun_elevation": 23.1,
+        "sun_azimuth": 184.4
+      }
+    },
+    {
+      "row": "Capella-17",
+      "start": "2026-11-07T11:23:00Z",
+      "end": "2026-11-07T11:26:09Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-17-64583-1124Z",
+      "norad": 64583,
+      "label": "CAPELLA-17 (ACADIA-7) pass",
+      "notes": "Highest 61\u00b0 at 1124Z (sun 20\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 64583, epoch 2026-11-04 18:28Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T11:24:35Z",
+        "elevation": 61.0,
+        "azimuth": 101.3,
+        "sun_elevation": 19.5,
+        "sun_azimuth": 206.3
+      }
+    },
+    {
+      "row": "Capella-13",
+      "start": "2026-11-07T11:37:52Z",
+      "end": "2026-11-07T11:41:21Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-13-60419-1139Z",
+      "norad": 60419,
+      "label": "CAPELLA-13 (ACADIA-3) pass",
+      "notes": "Highest 66\u00b0 at 1139Z (sun 18\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 60419, epoch 2026-11-04 21:57Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T11:39:36Z",
+        "elevation": 65.6,
+        "azimuth": 8.4,
+        "sun_elevation": 18.4,
+        "sun_azimuth": 209.9
+      }
+    },
+    {
+      "row": "Capella-13",
+      "start": "2026-11-07T13:18:48Z",
+      "end": "2026-11-07T13:22:10Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-13-60419-1320Z",
+      "norad": 60419,
+      "label": "CAPELLA-13 (ACADIA-3) pass",
+      "notes": "Highest 61\u00b0 at 1320Z (sun 8\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 60419, epoch 2026-11-04 21:57Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T13:20:29Z",
+        "elevation": 60.7,
+        "azimuth": 209.1,
+        "sun_elevation": 7.9,
+        "sun_azimuth": 232.2
+      }
+    },
+    {
+      "row": "Capella-19",
+      "start": "2026-11-07T15:20:03Z",
+      "end": "2026-11-07T15:21:31Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-19-67384-1520Z",
+      "norad": 67384,
+      "label": "CAPELLA-19 (ACADIA-9) pass",
+      "notes": "Highest 38\u00b0 at 1520Z (sun -9\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 67384, epoch 2026-11-04 14:25Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T15:20:47Z",
+        "elevation": 37.9,
+        "azimuth": 262.8,
+        "sun_elevation": -9.3,
+        "sun_azimuth": 255.5
+      }
+    },
+    {
+      "row": "Sentinel-1",
+      "start": "2026-11-07T15:41:29Z",
+      "end": "2026-11-07T15:43:43Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-1-39634-1542Z",
+      "norad": 39634,
+      "label": "SENTINEL-1A pass",
+      "notes": "Highest 56\u00b0 at 1542Z (sun -13\u00b0). Threshold 44\u201361\u00b0. Orbit: Celestrak NORAD 39634, epoch 2026-11-04 23:19Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T15:42:36Z",
+        "elevation": 55.6,
+        "azimuth": 259.3,
+        "sun_elevation": -12.7,
+        "sun_azimuth": 259.6
+      }
+    },
+    {
+      "row": "Sentinel-1",
+      "start": "2026-11-07T15:53:10Z",
+      "end": "2026-11-07T15:53:41Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-1-62261-1553Z",
+      "norad": 62261,
+      "label": "SENTINEL-1C pass",
+      "notes": "Highest 44\u00b0 at 1553Z (sun -14\u00b0). Threshold 44\u201361\u00b0. Orbit: Celestrak NORAD 62261, epoch 2026-11-04 23:28Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T15:53:25Z",
+        "elevation": 44.5,
+        "azimuth": 261.5,
+        "sun_elevation": -14.4,
+        "sun_azimuth": 261.6
+      }
+    },
+    {
+      "row": "Capella-14",
+      "start": "2026-11-07T16:06:38Z",
+      "end": "2026-11-07T16:08:43Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-14-59444-1607Z",
+      "norad": 59444,
+      "label": "CAPELLA-14 (ACADIA-4) pass",
+      "notes": "Highest 42\u00b0 at 1607Z (sun -17\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 59444, epoch 2026-11-04 20:50Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T16:07:40Z",
+        "elevation": 42.5,
+        "azimuth": 183.6,
+        "sun_elevation": -16.7,
+        "sun_azimuth": 264.3
+      }
+    },
+    {
+      "row": "Capella-11",
+      "start": "2026-11-07T19:13:08Z",
+      "end": "2026-11-07T19:16:28Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-11-57693-1914Z",
+      "norad": 57693,
+      "label": "CAPELLA-11 (ACADIA-1) pass",
+      "notes": "Highest 61\u00b0 at 1914Z (sun -45\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 57693, epoch 2026-11-04 05:34Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T19:14:48Z",
+        "elevation": 61.1,
+        "azimuth": 358.1,
+        "sun_elevation": -45.1,
+        "sun_azimuth": 305.8
+      }
+    },
+    {
+      "row": "Capella-16",
+      "start": "2026-11-07T20:26:20Z",
+      "end": "2026-11-07T20:27:59Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Capella-16-65318-2027Z",
+      "norad": 65318,
+      "label": "CAPELLA-16 (ACADIA-6) pass",
+      "notes": "Highest 39\u00b0 at 2027Z (sun -53\u00b0). Threshold 35\u201375\u00b0. Orbit: Celestrak NORAD 65318, epoch 2026-11-04 21:33Z, fetched 2026-11-05T13:10:40Z.",
+      "pass": {
+        "peak": "2026-11-07T20:27:09Z",
+        "elevation": 39.2,
+        "azimuth": 262.4,
+        "sun_elevation": -52.9,
+        "sun_azimuth": 329.5
+      }
+    }
+  ],
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint"
+    },
+    "Collected": {
+      "fill": "tint"
+    },
+    "High": {
+      "fill": "tint"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "tint"
+    },
+    "No Concern": {
+      "fill": "tint"
+    }
+  },
+  "icod_ageing": {
+    "ageing_after_hours": 30,
+    "stale_after_hours": 54
+  },
+  "seclabs": {
+    "labels": [
+      {
+        "name": "UNCLASSIFIED",
+        "color": "#1a9850",
+        "text_color": "#ffffff"
+      }
+    ],
+    "ceiling": "UNCLASSIFIED"
+  },
+  "daylight": {
+    "step_minutes": 10,
+    "elevations": [
+      -45.9,
+      -44.6,
+      -43.3,
+      -42.0,
+      -40.6,
+      -39.1,
+      -37.7,
+      -36.2,
+      -34.7,
+      -33.2,
+      -31.6,
+      -30.1,
+      -28.5,
+      -26.9,
+      -25.4,
+      -23.8,
+      -22.2,
+      -20.6,
+      -19.0,
+      -17.4,
+      -15.8,
+      -14.3,
+      -12.7,
+      -11.1,
+      -9.6,
+      -8.0,
+      -6.5,
+      -5.0,
+      -3.4,
+      -1.9,
+      -0.1,
+      1.2,
+      2.5,
+      3.8,
+      5.1,
+      6.4,
+      7.6,
+      8.9,
+      10.1,
+      11.2,
+      12.4,
+      13.4,
+      14.5,
+      15.5,
+      16.4,
+      17.3,
+      18.1,
+      18.9,
+      19.7,
+      20.3,
+      20.9,
+      21.4,
+      21.9,
+      22.3,
+      22.6,
+      22.9,
+      23.1,
+      23.2,
+      23.3,
+      23.2,
+      23.1,
+      23.0,
+      22.7,
+      22.4,
+      22.0,
+      21.6,
+      21.0,
+      20.5,
+      19.8,
+      19.1,
+      18.3,
+      17.5,
+      16.6,
+      15.7,
+      14.7,
+      13.7,
+      12.6,
+      11.5,
+      10.4,
+      9.2,
+      7.9,
+      6.7,
+      5.4,
+      4.1,
+      2.8,
+      1.5,
+      0.2,
+      -1.5,
+      -3.1,
+      -4.6,
+      -6.1,
+      -7.7,
+      -9.2,
+      -10.7,
+      -12.3,
+      -13.9,
+      -15.5,
+      -17.0,
+      -18.6,
+      -20.2,
+      -21.8,
+      -23.4,
+      -25.0,
+      -26.6,
+      -28.2,
+      -29.8,
+      -31.3,
+      -32.9,
+      -34.4,
+      -35.9,
+      -37.4,
+      -38.9,
+      -40.3,
+      -41.7,
+      -43.1,
+      -44.4,
+      -45.7,
+      -47.0,
+      -48.2,
+      -49.3,
+      -50.4,
+      -51.4,
+      -52.3,
+      -53.1,
+      -53.8,
+      -54.5,
+      -55.0,
+      -55.4,
+      -55.7,
+      -55.9,
+      -56.0,
+      -56.0,
+      -55.8,
+      -55.6,
+      -55.2,
+      -54.7,
+      -54.1,
+      -53.4,
+      -52.6,
+      -51.7,
+      -50.7,
+      -49.7,
+      -48.6,
+      -47.4,
+      -46.2
+    ],
+    "sun": {
+      "dawn": "2026-11-07T04:23:11Z",
+      "sunrise": "2026-11-07T04:58:50Z",
+      "sunset": "2026-11-07T14:23:34Z",
+      "dusk": "2026-11-07T14:59:12Z"
+    }
+  },
+  "markers": [],
+  "banners": [],
+  "label": "Abstracted Sync Matrix",
+  "rules": {
+    "GeoEye-1": {
+      "min_elevation": 40,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "Legion-1": {
+      "min_elevation": 40,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "Legion-2": {
+      "min_elevation": 40,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "Legion-3": {
+      "min_elevation": 40,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "Legion-4": {
+      "min_elevation": 40,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "Legion-5": {
+      "min_elevation": 40,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "Legion-6": {
+      "min_elevation": 40,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "Sentinel-2": {
+      "min_elevation": 78,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "Sentinel-3 OLCI": {
+      "min_elevation": 50,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "WorldView-1": {
+      "min_elevation": 40,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "WorldView-2": {
+      "min_elevation": 40,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "WorldView-3": {
+      "min_elevation": 40,
+      "needs_daylight": true,
+      "group": "EO"
+    },
+    "Capella-11": {
+      "min_elevation": 35,
+      "max_elevation": 75,
+      "group": "SAR"
+    },
+    "Capella-13": {
+      "min_elevation": 35,
+      "max_elevation": 75,
+      "group": "SAR"
+    },
+    "Capella-14": {
+      "min_elevation": 35,
+      "max_elevation": 75,
+      "group": "SAR"
+    },
+    "Capella-15": {
+      "min_elevation": 35,
+      "max_elevation": 75,
+      "group": "SAR"
+    },
+    "Capella-16": {
+      "min_elevation": 35,
+      "max_elevation": 75,
+      "group": "SAR"
+    },
+    "Capella-17": {
+      "min_elevation": 35,
+      "max_elevation": 75,
+      "group": "SAR"
+    },
+    "Capella-18": {
+      "min_elevation": 35,
+      "max_elevation": 75,
+      "group": "SAR"
+    },
+    "Capella-19": {
+      "min_elevation": 35,
+      "max_elevation": 75,
+      "group": "SAR"
+    },
+    "Capella-20": {
+      "min_elevation": 35,
+      "max_elevation": 75,
+      "group": "SAR"
+    },
+    "Sentinel-1": {
+      "min_elevation": 44,
+      "max_elevation": 61,
+      "group": "SAR"
+    }
+  }
+}
