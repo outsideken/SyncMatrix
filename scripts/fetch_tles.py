@@ -13,6 +13,7 @@ Committing the snapshot makes the predicted library reproducible.
     python scripts/fetch_tles.py
 """
 
+import http.client
 import json
 import sys
 import time
@@ -33,7 +34,12 @@ def norads() -> list:
 
 
 def get(url: str, tries: int = 4) -> str:
-    """GET with a few retries: Celestrak sometimes answers 5xx or times out for a moment."""
+    """GET with a few retries: Celestrak sometimes answers 5xx or times out for a moment.
+
+    urllib wraps only connection-phase failures in URLError. A server that accepts
+    the connection and then goes quiet raises a bare TimeoutError (or a reset /
+    truncated reply) while the status line or body is read, so those are retried too.
+    """
     request = urllib.request.Request(url, headers={"User-Agent": "SyncMatrix/1 (fetch_tles.py)"})
     for attempt in range(1, tries + 1):
         try:
@@ -42,7 +48,7 @@ def get(url: str, tries: int = 4) -> str:
         except urllib.error.HTTPError as err:
             if err.code < 500 or attempt == tries:
                 raise
-        except urllib.error.URLError:
+        except (OSError, http.client.HTTPException):  # URLError, TimeoutError, resets, truncated replies
             if attempt == tries:
                 raise
         print("  retrying %s (attempt %d of %d)" % (url, attempt + 1, tries))
