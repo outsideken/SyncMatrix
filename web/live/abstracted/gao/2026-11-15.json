@@ -1,0 +1,541 @@
+{
+  "version": 1,
+  "title": "Abstracted Sync Matrix",
+  "subtitle": "Gao \u00b7 15 November 2026",
+  "icod": "2026-11-13T13:04:39Z",
+  "icod_source": "celestrak",
+  "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-13T1304Z.json), computed with Skyfield",
+  "provenance": {
+    "all": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-13T1304Z.json), computed with Skyfield",
+      "icod": "2026-11-13T13:04:39Z",
+      "icod_source": "celestrak"
+    },
+    "IR": {
+      "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-13T1304Z.json), computed with Skyfield",
+      "icod": "2026-11-13T13:04:39Z",
+      "icod_source": "celestrak",
+      "notes": "11 predicted passes from 7 of 7 configured satellites"
+    }
+  },
+  "generated": "2026-11-13T13:06:20Z",
+  "locality": {
+    "id": "gao",
+    "name": "Gao",
+    "lon": -0.0444,
+    "lat": 16.2717,
+    "timezone": "Africa/Bamako",
+    "point": "POINT(-0.0444 16.2717)"
+  },
+  "window": {
+    "start": "2026-11-15T00:00:00Z",
+    "end": "2026-11-16T00:00:00Z",
+    "tick_minutes": 30
+  },
+  "groups": [
+    {
+      "id": "IR",
+      "label": "IR",
+      "color": "#cb181d",
+      "tint": "#fcbba1",
+      "rows": [
+        {
+          "id": "Aqua MODIS",
+          "label": "Aqua MODIS"
+        },
+        {
+          "id": "NOAA-20 VIIRS",
+          "label": "NOAA-20 VIIRS"
+        },
+        {
+          "id": "NOAA-21 VIIRS",
+          "label": "NOAA-21 VIIRS"
+        },
+        {
+          "id": "S-NPP VIIRS",
+          "label": "S-NPP VIIRS"
+        },
+        {
+          "id": "Sentinel-3 SLSTR",
+          "label": "Sentinel-3 SLSTR"
+        },
+        {
+          "id": "Terra MODIS",
+          "label": "Terra MODIS"
+        }
+      ]
+    }
+  ],
+  "grouping": "Phenomenology",
+  "alt_groupings": [
+    {
+      "id": "provider",
+      "label": "Provider",
+      "groups": [
+        {
+          "id": "Copernicus",
+          "label": "Copernicus",
+          "color": "#08519c",
+          "tint": "#c6dbef",
+          "rows": [
+            {
+              "id": "Sentinel-3 SLSTR",
+              "label": "Sentinel-3 SLSTR"
+            }
+          ]
+        },
+        {
+          "id": "NASA FIRMS",
+          "label": "NASA FIRMS",
+          "color": "#cb181d",
+          "tint": "#fcbba1",
+          "rows": [
+            {
+              "id": "Aqua MODIS",
+              "label": "Aqua MODIS"
+            },
+            {
+              "id": "NOAA-20 VIIRS",
+              "label": "NOAA-20 VIIRS"
+            },
+            {
+              "id": "NOAA-21 VIIRS",
+              "label": "NOAA-21 VIIRS"
+            },
+            {
+              "id": "S-NPP VIIRS",
+              "label": "S-NPP VIIRS"
+            },
+            {
+              "id": "Terra MODIS",
+              "label": "Terra MODIS"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "row": "NOAA-21 VIIRS",
+      "start": "2026-11-15T01:00:56Z",
+      "end": "2026-11-15T01:07:23Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "NOAA-21 VIIRS-54234-0104Z",
+      "norad": 54234,
+      "label": "NOAA 21 (JPSS-2) pass",
+      "notes": "Highest 40\u00b0 at 0104Z (sun -71\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 54234, epoch 2026-11-13 06:00Z, fetched 2026-11-13T13:04:39Z.",
+      "pass": {
+        "peak": "2026-11-15T01:04:09Z",
+        "elevation": 39.5,
+        "azimuth": 100.8,
+        "sun_elevation": -70.9,
+        "sun_azimuth": 99.4
+      }
+    },
+    {
+      "row": "S-NPP VIIRS",
+      "start": "2026-11-15T01:37:36Z",
+      "end": "2026-11-15T01:45:10Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "S-NPP VIIRS-37849-0141Z",
+      "norad": 37849,
+      "label": "SUOMI NPP pass",
+      "notes": "Highest 73\u00b0 at 0141Z (sun -62\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 37849, epoch 2026-11-13 06:37Z, fetched 2026-11-13T13:04:39Z.",
+      "pass": {
+        "peak": "2026-11-15T01:41:24Z",
+        "elevation": 73.0,
+        "azimuth": 102.5,
+        "sun_elevation": -62.1,
+        "sun_azimuth": 98.8
+      }
+    },
+    {
+      "row": "NOAA-20 VIIRS",
+      "start": "2026-11-15T01:57:30Z",
+      "end": "2026-11-15T02:04:45Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "NOAA-20 VIIRS-43013-0201Z",
+      "norad": 43013,
+      "label": "NOAA 20 (JPSS-1) pass",
+      "notes": "Highest 56\u00b0 at 0201Z (sun -57\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 43013, epoch 2026-11-13 06:57Z, fetched 2026-11-13T13:04:39Z.",
+      "pass": {
+        "peak": "2026-11-15T02:01:08Z",
+        "elevation": 56.1,
+        "azimuth": 284.2,
+        "sun_elevation": -57.4,
+        "sun_azimuth": 98.9
+      }
+    },
+    {
+      "row": "Aqua MODIS",
+      "start": "2026-11-15T03:59:50Z",
+      "end": "2026-11-15T04:05:17Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Aqua MODIS-27424-0402Z",
+      "norad": 27424,
+      "label": "AQUA pass",
+      "notes": "Highest 83\u00b0 at 0402Z (sun -29\u00b0). Threshold 25\u00b0. Orbit: Celestrak NORAD 27424, epoch 2026-11-13 05:53Z, fetched 2026-11-13T13:04:39Z.",
+      "pass": {
+        "peak": "2026-11-15T04:02:33Z",
+        "elevation": 82.7,
+        "azimuth": 282.4,
+        "sun_elevation": -28.8,
+        "sun_azimuth": 102.5
+      }
+    },
+    {
+      "row": "Terra MODIS",
+      "start": "2026-11-15T09:01:46Z",
+      "end": "2026-11-15T09:06:30Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Terra MODIS-25994-0904Z",
+      "norad": 25994,
+      "label": "TERRA pass",
+      "notes": "Highest 47\u00b0 at 0904Z (sun 37\u00b0). Threshold 25\u00b0. Orbit: Celestrak NORAD 25994, epoch 2026-11-13 05:40Z, fetched 2026-11-13T13:04:39Z.",
+      "pass": {
+        "peak": "2026-11-15T09:04:08Z",
+        "elevation": 46.5,
+        "azimuth": 283.4,
+        "sun_elevation": 37.4,
+        "sun_azimuth": 129.7
+      }
+    },
+    {
+      "row": "Sentinel-3 SLSTR",
+      "start": "2026-11-15T10:05:21Z",
+      "end": "2026-11-15T10:08:41Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-3 SLSTR-43437-1007Z",
+      "norad": 43437,
+      "label": "SENTINEL-3B pass",
+      "notes": "Highest 81\u00b0 at 1007Z (sun 48\u00b0). Threshold 45\u00b0. Orbit: Celestrak NORAD 43437, epoch 2026-11-13 03:29Z, fetched 2026-11-13T13:04:39Z.",
+      "pass": {
+        "peak": "2026-11-15T10:07:01Z",
+        "elevation": 81.0,
+        "azimuth": 102.3,
+        "sun_elevation": 47.7,
+        "sun_azimuth": 144.4
+      }
+    },
+    {
+      "row": "S-NPP VIIRS",
+      "start": "2026-11-15T12:48:04Z",
+      "end": "2026-11-15T12:53:49Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "S-NPP VIIRS-37849-1250Z",
+      "norad": 37849,
+      "label": "SUOMI NPP pass",
+      "notes": "Highest 33\u00b0 at 1250Z (sun 52\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 37849, epoch 2026-11-13 06:37Z, fetched 2026-11-13T13:04:39Z.",
+      "pass": {
+        "peak": "2026-11-15T12:50:57Z",
+        "elevation": 33.1,
+        "azimuth": 74.2,
+        "sun_elevation": 51.6,
+        "sun_azimuth": 205.7
+      }
+    },
+    {
+      "row": "NOAA-20 VIIRS",
+      "start": "2026-11-15T13:06:54Z",
+      "end": "2026-11-15T13:14:23Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "NOAA-20 VIIRS-43013-1310Z",
+      "norad": 43013,
+      "label": "NOAA 20 (JPSS-1) pass",
+      "notes": "Highest 67\u00b0 at 1310Z (sun 49\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 43013, epoch 2026-11-13 06:57Z, fetched 2026-11-13T13:04:39Z.",
+      "pass": {
+        "peak": "2026-11-15T13:10:38Z",
+        "elevation": 67.0,
+        "azimuth": 76.3,
+        "sun_elevation": 49.3,
+        "sun_azimuth": 212.1
+      }
+    },
+    {
+      "row": "NOAA-21 VIIRS",
+      "start": "2026-11-15T13:50:54Z",
+      "end": "2026-11-15T13:56:35Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "NOAA-21 VIIRS-54234-1353Z",
+      "norad": 54234,
+      "label": "NOAA 21 (JPSS-2) pass",
+      "notes": "Highest 32\u00b0 at 1353Z (sun 43\u00b0). Threshold 20\u00b0. Orbit: Celestrak NORAD 54234, epoch 2026-11-13 06:00Z, fetched 2026-11-13T13:04:39Z.",
+      "pass": {
+        "peak": "2026-11-15T13:53:44Z",
+        "elevation": 32.4,
+        "azimuth": 259.7,
+        "sun_elevation": 42.9,
+        "sun_azimuth": 223.6
+      }
+    },
+    {
+      "row": "Terra MODIS",
+      "start": "2026-11-15T19:52:51Z",
+      "end": "2026-11-15T19:56:52Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Terra MODIS-25994-1954Z",
+      "norad": 25994,
+      "label": "TERRA pass",
+      "notes": "Highest 37\u00b0 at 1954Z (sun -35\u00b0). Threshold 25\u00b0. Orbit: Celestrak NORAD 25994, epoch 2026-11-13 05:40Z, fetched 2026-11-13T13:04:39Z.",
+      "pass": {
+        "peak": "2026-11-15T19:54:52Z",
+        "elevation": 36.8,
+        "azimuth": 75.9,
+        "sun_elevation": -35.3,
+        "sun_azimuth": 258.4
+      }
+    },
+    {
+      "row": "Sentinel-3 SLSTR",
+      "start": "2026-11-15T21:49:37Z",
+      "end": "2026-11-15T21:52:59Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "id": "Sentinel-3 SLSTR-41335-2151Z",
+      "norad": 41335,
+      "label": "SENTINEL-3A pass",
+      "notes": "Highest 88\u00b0 at 2151Z (sun -63\u00b0). Threshold 45\u00b0. Orbit: Celestrak NORAD 41335, epoch 2026-11-13 05:49Z, fetched 2026-11-13T13:04:39Z.",
+      "pass": {
+        "peak": "2026-11-15T21:51:18Z",
+        "elevation": 88.3,
+        "azimuth": 256.7,
+        "sun_elevation": -62.9,
+        "sun_azimuth": 260.7
+      }
+    }
+  ],
+  "status_styles": {
+    "Predicted": {
+      "fill": "tint"
+    },
+    "Collected": {
+      "fill": "tint"
+    },
+    "High": {
+      "fill": "tint"
+    },
+    "Moderate": {
+      "fill": "tint"
+    },
+    "Low": {
+      "fill": "tint"
+    },
+    "No Concern": {
+      "fill": "tint"
+    }
+  },
+  "icod_ageing": {
+    "ageing_after_hours": 30,
+    "stale_after_hours": 54
+  },
+  "seclabs": {
+    "labels": [
+      {
+        "name": "UNCLASSIFIED",
+        "color": "#1a9850",
+        "text_color": "#ffffff"
+      }
+    ],
+    "ceiling": "UNCLASSIFIED"
+  },
+  "daylight": {
+    "step_minutes": 10,
+    "elevations": [
+      -85.7,
+      -83.6,
+      -81.3,
+      -79.0,
+      -76.6,
+      -74.3,
+      -71.9,
+      -69.5,
+      -67.2,
+      -64.8,
+      -62.4,
+      -60.0,
+      -57.7,
+      -55.3,
+      -52.9,
+      -50.6,
+      -48.2,
+      -45.8,
+      -43.5,
+      -41.1,
+      -38.8,
+      -36.4,
+      -34.0,
+      -31.7,
+      -29.4,
+      -27.0,
+      -24.7,
+      -22.3,
+      -20.0,
+      -17.7,
+      -15.4,
+      -13.0,
+      -10.7,
+      -8.4,
+      -6.1,
+      -3.8,
+      -1.4,
+      1.1,
+      3.1,
+      5.3,
+      7.5,
+      9.7,
+      11.9,
+      14.1,
+      16.2,
+      18.4,
+      20.5,
+      22.6,
+      24.7,
+      26.8,
+      28.8,
+      30.8,
+      32.8,
+      34.7,
+      36.6,
+      38.4,
+      40.2,
+      42.0,
+      43.6,
+      45.2,
+      46.7,
+      48.1,
+      49.4,
+      50.6,
+      51.7,
+      52.7,
+      53.5,
+      54.2,
+      54.7,
+      55.0,
+      55.2,
+      55.2,
+      55.0,
+      54.6,
+      54.1,
+      53.4,
+      52.6,
+      51.7,
+      50.6,
+      49.3,
+      48.0,
+      46.6,
+      45.1,
+      43.5,
+      41.8,
+      40.1,
+      38.3,
+      36.5,
+      34.6,
+      32.7,
+      30.7,
+      28.7,
+      26.6,
+      24.6,
+      22.5,
+      20.4,
+      18.2,
+      16.1,
+      13.9,
+      11.7,
+      9.5,
+      7.4,
+      5.2,
+      3.0,
+      0.9,
+      -1.6,
+      -4.0,
+      -6.3,
+      -8.6,
+      -10.9,
+      -13.2,
+      -15.5,
+      -17.8,
+      -20.2,
+      -22.5,
+      -24.8,
+      -27.2,
+      -29.5,
+      -31.8,
+      -34.2,
+      -36.5,
+      -38.9,
+      -41.3,
+      -43.6,
+      -46.0,
+      -48.3,
+      -50.7,
+      -53.1,
+      -55.4,
+      -57.8,
+      -60.2,
+      -62.5,
+      -64.9,
+      -67.3,
+      -69.6,
+      -72.0,
+      -74.4,
+      -76.7,
+      -79.0,
+      -81.4,
+      -83.6,
+      -85.7,
+      -87.3,
+      -87.3,
+      -85.7
+    ],
+    "sun": {
+      "dawn": "2026-11-15T05:40:29Z",
+      "sunrise": "2026-11-15T06:03:36Z",
+      "sunset": "2026-11-15T17:25:41Z",
+      "dusk": "2026-11-15T17:48:48Z"
+    }
+  },
+  "markers": [],
+  "banners": [],
+  "label": "Abstracted Sync Matrix",
+  "rules": {
+    "Aqua MODIS": {
+      "min_elevation": 25,
+      "group": "IR"
+    },
+    "NOAA-20 VIIRS": {
+      "min_elevation": 20,
+      "group": "IR"
+    },
+    "NOAA-21 VIIRS": {
+      "min_elevation": 20,
+      "group": "IR"
+    },
+    "S-NPP VIIRS": {
+      "min_elevation": 20,
+      "group": "IR"
+    },
+    "Sentinel-3 SLSTR": {
+      "min_elevation": 45,
+      "group": "IR"
+    },
+    "Terra MODIS": {
+      "min_elevation": 25,
+      "group": "IR"
+    }
+  },
+  "rules_metadata": {
+    "rules_hash": "51c6d44fc23c",
+    "catalogue_version": "2026.11.04"
+  }
+}
