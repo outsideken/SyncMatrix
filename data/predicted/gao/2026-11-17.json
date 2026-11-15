@@ -1,0 +1,291 @@
+{
+  "locality": {
+    "name": "Gao",
+    "point": "POINT(-0.0444 16.2717)"
+  },
+  "evaluation_date": "2026-11-17",
+  "icod": "2026-11-15T12:42:48Z",
+  "icod_source": "celestrak",
+  "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-15T1242Z.json), computed with Skyfield",
+  "evaluated": {
+    "Aqua MODIS": [
+      27424
+    ],
+    "NOAA-20 VIIRS": [
+      43013
+    ],
+    "NOAA-21 VIIRS": [
+      54234
+    ],
+    "S-NPP VIIRS": [
+      37849
+    ],
+    "Sentinel-3 SLSTR": [
+      41335,
+      43437
+    ],
+    "Terra MODIS": [
+      25994
+    ]
+  },
+  "rules": {
+    "Aqua MODIS": {
+      "min_elevation": 25
+    },
+    "NOAA-20 VIIRS": {
+      "min_elevation": 20
+    },
+    "NOAA-21 VIIRS": {
+      "min_elevation": 20
+    },
+    "S-NPP VIIRS": {
+      "min_elevation": 20
+    },
+    "Sentinel-3 SLSTR": {
+      "min_elevation": 45
+    },
+    "Terra MODIS": {
+      "min_elevation": 25
+    }
+  },
+  "rules_metadata": {
+    "rules_hash": "51c6d44fc23c",
+    "catalogue_version": "2026.11.04"
+  },
+  "windows": [
+    {
+      "id": "S-NPP VIIRS-37849-0103Z",
+      "satellite": "S-NPP VIIRS",
+      "norad": 37849,
+      "start": "2026-11-17T01:01:31Z",
+      "end": "2026-11-17T01:06:09Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "SUOMI NPP pass",
+      "pass": {
+        "peak": "2026-11-17T01:03:50Z",
+        "elevation": 26.9,
+        "azimuth": 99.9,
+        "sun_elevation": -71.0,
+        "sun_azimuth": 101.0
+      },
+      "notes": "Highest 27° at 0103Z (sun -71°). Threshold 20°. Orbit: Celestrak NORAD 37849, epoch 2026-11-15 05:59Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "NOAA-20 VIIRS-43013-0123Z",
+      "satellite": "NOAA-20 VIIRS",
+      "norad": 43013,
+      "start": "2026-11-17T01:20:03Z",
+      "end": "2026-11-17T01:27:16Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "NOAA 20 (JPSS-1) pass",
+      "pass": {
+        "peak": "2026-11-17T01:23:39Z",
+        "elevation": 54.4,
+        "azimuth": 101.6,
+        "sun_elevation": -66.4,
+        "sun_azimuth": 100.2
+      },
+      "notes": "Highest 54° at 0123Z (sun -66°). Threshold 20°. Orbit: Celestrak NORAD 43013, epoch 2026-11-15 06:19Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "NOAA-21 VIIRS-54234-0206Z",
+      "satellite": "NOAA-21 VIIRS",
+      "norad": 54234,
+      "start": "2026-11-17T02:03:25Z",
+      "end": "2026-11-17T02:09:50Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "NOAA 21 (JPSS-2) pass",
+      "pass": {
+        "peak": "2026-11-17T02:06:38Z",
+        "elevation": 39.5,
+        "azimuth": 285.2,
+        "sun_elevation": -56.2,
+        "sun_azimuth": 99.9
+      },
+      "notes": "Highest 40° at 0206Z (sun -56°). Threshold 20°. Orbit: Celestrak NORAD 54234, epoch 2026-11-15 07:03Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "S-NPP VIIRS-37849-0243Z",
+      "satellite": "S-NPP VIIRS",
+      "norad": 37849,
+      "start": "2026-11-17T02:42:18Z",
+      "end": "2026-11-17T02:45:13Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "SUOMI NPP pass",
+      "pass": {
+        "peak": "2026-11-17T02:43:46Z",
+        "elevation": 22.4,
+        "azimuth": 287.1,
+        "sun_elevation": -47.4,
+        "sun_azimuth": 100.5
+      },
+      "notes": "Highest 22° at 0243Z (sun -47°). Threshold 20°. Orbit: Celestrak NORAD 37849, epoch 2026-11-15 05:59Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "Aqua MODIS-27424-0340Z",
+      "satellite": "Aqua MODIS",
+      "norad": 27424,
+      "start": "2026-11-17T03:37:55Z",
+      "end": "2026-11-17T03:42:47Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "AQUA pass",
+      "pass": {
+        "peak": "2026-11-17T03:40:21Z",
+        "elevation": 49.3,
+        "azimuth": 101.2,
+        "sun_elevation": -34.1,
+        "sun_azimuth": 102.2
+      },
+      "notes": "Highest 49° at 0340Z (sun -34°). Threshold 25°. Orbit: Celestrak NORAD 27424, epoch 2026-11-15 07:04Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "Terra MODIS-25994-0844Z",
+      "satellite": "Terra MODIS",
+      "norad": 25994,
+      "start": "2026-11-17T08:41:19Z",
+      "end": "2026-11-17T08:46:48Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "TERRA pass",
+      "pass": {
+        "peak": "2026-11-17T08:44:03Z",
+        "elevation": 86.1,
+        "azimuth": 282.5,
+        "sun_elevation": 33.2,
+        "sun_azimuth": 126.6
+      },
+      "notes": "Highest 86° at 0844Z (sun 33°). Threshold 25°. Orbit: Celestrak NORAD 25994, epoch 2026-11-15 07:18Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "Sentinel-3 SLSTR-41335-0953Z",
+      "satellite": "Sentinel-3 SLSTR",
+      "norad": 41335,
+      "start": "2026-11-17T09:52:16Z",
+      "end": "2026-11-17T09:54:47Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "SENTINEL-3A pass",
+      "pass": {
+        "peak": "2026-11-17T09:53:31Z",
+        "elevation": 56.9,
+        "azimuth": 101.6,
+        "sun_elevation": 45.3,
+        "sun_azimuth": 141.0
+      },
+      "notes": "Highest 57° at 0953Z (sun 45°). Threshold 45°. Orbit: Celestrak NORAD 41335, epoch 2026-11-15 06:37Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "NOAA-20 VIIRS-43013-1233Z",
+      "satellite": "NOAA-20 VIIRS",
+      "norad": 43013,
+      "start": "2026-11-17T12:31:13Z",
+      "end": "2026-11-17T12:35:19Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "NOAA 20 (JPSS-1) pass",
+      "pass": {
+        "peak": "2026-11-17T12:33:16Z",
+        "elevation": 25.2,
+        "azimuth": 73.3,
+        "sun_elevation": 52.8,
+        "sun_azimuth": 199.0
+      },
+      "notes": "Highest 25° at 1233Z (sun 53°). Threshold 20°. Orbit: Celestrak NORAD 43013, epoch 2026-11-15 06:19Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "NOAA-21 VIIRS-54234-1316Z",
+      "satellite": "NOAA-21 VIIRS",
+      "norad": 54234,
+      "start": "2026-11-17T13:12:21Z",
+      "end": "2026-11-17T13:19:59Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "NOAA 21 (JPSS-2) pass",
+      "pass": {
+        "peak": "2026-11-17T13:16:10Z",
+        "elevation": 87.3,
+        "azimuth": 257.8,
+        "sun_elevation": 48.2,
+        "sun_azimuth": 213.3
+      },
+      "notes": "Highest 87° at 1316Z (sun 48°). Threshold 20°. Orbit: Celestrak NORAD 54234, epoch 2026-11-15 07:03Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "S-NPP VIIRS-37849-1353Z",
+      "satellite": "S-NPP VIIRS",
+      "norad": 37849,
+      "start": "2026-11-17T13:49:55Z",
+      "end": "2026-11-17T13:56:53Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "SUOMI NPP pass",
+      "pass": {
+        "peak": "2026-11-17T13:53:24Z",
+        "elevation": 47.8,
+        "azimuth": 258.7,
+        "sun_elevation": 42.6,
+        "sun_azimuth": 223.0
+      },
+      "notes": "Highest 48° at 1353Z (sun 43°). Threshold 20°. Orbit: Celestrak NORAD 37849, epoch 2026-11-15 05:59Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "NOAA-20 VIIRS-43013-1413Z",
+      "satellite": "NOAA-20 VIIRS",
+      "norad": 43013,
+      "start": "2026-11-17T14:11:25Z",
+      "end": "2026-11-17T14:15:03Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "NOAA 20 (JPSS-1) pass",
+      "pass": {
+        "peak": "2026-11-17T14:13:14Z",
+        "elevation": 23.8,
+        "azimuth": 260.4,
+        "sun_elevation": 39.3,
+        "sun_azimuth": 227.3
+      },
+      "notes": "Highest 24° at 1413Z (sun 39°). Threshold 20°. Orbit: Celestrak NORAD 43013, epoch 2026-11-15 06:19Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "Aqua MODIS-27424-1607Z",
+      "satellite": "Aqua MODIS",
+      "norad": 27424,
+      "start": "2026-11-17T16:05:41Z",
+      "end": "2026-11-17T16:09:51Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "AQUA pass",
+      "pass": {
+        "peak": "2026-11-17T16:07:45Z",
+        "elevation": 38.4,
+        "azimuth": 259.4,
+        "sun_elevation": 16.5,
+        "sun_azimuth": 243.8
+      },
+      "notes": "Highest 38° at 1607Z (sun 16°). Threshold 25°. Orbit: Celestrak NORAD 27424, epoch 2026-11-15 07:04Z, fetched 2026-11-15T12:42:48Z."
+    },
+    {
+      "id": "Sentinel-3 SLSTR-43437-2201Z",
+      "satellite": "Sentinel-3 SLSTR",
+      "norad": 43437,
+      "start": "2026-11-17T21:59:32Z",
+      "end": "2026-11-17T22:02:39Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "SENTINEL-3B pass",
+      "pass": {
+        "peak": "2026-11-17T22:01:06Z",
+        "elevation": 69.6,
+        "azimuth": 257.9,
+        "sun_elevation": -65.1,
+        "sun_azimuth": 259.5
+      },
+      "notes": "Highest 70° at 2201Z (sun -65°). Threshold 45°. Orbit: Celestrak NORAD 43437, epoch 2026-11-15 04:18Z, fetched 2026-11-15T12:42:48Z."
+    }
+  ]
+}
