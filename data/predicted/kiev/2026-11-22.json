@@ -1,0 +1,665 @@
+{
+  "locality": {
+    "name": "Kiev",
+    "point": "POINT(30.5234 50.4501)"
+  },
+  "evaluation_date": "2026-11-22",
+  "icod": "2026-11-20T13:59:07Z",
+  "icod_source": "celestrak",
+  "source": "Predicted passes from Celestrak orbits (celestrak-2026-11-20T1359Z.json), computed with Skyfield",
+  "evaluated": {
+    "GeoEye-1": [
+      33331
+    ],
+    "Legion-1": [
+      59625
+    ],
+    "Legion-2": [
+      59626
+    ],
+    "Legion-3": [
+      60452
+    ],
+    "Legion-4": [
+      60453
+    ],
+    "Legion-5": [
+      62900
+    ],
+    "Legion-6": [
+      62901
+    ],
+    "Sentinel-2": [
+      40697,
+      42063,
+      60989
+    ],
+    "Sentinel-3 OLCI": [
+      41335,
+      43437
+    ],
+    "WorldView-1": [
+      32060
+    ],
+    "WorldView-2": [
+      35946
+    ],
+    "WorldView-3": [
+      40115
+    ],
+    "Capella-11": [
+      57693
+    ],
+    "Capella-13": [
+      60419
+    ],
+    "Capella-14": [
+      59444
+    ],
+    "Capella-15": [
+      60544
+    ],
+    "Capella-16": [
+      65318
+    ],
+    "Capella-17": [
+      64583
+    ],
+    "Capella-18": [
+      67385
+    ],
+    "Capella-19": [
+      67384
+    ],
+    "Capella-20": [
+      68485
+    ],
+    "Sentinel-1": [
+      39634,
+      62261,
+      66315
+    ]
+  },
+  "rules": {
+    "GeoEye-1": {
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-1": {
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-2": {
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-3": {
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-4": {
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-5": {
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Legion-6": {
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Sentinel-2": {
+      "min_elevation": 78,
+      "needs_daylight": true
+    },
+    "Sentinel-3 OLCI": {
+      "min_elevation": 50,
+      "needs_daylight": true
+    },
+    "WorldView-1": {
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "WorldView-2": {
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "WorldView-3": {
+      "min_elevation": 40,
+      "needs_daylight": true
+    },
+    "Capella-11": {
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-13": {
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-14": {
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-15": {
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-16": {
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-17": {
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-18": {
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-19": {
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Capella-20": {
+      "min_elevation": 35,
+      "max_elevation": 75
+    },
+    "Sentinel-1": {
+      "min_elevation": 44,
+      "max_elevation": 61
+    }
+  },
+  "rules_metadata": {
+    "rules_hash": "26968484e6f4",
+    "catalogue_version": "2026.11.04"
+  },
+  "windows": [
+    {
+      "id": "Capella-13-60419-0301Z",
+      "satellite": "Capella-13",
+      "norad": 60419,
+      "start": "2026-11-22T03:00:05Z",
+      "end": "2026-11-22T03:02:47Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-13 (ACADIA-3) pass",
+      "pass": {
+        "peak": "2026-11-22T03:01:26Z",
+        "elevation": 46.9,
+        "azimuth": 146.8,
+        "sun_elevation": -22.0,
+        "sun_azimuth": 95.3
+      },
+      "notes": "Highest 47° at 0301Z (sun -22°). Threshold 35–75°. Orbit: Celestrak NORAD 60419, epoch 2026-11-19 18:17Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-19-67384-0436Z",
+      "satellite": "Capella-19",
+      "norad": 67384,
+      "start": "2026-11-22T04:35:51Z",
+      "end": "2026-11-22T04:37:28Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-19 (ACADIA-9) pass",
+      "pass": {
+        "peak": "2026-11-22T04:36:40Z",
+        "elevation": 38.7,
+        "azimuth": 292.3,
+        "sun_elevation": -7.4,
+        "sun_azimuth": 112.8
+      },
+      "notes": "Highest 39° at 0436Z (sun -7°). Threshold 35–75°. Orbit: Celestrak NORAD 67384, epoch 2026-11-20 00:21Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-13-60419-0442Z",
+      "satellite": "Capella-13",
+      "norad": 60419,
+      "start": "2026-11-22T04:40:23Z",
+      "end": "2026-11-22T04:43:59Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-13 (ACADIA-3) pass",
+      "pass": {
+        "peak": "2026-11-22T04:42:11Z",
+        "elevation": 71.9,
+        "azimuth": 347.1,
+        "sun_elevation": -6.6,
+        "sun_azimuth": 113.8
+      },
+      "notes": "Highest 72° at 0442Z (sun -7°). Threshold 35–75°. Orbit: Celestrak NORAD 60419, epoch 2026-11-19 18:17Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Sentinel-1-62261-0508Z",
+      "satellite": "Sentinel-1",
+      "norad": 62261,
+      "start": "2026-11-22T05:07:18Z",
+      "end": "2026-11-22T05:09:02Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "SENTINEL-1C pass",
+      "pass": {
+        "peak": "2026-11-22T05:08:10Z",
+        "elevation": 50.0,
+        "azimuth": 291.2,
+        "sun_elevation": -2.8,
+        "sun_azimuth": 118.7
+      },
+      "notes": "Highest 50° at 0508Z (sun -3°). Threshold 44–61°. Orbit: Celestrak NORAD 62261, epoch 2026-11-20 06:28Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-13-60419-0623Z",
+      "satellite": "Capella-13",
+      "norad": 60419,
+      "start": "2026-11-22T06:21:33Z",
+      "end": "2026-11-22T06:25:03Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-13 (ACADIA-3) pass",
+      "pass": {
+        "peak": "2026-11-22T06:23:18Z",
+        "elevation": 65.6,
+        "azimuth": 8.3,
+        "sun_elevation": 6.9,
+        "sun_azimuth": 133.5
+      },
+      "notes": "Highest 66° at 0623Z (sun 7°). Threshold 35–75°. Orbit: Celestrak NORAD 60419, epoch 2026-11-19 18:17Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-13-60419-0804Z",
+      "satellite": "Capella-13",
+      "norad": 60419,
+      "start": "2026-11-22T08:02:30Z",
+      "end": "2026-11-22T08:05:51Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-13 (ACADIA-3) pass",
+      "pass": {
+        "peak": "2026-11-22T08:04:10Z",
+        "elevation": 60.7,
+        "azimuth": 209.1,
+        "sun_elevation": 16.1,
+        "sun_azimuth": 155.7
+      },
+      "notes": "Highest 61° at 0804Z (sun 16°). Threshold 35–75°. Orbit: Celestrak NORAD 60419, epoch 2026-11-19 18:17Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Sentinel-3 OLCI-43437-0835Z",
+      "satellite": "Sentinel-3 OLCI",
+      "norad": 43437,
+      "start": "2026-11-22T08:33:36Z",
+      "end": "2026-11-22T08:36:27Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "SENTINEL-3B pass",
+      "pass": {
+        "peak": "2026-11-22T08:35:01Z",
+        "elevation": 81.7,
+        "azimuth": 104.9,
+        "sun_elevation": 17.8,
+        "sun_azimuth": 163.0
+      },
+      "notes": "Highest 82° at 0835Z (sun 18°). Threshold 50°. Orbit: Celestrak NORAD 43437, epoch 2026-11-20 03:48Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "WorldView-2-35946-0835Z",
+      "satellite": "WorldView-2",
+      "norad": 35946,
+      "start": "2026-11-22T08:33:45Z",
+      "end": "2026-11-22T08:36:36Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "WORLDVIEW-2 (WV-2) pass",
+      "pass": {
+        "peak": "2026-11-22T08:35:10Z",
+        "elevation": 52.7,
+        "azimuth": 100.3,
+        "sun_elevation": 17.8,
+        "sun_azimuth": 163.1
+      },
+      "notes": "Highest 53° at 0835Z (sun 18°). Threshold 40°. Orbit: Celestrak NORAD 35946, epoch 2026-11-20 05:52Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-15-60544-0903Z",
+      "satellite": "Capella-15",
+      "norad": 60544,
+      "start": "2026-11-22T09:02:21Z",
+      "end": "2026-11-22T09:05:37Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-15 (ACADIA-5) pass",
+      "pass": {
+        "peak": "2026-11-22T09:03:59Z",
+        "elevation": 66.7,
+        "azimuth": 287.2,
+        "sun_elevation": 18.9,
+        "sun_azimuth": 170.1
+      },
+      "notes": "Highest 67° at 0903Z (sun 19°). Threshold 35–75°. Orbit: Celestrak NORAD 60544, epoch 2026-11-20 01:46Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Sentinel-2-60989-0906Z",
+      "satellite": "Sentinel-2",
+      "norad": 60989,
+      "start": "2026-11-22T09:05:58Z",
+      "end": "2026-11-22T09:06:39Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "SENTINEL-2C pass",
+      "pass": {
+        "peak": "2026-11-22T09:06:19Z",
+        "elevation": 85.1,
+        "azimuth": 105.9,
+        "sun_elevation": 18.9,
+        "sun_azimuth": 170.7
+      },
+      "notes": "Highest 85° at 0906Z (sun 19°). Threshold 78°. Orbit: Celestrak NORAD 60989, epoch 2026-11-20 04:28Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Sentinel-3 OLCI-41335-0913Z",
+      "satellite": "Sentinel-3 OLCI",
+      "norad": 41335,
+      "start": "2026-11-22T09:12:43Z",
+      "end": "2026-11-22T09:13:35Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "SENTINEL-3A pass",
+      "pass": {
+        "peak": "2026-11-22T09:13:09Z",
+        "elevation": 51.4,
+        "azimuth": 292.4,
+        "sun_elevation": 19.1,
+        "sun_azimuth": 172.3
+      },
+      "notes": "Highest 51° at 0913Z (sun 19°). Threshold 50°. Orbit: Celestrak NORAD 41335, epoch 2026-11-20 06:07Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Legion-2-59626-0917Z",
+      "satellite": "Legion-2",
+      "norad": 59626,
+      "start": "2026-11-22T09:16:43Z",
+      "end": "2026-11-22T09:19:16Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "LEGION 2 pass",
+      "pass": {
+        "peak": "2026-11-22T09:17:59Z",
+        "elevation": 87.4,
+        "azimuth": 103.6,
+        "sun_elevation": 19.2,
+        "sun_azimuth": 173.5
+      },
+      "notes": "Highest 87° at 0917Z (sun 19°). Threshold 40°. Orbit: Celestrak NORAD 59626, epoch 2026-11-20 06:03Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-16-65318-0919Z",
+      "satellite": "Capella-16",
+      "norad": 65318,
+      "start": "2026-11-22T09:17:36Z",
+      "end": "2026-11-22T09:20:49Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-16 (ACADIA-6) pass",
+      "pass": {
+        "peak": "2026-11-22T09:19:12Z",
+        "elevation": 68.1,
+        "azimuth": 286.8,
+        "sun_elevation": 19.2,
+        "sun_azimuth": 173.8
+      },
+      "notes": "Highest 68° at 0919Z (sun 19°). Threshold 35–75°. Orbit: Celestrak NORAD 65318, epoch 2026-11-20 05:21Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "WorldView-3-40115-0921Z",
+      "satellite": "WorldView-3",
+      "norad": 40115,
+      "start": "2026-11-22T09:20:04Z",
+      "end": "2026-11-22T09:22:51Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "WORLDVIEW-3 (WV-3) pass",
+      "pass": {
+        "peak": "2026-11-22T09:21:27Z",
+        "elevation": 65.1,
+        "azimuth": 287.5,
+        "sun_elevation": 19.3,
+        "sun_azimuth": 174.4
+      },
+      "notes": "Highest 65° at 0921Z (sun 19°). Threshold 40°. Orbit: Celestrak NORAD 40115, epoch 2026-11-20 06:38Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "GeoEye-1-33331-0925Z",
+      "satellite": "GeoEye-1",
+      "norad": 33331,
+      "start": "2026-11-22T09:24:27Z",
+      "end": "2026-11-22T09:27:22Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "GEOEYE 1 pass",
+      "pass": {
+        "peak": "2026-11-22T09:25:54Z",
+        "elevation": 60.0,
+        "azimuth": 289.3,
+        "sun_elevation": 19.3,
+        "sun_azimuth": 175.5
+      },
+      "notes": "Highest 60° at 0925Z (sun 19°). Threshold 40°. Orbit: Celestrak NORAD 33331, epoch 2026-11-20 06:01Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-14-59444-0935Z",
+      "satellite": "Capella-14",
+      "norad": 59444,
+      "start": "2026-11-22T09:34:03Z",
+      "end": "2026-11-22T09:36:12Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-14 (ACADIA-4) pass",
+      "pass": {
+        "peak": "2026-11-22T09:35:07Z",
+        "elevation": 43.0,
+        "azimuth": 178.6,
+        "sun_elevation": 19.4,
+        "sun_azimuth": 177.8
+      },
+      "notes": "Highest 43° at 0935Z (sun 19°). Threshold 35–75°. Orbit: Celestrak NORAD 59444, epoch 2026-11-20 06:14Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-11-57693-1123Z",
+      "satellite": "Capella-11",
+      "norad": 57693,
+      "start": "2026-11-22T11:22:06Z",
+      "end": "2026-11-22T11:24:41Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-11 (ACADIA-1) pass",
+      "pass": {
+        "peak": "2026-11-22T11:23:24Z",
+        "elevation": 46.3,
+        "azimuth": 146.8,
+        "sun_elevation": 16.1,
+        "sun_azimuth": 204.2
+      },
+      "notes": "Highest 46° at 1123Z (sun 16°). Threshold 35–75°. Orbit: Celestrak NORAD 57693, epoch 2026-11-19 04:18Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "WorldView-1-32060-1217Z",
+      "satellite": "WorldView-1",
+      "norad": 32060,
+      "start": "2026-11-22T12:16:15Z",
+      "end": "2026-11-22T12:18:27Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "WORLDVIEW-1 (WV-1) pass",
+      "pass": {
+        "peak": "2026-11-22T12:17:21Z",
+        "elevation": 62.8,
+        "azimuth": 286.6,
+        "sun_elevation": 11.8,
+        "sun_azimuth": 216.5
+      },
+      "notes": "Highest 63° at 1217Z (sun 12°). Threshold 40°. Orbit: Celestrak NORAD 32060, epoch 2026-11-20 07:44Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-20-68485-1222Z",
+      "satellite": "Capella-20",
+      "norad": 68485,
+      "start": "2026-11-22T12:20:40Z",
+      "end": "2026-11-22T12:23:52Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-20 (ACADIA-10) pass",
+      "pass": {
+        "peak": "2026-11-22T12:22:16Z",
+        "elevation": 58.0,
+        "azimuth": 259.2,
+        "sun_elevation": 11.3,
+        "sun_azimuth": 217.5
+      },
+      "notes": "Highest 58° at 1222Z (sun 11°). Threshold 35–75°. Orbit: Celestrak NORAD 68485, epoch 2026-11-19 21:08Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-11-57693-1303Z",
+      "satellite": "Capella-11",
+      "norad": 57693,
+      "start": "2026-11-22T13:02:05Z",
+      "end": "2026-11-22T13:05:37Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-11 (ACADIA-1) pass",
+      "pass": {
+        "peak": "2026-11-22T13:03:51Z",
+        "elevation": 71.7,
+        "azimuth": 346.8,
+        "sun_elevation": 6.9,
+        "sun_azimuth": 226.3
+      },
+      "notes": "Highest 72° at 1303Z (sun 7°). Threshold 35–75°. Orbit: Celestrak NORAD 57693, epoch 2026-11-19 04:18Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-18-67385-1412Z",
+      "satellite": "Capella-18",
+      "norad": 67385,
+      "start": "2026-11-22T14:11:18Z",
+      "end": "2026-11-22T14:13:51Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-18 (ACADIA-8) pass",
+      "pass": {
+        "peak": "2026-11-22T14:12:35Z",
+        "elevation": 46.4,
+        "azimuth": 69.4,
+        "sun_elevation": -1.8,
+        "sun_azimuth": 239.9
+      },
+      "notes": "Highest 46° at 1412Z (sun -2°). Threshold 35–75°. Orbit: Celestrak NORAD 67385, epoch 2026-11-19 22:58Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-11-57693-1444Z",
+      "satellite": "Capella-11",
+      "norad": 57693,
+      "start": "2026-11-22T14:42:59Z",
+      "end": "2026-11-22T14:46:24Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-11 (ACADIA-1) pass",
+      "pass": {
+        "peak": "2026-11-22T14:44:41Z",
+        "elevation": 65.0,
+        "azimuth": 8.2,
+        "sun_elevation": -6.5,
+        "sun_azimuth": 245.9
+      },
+      "notes": "Highest 65° at 1444Z (sun -6°). Threshold 35–75°. Orbit: Celestrak NORAD 57693, epoch 2026-11-19 04:18Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Sentinel-1-39634-1552Z",
+      "satellite": "Sentinel-1",
+      "norad": 39634,
+      "start": "2026-11-22T15:52:39Z",
+      "end": "2026-11-22T15:53:18Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "SENTINEL-1A pass",
+      "pass": {
+        "peak": "2026-11-22T15:52:59Z",
+        "elevation": 44.7,
+        "azimuth": 261.4,
+        "sun_elevation": -16.8,
+        "sun_azimuth": 258.4
+      },
+      "notes": "Highest 45° at 1552Z (sun -17°). Threshold 44–61°. Orbit: Celestrak NORAD 39634, epoch 2026-11-20 06:06Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-11-57693-1625Z",
+      "satellite": "Capella-11",
+      "norad": 57693,
+      "start": "2026-11-22T16:23:38Z",
+      "end": "2026-11-22T16:26:56Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-11 (ACADIA-1) pass",
+      "pass": {
+        "peak": "2026-11-22T16:25:17Z",
+        "elevation": 60.9,
+        "azimuth": 208.9,
+        "sun_elevation": -21.9,
+        "sun_azimuth": 264.4
+      },
+      "notes": "Highest 61° at 1625Z (sun -22°). Threshold 35–75°. Orbit: Celestrak NORAD 57693, epoch 2026-11-19 04:18Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-15-60544-1958Z",
+      "satellite": "Capella-15",
+      "norad": 60544,
+      "start": "2026-11-22T19:57:23Z",
+      "end": "2026-11-22T20:00:17Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-15 (ACADIA-5) pass",
+      "pass": {
+        "peak": "2026-11-22T19:58:49Z",
+        "elevation": 53.2,
+        "azimuth": 260.0,
+        "sun_elevation": -53.4,
+        "sun_azimuth": 315.8
+      },
+      "notes": "Highest 53° at 1958Z (sun -53°). Threshold 35–75°. Orbit: Celestrak NORAD 60544, epoch 2026-11-20 01:46Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-16-65318-2012Z",
+      "satellite": "Capella-16",
+      "norad": 65318,
+      "start": "2026-11-22T20:11:21Z",
+      "end": "2026-11-22T20:14:15Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-16 (ACADIA-6) pass",
+      "pass": {
+        "peak": "2026-11-22T20:12:48Z",
+        "elevation": 54.8,
+        "azimuth": 259.7,
+        "sun_elevation": -54.8,
+        "sun_azimuth": 320.8
+      },
+      "notes": "Highest 55° at 2012Z (sun -55°). Threshold 35–75°. Orbit: Celestrak NORAD 65318, epoch 2026-11-20 05:21Z, fetched 2026-11-20T13:59:07Z."
+    },
+    {
+      "id": "Capella-17-64583-2238Z",
+      "satellite": "Capella-17",
+      "norad": 64583,
+      "start": "2026-11-22T22:36:46Z",
+      "end": "2026-11-22T22:40:04Z",
+      "status": "Predicted",
+      "seclab": "UNCLASSIFIED",
+      "label": "CAPELLA-17 (ACADIA-7) pass",
+      "pass": {
+        "peak": "2026-11-22T22:38:25Z",
+        "elevation": 68.5,
+        "azimuth": 257.6,
+        "sun_elevation": -58.0,
+        "sun_azimuth": 24.5
+      },
+      "notes": "Highest 69° at 2238Z (sun -58°). Threshold 35–75°. Orbit: Celestrak NORAD 64583, epoch 2026-11-20 06:04Z, fetched 2026-11-20T13:59:07Z."
+    }
+  ]
+}
